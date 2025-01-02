@@ -1,0 +1,154 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  TEACHER
+  ADMIN
+}
+
+enum Nilai {
+  SANGAT_BAIK
+  BAIK
+  CUKUP
+  KURANG
+}
+
+enum Semester {
+  GANJIL
+  GENAP
+}
+
+enum Gender {
+  LAKI_LAKI
+  PEREMPUAN
+}
+
+enum AssessmentAspects {
+  NILAI_AGAMA_DAN_BUDI_PEKERTI
+  JATI_DIRI
+  DASAR_LITERASI_MATEMATIKA_SAINS_TEKNOLOGI_REKAYASA_DAN_SENI
+}
+
+model Teacher {
+  id       Int    @id @default(autoincrement())
+  fullname String
+  email    String @unique
+  nip      String @unique
+  password String
+  classID  Int?   @map("class_id")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updateAt  DateTime @updatedAt @map("update_at")
+
+  role  UserRole
+  class Class?   @relation(fields: [classID], references: [id])
+
+  @@map("teachers")
+}
+
+model Class {
+  id   Int    @id @default(autoincrement())
+  name String @unique
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updateAt  DateTime @updatedAt @map("update_at")
+
+  Student Student[]
+  Teacher Teacher[]
+
+  @@map("class")
+}
+
+model Period {
+  id   Int      @id @default(autoincrement())
+  name Semester
+  year String   @default("2025")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updateAt  DateTime @updatedAt @map("update_at")
+
+  Student_Score Student_Score[]
+
+  @@map("periods")
+}
+
+model Student {
+  id       Int      @id @default(autoincrement())
+  fullname String
+  height   Float?
+  weight   Float?
+  gender   Gender
+  dob      DateTime @map("date_of_birth")
+  classID  Int?     @map("class_id")
+  address  String?
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updateAt  DateTime @updatedAt @map("update_at")
+
+  class         Class?          @relation(fields: [classID], references: [id])
+  Student_Score Student_Score[]
+
+  @@map("students")
+}
+
+model Theme {
+  id    Int    @id @default(autoincrement())
+  title String
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updateAt  DateTime @updatedAt @map("update_at")
+
+  Criteria Criteria[]
+
+  @@map("themes")
+}
+
+model Criteria {
+  id             Int               @id @default(autoincrement())
+  title          String
+  description    String
+  assesment_type AssessmentAspects
+  themeId        Int?
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updateAt  DateTime @updatedAt @map("update_at")
+
+  theme         Theme?          @relation(fields: [themeId], references: [id])
+  Student_Score Student_Score[]
+
+  @@map("criterias")
+}
+
+model Student_Score {
+  id          Int    @id @default(autoincrement())
+  studentId   Int
+  criteriaId  Int
+  periodId    Int
+  description String
+  value       Nilai
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updateAt  DateTime @updatedAt @map("update_at")
+
+  studentID  Student  @relation(fields: [studentId], references: [id])
+  criteriaID Criteria @relation(fields: [criteriaId], references: [id])
+  periodID   Period   @relation(fields: [periodId], references: [id])
+
+  @@index([studentId], name: "idx_studentId")
+  @@index([criteriaId], name: "idx_criteriaId")
+  @@index([periodId], name: "idx_periodId")
+  @@index([studentId, criteriaId, periodId], name: "idx_composite")
+  @@map("student_scores")
+}
