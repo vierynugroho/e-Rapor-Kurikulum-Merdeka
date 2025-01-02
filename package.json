@@ -2,7 +2,7 @@
     "name": "e_rapor",
     "version": "0.1.0",
     "author": "Viery Nugroho",
-    "description": "e-Rapor Skripsi Kurikulum Merdeka PAUD",
+    "description": "[skripsi] e-Rapor Kurikulum Merdeka PAUD",
     "private": true,
     "type": "module",
     "scripts": {
