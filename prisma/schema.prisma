@@ -52,9 +52,10 @@ model Teacher {
   createdAt DateTime @default(now()) @map("created_at")
   updateAt  DateTime @updatedAt @map("update_at")
 
-  role          UserRole
-  class         Class?          @relation(fields: [classID], references: [id])
-  Student_Score Student_Score[]
+  role                UserRole
+  class               Class?                @relation(fields: [classID], references: [id])
+  Student_Score       Student_Score[]
+  Student_Development Student_Development[]
 
   @@map("teachers")
 }
@@ -164,11 +165,13 @@ model Student_Development {
   weight     Float?
   notes      String?
   studentId  Int
+  teacherId  Int
   recordDate DateTime @default(now()) @map("record_date")
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
+  teacherID Teacher @relation(fields: [teacherId], references: [id])
   studentID Student @relation(fields: [studentId], references: [id])
 
   @@map("student_developments")
