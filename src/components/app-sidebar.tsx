@@ -43,11 +43,11 @@ const data = {
             items: [
                 {
                     title: 'Penilaian',
-                    url: '#',
+                    url: '/students',
                 },
                 {
                     title: 'Perkembangan',
-                    url: '#',
+                    url: '/students',
                 },
             ],
         },
@@ -58,7 +58,7 @@ const data = {
             items: [
                 {
                     title: 'Manajemen Data',
-                    url: '#',
+                    url: '/teachers',
                 },
             ],
         },
@@ -69,7 +69,7 @@ const data = {
             items: [
                 {
                     title: 'Manajemen Data',
-                    url: '#',
+                    url: '/periods',
                 },
             ],
         },
@@ -80,7 +80,7 @@ const data = {
             items: [
                 {
                     title: 'Manajemen Data',
-                    url: '#',
+                    url: '/themes',
                 },
             ],
         },
@@ -91,7 +91,7 @@ const data = {
             items: [
                 {
                     title: 'Manajemen Data',
-                    url: '#',
+                    url: '/indicators',
                 },
             ],
         },
@@ -102,7 +102,7 @@ const data = {
             items: [
                 {
                     title: 'Manajemen Data',
-                    url: '#',
+                    url: '/classes',
                 },
             ],
         },
