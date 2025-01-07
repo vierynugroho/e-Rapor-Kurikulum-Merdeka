@@ -25,6 +25,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { DataTablePagination } from '@/components/pagination';
+import { Download } from 'lucide-react';
 
 interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[];
@@ -56,7 +57,7 @@ export function DataTable<TData, TValue>({
 
     return (
         <div>
-            <div className="flex items-center py-4">
+            <div className="flex items-center justify-between py-4">
                 <Input
                     placeholder="Filter by names..."
                     value={
@@ -71,6 +72,12 @@ export function DataTable<TData, TValue>({
                     }
                     className="max-w-sm"
                 />
+                <Button
+                    onClick={() => window.print()}
+                    className="bg-blend-hard-light"
+                >
+                    <Download /> Unduh Data
+                </Button>
             </div>
             <div className="rounded-md border">
                 <Table>
