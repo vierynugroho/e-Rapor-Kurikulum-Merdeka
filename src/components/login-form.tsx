@@ -59,7 +59,7 @@ export function LoginForm({
                                     href="#"
                                     className="underline underline-offset-4"
                                 >
-                                    Sign up
+                                    Contact admin
                                 </a>
                             </div>
                         </div>

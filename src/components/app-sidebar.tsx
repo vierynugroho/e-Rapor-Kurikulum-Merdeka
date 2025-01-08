@@ -13,7 +13,7 @@ import {
 
 import { NavMain } from '@/components/nav-main';
 import { NavUser } from '@/components/nav-user';
-import { SchoolSwitcher } from '@/components/team-switcher';
+import { SchoolSwitcher } from '@/components/school-switcher';
 import {
     Sidebar,
     SidebarContent,
@@ -21,7 +21,7 @@ import {
     SidebarHeader,
     SidebarRail,
 } from '@/components/ui/sidebar';
-import { NavGeneral } from './nav-projects';
+import { NavGeneral } from './nav-general';
 
 const data = {
     user: {

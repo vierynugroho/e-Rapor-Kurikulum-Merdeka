@@ -20,15 +20,15 @@ export type Student_Development = {
 };
 
 export type Teacher = {
-    id: number;
+    id?: number;
     fullname: string;
     email: string;
     nip: string;
     password: string;
     classID?: number | null;
 
-    createdAt: Date;
-    updateAt: Date;
+    createdAt?: Date;
+    updateAt?: Date;
 
     role: UserRole;
     class?: Class | null;

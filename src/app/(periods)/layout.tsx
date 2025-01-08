@@ -1,3 +1,5 @@
+'use client';
+
 import { AppSidebar } from '@/components/app-sidebar';
 import {
     Breadcrumb,
@@ -14,12 +16,33 @@ import {
     SidebarProvider,
     SidebarTrigger,
 } from '@/components/ui/sidebar';
+import { usePathname } from 'next/navigation';
 
 export default function ThemesLayout({
     children,
 }: Readonly<{
     children: React.ReactNode;
 }>) {
+    const pathname = usePathname();
+
+    const generateBreadcrumbs = () => {
+        const paths = pathname.split('/').filter(path => path);
+
+        return paths.map((path, index) => {
+            const href = `/${paths.slice(0, index + 1).join('/')}`;
+            const label = path.charAt(0).toUpperCase() + path.slice(1);
+            const isLast = index === paths.length - 1;
+
+            return {
+                href,
+                label,
+                isLast,
+            };
+        });
+    };
+
+    const breadcrumbs = generateBreadcrumbs();
+
     return (
         <SidebarProvider>
             <AppSidebar />
@@ -31,20 +54,22 @@ export default function ThemesLayout({
                             orientation="vertical"
                             className="mr-2 h-4"
                         />
-                        <Breadcrumb>
-                            <BreadcrumbList>
-                                <BreadcrumbItem className="hidden md:block">
-                                    <BreadcrumbLink href="#">
-                                        e-Rapor TK Negeri 2 Sananwetan Kota
-                                        Blitar
-                                    </BreadcrumbLink>
-                                </BreadcrumbItem>
-                                <BreadcrumbSeparator className="hidden md:block" />
-                                <BreadcrumbItem>
-                                    <BreadcrumbPage>Dashboard</BreadcrumbPage>
-                                </BreadcrumbItem>
-                            </BreadcrumbList>
-                        </Breadcrumb>
+                        {breadcrumbs.map(({ href, label }) => (
+                            <Breadcrumb key={href}>
+                                <BreadcrumbList>
+                                    <BreadcrumbItem className="hidden md:block">
+                                        <BreadcrumbLink>
+                                            e-Rapor TK Negeri 2 Sananwetan Kota
+                                            Blitar
+                                        </BreadcrumbLink>
+                                    </BreadcrumbItem>
+                                    <BreadcrumbSeparator className="hidden md:block" />
+                                    <BreadcrumbItem>
+                                        <BreadcrumbPage>{label}</BreadcrumbPage>
+                                    </BreadcrumbItem>
+                                </BreadcrumbList>
+                            </Breadcrumb>
+                        ))}
                         <div className="fixed right-0 mr-6">
                             <ModeToggle />
                         </div>
