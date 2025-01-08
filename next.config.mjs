@@ -7,9 +7,19 @@ const nextConfig = {
                 hostname: 'ik.imagekit.io',
                 pathname: '/**',
             },
+            {
+                protocol: 'https',
+                hostname: 'lh3.googleusercontent.com',
+                port: '',
+                pathname: '/**',
+            },
+            {
+                protocol: 'https',
+                hostname: 'res.cloudinary.com',
+                pathname: '/**',
+            },
         ],
         unoptimized: false,
-        domains: ['ik.imagekit.io'],
     },
 };
 

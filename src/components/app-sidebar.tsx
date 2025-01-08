@@ -25,7 +25,7 @@ import { NavGeneral } from './nav-general';
 
 const data = {
     user: {
-        name: 'Viery Nugrpjp',
+        name: 'Viery Nugroho',
         email: 'viery@tkn2sanewa.com',
         avatar: '/assets/Viery_Nugroho.png',
     },

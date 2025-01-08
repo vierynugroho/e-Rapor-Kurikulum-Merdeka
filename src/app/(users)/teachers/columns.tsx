@@ -181,7 +181,7 @@ export const columns: ColumnDef<Teacher>[] = [
                             <AlertDialogTrigger asChild>
                                 <DropdownMenuItem
                                     onSelect={e => e.preventDefault()}
-                                    className="text-red-600"
+                                    className="text-red-600 text-white"
                                     key={`delete-${teacher.id}`}
                                 >
                                     Delete Data
