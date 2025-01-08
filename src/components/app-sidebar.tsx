@@ -2,16 +2,18 @@
 
 import * as React from 'react';
 import {
-    BookOpen,
-    Bot,
-    GalleryVerticalEnd,
-    Settings2,
-    SquareTerminal,
+    BookOpenCheck,
+    CalendarCheck,
+    LayoutDashboard,
+    School,
+    School2,
+    SwatchBook,
+    Users,
 } from 'lucide-react';
 
 import { NavMain } from '@/components/nav-main';
 import { NavUser } from '@/components/nav-user';
-import { TeamSwitcher } from '@/components/team-switcher';
+import { SchoolSwitcher } from '@/components/team-switcher';
 import {
     Sidebar,
     SidebarContent,
@@ -19,18 +21,18 @@ import {
     SidebarHeader,
     SidebarRail,
 } from '@/components/ui/sidebar';
+import { NavGeneral } from './nav-projects';
 
-// This is sample data.
 const data = {
     user: {
         name: 'Viery Nugrpjp',
         email: 'viery@tkn2sanewa.com',
         avatar: '/avatars/shadcn.jpg',
     },
-    teams: [
+    schools: [
         {
             name: 'TK Negeri 2 Sananwetan',
-            logo: GalleryVerticalEnd,
+            logo: School2,
             plan: 'e-Rapor Kurikulum Merdeka',
         },
     ],
@@ -38,8 +40,7 @@ const data = {
         {
             title: 'Data Siswa',
             url: '#',
-            icon: SquareTerminal,
-            isActive: true,
+            icon: Users,
             items: [
                 {
                     title: 'Penilaian',
@@ -54,7 +55,7 @@ const data = {
         {
             title: 'Data Guru',
             url: '#',
-            icon: Bot,
+            icon: Users,
             items: [
                 {
                     title: 'Manajemen Data',
@@ -65,7 +66,7 @@ const data = {
         {
             title: 'Data Periode',
             url: '#',
-            icon: BookOpen,
+            icon: CalendarCheck,
             items: [
                 {
                     title: 'Manajemen Data',
@@ -76,7 +77,7 @@ const data = {
         {
             title: 'Data Tema',
             url: '#',
-            icon: BookOpen,
+            icon: SwatchBook,
             items: [
                 {
                     title: 'Manajemen Data',
@@ -87,7 +88,7 @@ const data = {
         {
             title: 'Data Indikator Nilai',
             url: '#',
-            icon: BookOpen,
+            icon: BookOpenCheck,
             items: [
                 {
                     title: 'Manajemen Data',
@@ -98,7 +99,7 @@ const data = {
         {
             title: 'Data Kelas',
             url: '#',
-            icon: BookOpen,
+            icon: School,
             items: [
                 {
                     title: 'Manajemen Data',
@@ -106,16 +107,12 @@ const data = {
                 },
             ],
         },
+    ],
+    generals: [
         {
-            title: 'Settings',
-            url: '#',
-            icon: Settings2,
-            items: [
-                {
-                    title: 'General',
-                    url: '#',
-                },
-            ],
+            name: 'Dashboard',
+            url: '/',
+            icon: LayoutDashboard,
         },
     ],
 };
@@ -124,9 +121,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     return (
         <Sidebar collapsible="icon" {...props}>
             <SidebarHeader>
-                <TeamSwitcher teams={data.teams} />
+                <SchoolSwitcher schools={data.schools} />
             </SidebarHeader>
             <SidebarContent>
+                <NavGeneral generals={data.generals} />
                 <NavMain items={data.navMain} />
             </SidebarContent>
             <SidebarFooter>
