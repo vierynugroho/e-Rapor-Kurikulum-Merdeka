@@ -72,7 +72,7 @@ export const columns: ColumnDef<Teacher>[] = [
         },
     },
     {
-        accessorKey: 'class.name',
+        accessorFn: row => row.class?.name || '-',
         header: 'Class',
     },
     {

@@ -27,7 +27,7 @@ const data = {
     user: {
         name: 'Viery Nugrpjp',
         email: 'viery@tkn2sanewa.com',
-        avatar: '/avatars/shadcn.jpg',
+        avatar: '/assets/Viery_Nugroho.png',
     },
     schools: [
         {

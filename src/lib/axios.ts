@@ -1,5 +1,4 @@
 import axios from 'axios';
-import { cookies } from 'next/headers';
 
 const baseURL = process.env.BASE_URL || 'http://localhost:3000/api';
 const tokenKey = process.env.TOKEN_KEY || 'token';
@@ -23,9 +22,11 @@ api.interceptors.request.use(
             let token = '';
 
             if (isServer) {
-                // Server-side: Menggunakan `next/headers` untuk membaca cookies
-                const cookieStore = cookies();
-                token = cookieStore.get(tokenKey)?.value || '';
+                const { cookies } = await import('next/headers');
+                const token = cookies().get(process.env.TOKEN_KEY!)?.value;
+                if (token) {
+                    config.headers.Authorization = `Bearer ${token}`;
+                }
             } else {
                 // Client-side: Menggunakan `document.cookie`
                 token = document.cookie.replace(
