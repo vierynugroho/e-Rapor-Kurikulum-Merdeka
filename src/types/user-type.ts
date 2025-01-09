@@ -23,7 +23,7 @@ export type Teacher = {
     id?: number;
     fullname: string;
     email: string;
-    nip: string;
+    identity_number: string;
     password: string;
     classID?: number | null;
 
@@ -31,7 +31,7 @@ export type Teacher = {
     updateAt?: Date;
 
     role: UserRole;
-    class?: Class | null;
+    kelas?: Class | null;
     Student_Score?: Student_Score[];
     Student_Development?: Student_Development[];
 };

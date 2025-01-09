@@ -24,6 +24,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { formSchema } from './validation';
 import { Teacher } from '../../../../types/user-type';
+import { PasswordInput } from '@/components/ui/password-input';
 
 function onSubmit(values: z.infer<typeof formSchema>) {
     console.log(values);
@@ -31,30 +32,30 @@ function onSubmit(values: z.infer<typeof formSchema>) {
 }
 
 type FormTeacherProps = {
-    teacher: Teacher;
+    teacher?: Teacher;
 };
 
 export default function FormTeacher({ teacher }: FormTeacherProps) {
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            fullname: teacher.fullname,
-            email: teacher.email,
-            nip: teacher.nip,
-            classID: teacher.classID!,
-            role: teacher.role,
+            fullname: teacher?.fullname || '',
+            email: teacher?.email || '',
+            identity_number: teacher?.identity_number || '',
+            classID: teacher?.kelas?.id || undefined,
+            role: teacher?.role || 'TEACHER',
         },
     });
 
     return (
-        <Form {...form} key={teacher.id}>
+        <Form {...form} key={teacher?.id || 'add-data'}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
                 <FormField
                     control={form.control}
                     name="fullname"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Name</FormLabel>
+                            <FormLabel>Nama</FormLabel>
                             <FormControl>
                                 <Input {...field} />
                             </FormControl>
@@ -79,39 +80,51 @@ export default function FormTeacher({ teacher }: FormTeacherProps) {
 
                 <FormField
                     control={form.control}
-                    name="nip"
+                    name="identity_number"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>NIP</FormLabel>
+                            <FormLabel>NIP / NIK</FormLabel>
                             <FormControl>
-                                <Input {...field} />
+                                <Input {...field} type="number" />
                             </FormControl>
                             <FormMessage />
                         </FormItem>
                     )}
                 />
-
+                <FormField
+                    control={form.control}
+                    name="password"
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Password</FormLabel>
+                            <FormControl>
+                                <PasswordInput {...field} />
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
                 <FormField
                     control={form.control}
                     name="classID"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Class</FormLabel>
+                            <FormLabel>Kelas</FormLabel>
                             <Select
                                 onValueChange={field.onChange}
                                 disabled={form.getValues('role') === 'ADMIN'}
-                                defaultValue={field.value?.toString()}
+                                defaultValue={field?.value?.toString()}
                             >
                                 <FormControl>
                                     <SelectTrigger>
-                                        <SelectValue placeholder="Select class" />
+                                        <SelectValue placeholder="Pilih Kelas" />
                                     </SelectTrigger>
                                 </FormControl>
                                 <SelectContent>
-                                    <SelectItem value="1">Class A1</SelectItem>
-                                    <SelectItem value="2">Class A2</SelectItem>
-                                    <SelectItem value="3">Class B1</SelectItem>
-                                    <SelectItem value="4">Class B2</SelectItem>
+                                    <SelectItem value="1">Kelas A1</SelectItem>
+                                    <SelectItem value="2">Kelas A2</SelectItem>
+                                    <SelectItem value="3">Kelas B1</SelectItem>
+                                    <SelectItem value="4">Kelas B2</SelectItem>
                                 </SelectContent>
                             </Select>
                             <FormMessage />
@@ -124,14 +137,14 @@ export default function FormTeacher({ teacher }: FormTeacherProps) {
                     name="role"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Role</FormLabel>
+                            <FormLabel>Peran</FormLabel>
                             <Select
                                 onValueChange={field.onChange}
                                 defaultValue={field.value}
                             >
                                 <FormControl>
                                     <SelectTrigger>
-                                        <SelectValue placeholder="Select role" />
+                                        <SelectValue placeholder="Pilih Peran" />
                                     </SelectTrigger>
                                 </FormControl>
                                 <SelectContent>
@@ -147,7 +160,7 @@ export default function FormTeacher({ teacher }: FormTeacherProps) {
                     )}
                 />
                 <DialogFooter>
-                    <Button type="submit">Save changes</Button>
+                    <Button type="submit">Simpan</Button>
                 </DialogFooter>
             </form>
         </Form>

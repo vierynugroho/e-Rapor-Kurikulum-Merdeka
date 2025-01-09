@@ -52,13 +52,13 @@ export function LoginForm() {
 
                                 <FormField
                                     control={form.control}
-                                    name="user_id"
+                                    name="identity_number"
                                     render={({ field }) => (
                                         <FormItem>
                                             <FormLabel>User ID</FormLabel>
                                             <FormControl>
                                                 <Input
-                                                    id="user_id"
+                                                    id="identity_number"
                                                     type="number"
                                                     placeholder="NIK atau NIP"
                                                     {...field}

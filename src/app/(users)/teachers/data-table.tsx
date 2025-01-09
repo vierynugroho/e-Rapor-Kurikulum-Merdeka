@@ -25,7 +25,16 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { DataTablePagination } from '@/components/pagination';
-import { Download } from 'lucide-react';
+import { Download, Plus } from 'lucide-react';
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from '@/components/ui/dialog';
+import FormTeacher from './form';
 
 interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[];
@@ -59,7 +68,7 @@ export function DataTable<TData, TValue>({
         <div>
             <div className="flex items-center justify-between py-4">
                 <Input
-                    placeholder="Filter by names..."
+                    placeholder="Filter berdasarkan nama..."
                     value={
                         (table
                             .getColumn('fullname')
@@ -72,12 +81,32 @@ export function DataTable<TData, TValue>({
                     }
                     className="max-w-sm"
                 />
-                <Button
-                    onClick={() => window.print()}
-                    className="bg-blend-hard-light"
-                >
-                    <Download /> Unduh Data
-                </Button>
+                <div className="user-action flex gap-2">
+                    <Dialog>
+                        <DialogTrigger asChild>
+                            <Button className="bg-blend-hard-light">
+                                <Plus /> Tambah Data
+                            </Button>
+                        </DialogTrigger>
+                        <DialogContent className="sm:max-w-[425px]">
+                            <DialogHeader>
+                                <DialogTitle>Tambah Data Guru</DialogTitle>
+                                <DialogDescription>
+                                    Buat data guru baru sekolah anda di sini
+                                </DialogDescription>
+                            </DialogHeader>
+                            <div className="grid gap-4 py-4">
+                                <FormTeacher />
+                            </div>
+                        </DialogContent>
+                    </Dialog>
+                    <Button
+                        onClick={() => window.print()}
+                        className="bg-green-800 text-white hover:bg-green-600 dark:bg-green-600 dark:hover:bg-green-500"
+                    >
+                        <Download /> Unduh Data
+                    </Button>
+                </div>
             </div>
             <div className="rounded-md border">
                 <Table>
@@ -125,7 +154,7 @@ export function DataTable<TData, TValue>({
                                     colSpan={columns.length}
                                     className="h-24 text-center"
                                 >
-                                    No results.
+                                    Data Tidak Ditemukan.
                                 </TableCell>
                             </TableRow>
                         )}

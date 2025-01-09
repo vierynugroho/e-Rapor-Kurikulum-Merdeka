@@ -3,7 +3,7 @@
 import { ColumnDef } from '@tanstack/react-table';
 import { Teacher } from '../../../types/user-type';
 
-import { MoreHorizontal, ArrowUpDown } from 'lucide-react';
+import { MoreHorizontal, ArrowUpDown, Trash, Edit, Eye } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
     DropdownMenu,
@@ -46,7 +46,7 @@ export const columns: ColumnDef<Teacher>[] = [
                     column.toggleSorting(column.getIsSorted() === 'asc')
                 }
             >
-                Name
+                Nama
                 <ArrowUpDown className="ml-2 h-4 w-4" />
             </Button>
         ),
@@ -72,34 +72,35 @@ export const columns: ColumnDef<Teacher>[] = [
         },
     },
     {
-        accessorFn: row => row.class?.name || '-',
-        header: 'Class',
+        accessorFn: row => row.kelas?.name || '-',
+        header: 'Kelas',
     },
     {
         accessorKey: 'role',
-        header: 'Role',
+        header: 'Peran',
     },
     {
-        id: 'actions',
+        id: 'Aksi',
         cell: ({ row }) => {
             const teacher = row.original;
             return (
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                         <Button variant="ghost" className="h-8 w-8 p-0">
-                            <span className="sr-only">Open menu</span>
+                            <span className="sr-only">Buka menu</span>
                             <MoreHorizontal className="h-4 w-4" />
                         </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
-                        <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                        <DropdownMenuLabel>Aksi</DropdownMenuLabel>
+                        {/* detail action */}
                         <Dialog>
                             <DialogTrigger asChild>
                                 <DropdownMenuItem
                                     onSelect={e => e.preventDefault()}
                                     key={`view-${teacher.id}`}
                                 >
-                                    View Detail
+                                    <Eye /> Lihat Detail
                                 </DropdownMenuItem>
                             </DialogTrigger>
                             <DialogContent className="sm:max-w-[425px]">
@@ -129,10 +130,10 @@ export const columns: ColumnDef<Teacher>[] = [
                                     </div>
                                     <div className="grid grid-cols-4 items-center gap-4">
                                         <Label className="text-right">
-                                            NIP
+                                            Identity Number
                                         </Label>
                                         <div className="col-span-3">
-                                            {teacher.nip}
+                                            {teacher.identity_number}
                                         </div>
                                     </div>
                                     <div className="grid grid-cols-4 items-center gap-4">
@@ -148,27 +149,27 @@ export const columns: ColumnDef<Teacher>[] = [
                                             Class ID
                                         </Label>
                                         <div className="col-span-3">
-                                            {teacher.class?.name}
+                                            {teacher.kelas?.name}
                                         </div>
                                     </div>
                                 </div>
                             </DialogContent>
                         </Dialog>
-
+                        {/* edit action */}
                         <Dialog>
                             <DialogTrigger asChild>
                                 <DropdownMenuItem
                                     onSelect={e => e.preventDefault()}
                                     key={`edit-${teacher.id}`}
                                 >
-                                    Edit Data
+                                    <Edit /> Edit Data
                                 </DropdownMenuItem>
                             </DialogTrigger>
                             <DialogContent className="sm:max-w-[425px]">
                                 <DialogHeader>
-                                    <DialogTitle>Edit Teacher</DialogTitle>
+                                    <DialogTitle>Edit Data Guru</DialogTitle>
                                     <DialogDescription>
-                                        Make changes to teacher profile here.
+                                        Perbarui data guru sekolah anda di sini
                                     </DialogDescription>
                                 </DialogHeader>
                                 <div className="grid gap-4 py-4">
@@ -176,34 +177,31 @@ export const columns: ColumnDef<Teacher>[] = [
                                 </div>
                             </DialogContent>
                         </Dialog>
-
+                        {/* delete action */}
                         <AlertDialog>
                             <AlertDialogTrigger asChild>
                                 <DropdownMenuItem
                                     onSelect={e => e.preventDefault()}
-                                    className="text-red-600 text-white"
                                     key={`delete-${teacher.id}`}
                                 >
-                                    Delete Data
+                                    <Trash /> Hapus Data
                                 </DropdownMenuItem>
                             </AlertDialogTrigger>
                             <AlertDialogContent>
                                 <AlertDialogHeader>
                                     <AlertDialogTitle>
-                                        Delete Teacher
+                                        Hapus Guru
                                     </AlertDialogTitle>
                                     <AlertDialogDescription>
-                                        Are you sure you want to delete{' '}
-                                        {teacher.fullname}? This action cannot
-                                        be undone.
+                                        Apakah anda yakin untuk menghapus data{' '}
+                                        {teacher.fullname}? Aksi ini tidak bisa
+                                        dikembalikan.
                                     </AlertDialogDescription>
                                 </AlertDialogHeader>
                                 <AlertDialogFooter>
-                                    <AlertDialogCancel>
-                                        Cancel
-                                    </AlertDialogCancel>
+                                    <AlertDialogCancel>Batal</AlertDialogCancel>
                                     <AlertDialogAction className="bg-red-600">
-                                        Delete
+                                        Hapus
                                     </AlertDialogAction>
                                 </AlertDialogFooter>
                             </AlertDialogContent>
