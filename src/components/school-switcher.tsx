@@ -8,7 +8,6 @@ import {
     DropdownMenuContent,
     DropdownMenuItem,
     DropdownMenuLabel,
-    DropdownMenuShortcut,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import {
@@ -64,7 +63,7 @@ export function SchoolSwitcher({
                         </DropdownMenuLabel>
                         {schools.map((team, index) => (
                             <DropdownMenuItem
-                                key={team.name}
+                                key={index}
                                 onClick={() => setActiveTeam(team)}
                                 className="gap-2 p-2"
                             >
@@ -72,9 +71,6 @@ export function SchoolSwitcher({
                                     <team.logo className="size-4 shrink-0" />
                                 </div>
                                 {team.name}
-                                <DropdownMenuShortcut>
-                                    ⌘{index + 1}
-                                </DropdownMenuShortcut>
                             </DropdownMenuItem>
                         ))}
                     </DropdownMenuContent>

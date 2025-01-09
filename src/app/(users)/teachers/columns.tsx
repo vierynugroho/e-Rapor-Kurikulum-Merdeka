@@ -56,10 +56,10 @@ export const columns: ColumnDef<Teacher>[] = [
         header: 'Email',
     },
     {
-        accessorKey: 'nip',
-        header: () => <div className="text-right">NIP</div>,
+        accessorKey: 'identity_number',
+        header: () => <div className="text-right">Identity Number</div>,
         cell: ({ row }) => {
-            const rawNip = row.getValue('nip');
+            const rawNip = row.getValue('identity_number');
             if (typeof rawNip !== 'string' && typeof rawNip !== 'number') {
                 return (
                     <div className="text-right font-medium">Invalid NIP</div>
@@ -165,7 +165,7 @@ export const columns: ColumnDef<Teacher>[] = [
                                     <Edit /> Edit Data
                                 </DropdownMenuItem>
                             </DialogTrigger>
-                            <DialogContent className="sm:max-w-[425px]">
+                            <DialogContent className="sm:max-w-[425px] md:max-w-[768px]">
                                 <DialogHeader>
                                     <DialogTitle>Edit Data Guru</DialogTitle>
                                     <DialogDescription>

@@ -55,7 +55,9 @@ export function LoginForm() {
                                     name="identity_number"
                                     render={({ field }) => (
                                         <FormItem>
-                                            <FormLabel>User ID</FormLabel>
+                                            <FormLabel>
+                                                Identity Number
+                                            </FormLabel>
                                             <FormControl>
                                                 <Input
                                                     id="identity_number"

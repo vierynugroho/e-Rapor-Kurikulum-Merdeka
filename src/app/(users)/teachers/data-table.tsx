@@ -88,7 +88,7 @@ export function DataTable<TData, TValue>({
                                 <Plus /> Tambah Data
                             </Button>
                         </DialogTrigger>
-                        <DialogContent className="sm:max-w-[425px]">
+                        <DialogContent className="sm:max-w-[425px] md:max-w-[768px]">
                             <DialogHeader>
                                 <DialogTitle>Tambah Data Guru</DialogTitle>
                                 <DialogDescription>

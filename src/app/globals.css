@@ -95,8 +95,8 @@ body {
     }
 }
 
-#user_id::-webkit-inner-spin-button,
-#user_id::-webkit-outer-spin-button {
+#identity_number::-webkit-inner-spin-button,
+#identity_number::-webkit-outer-spin-button {
     -webkit-appearance: none;
     margin: 0;
 }
