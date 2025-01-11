@@ -19,7 +19,7 @@ export type Student_Development = {
     developmentDetails: string;
 };
 
-export type Teacher = {
+export type TeacherType = {
     id?: number;
     fullname: string;
     email: string;
@@ -32,6 +32,7 @@ export type Teacher = {
 
     role: UserRole;
     kelas?: Class | null;
+    class?: Class | null;
     Student_Score?: Student_Score[];
     Student_Development?: Student_Development[];
 };

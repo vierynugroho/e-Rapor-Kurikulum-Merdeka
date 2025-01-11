@@ -7,7 +7,7 @@ export const formSchema = z.object({
         .string()
         .min(8, 'Identity number must be at least 8 characters'),
     password: z.string().min(8, 'Password must be at least 8 characters'),
-    classID: z.number({
+    classID: z.any({
         required_error: 'Please select a class',
     }),
     role: z.enum(['TEACHER', 'ADMIN'], {

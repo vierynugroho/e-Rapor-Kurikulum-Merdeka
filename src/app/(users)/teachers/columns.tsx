@@ -1,7 +1,7 @@
 'use client';
 
 import { ColumnDef } from '@tanstack/react-table';
-import { Teacher } from '../../../types/user-type';
+import { TeacherType } from '../../../types/user-type';
 
 import { MoreHorizontal, ArrowUpDown, Trash, Edit, Eye } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -36,7 +36,7 @@ import {
 } from '@/components/ui/alert-dialog';
 import FormTeacher from './form';
 
-export const columns: ColumnDef<Teacher>[] = [
+export const columns: ColumnDef<TeacherType>[] = [
     {
         accessorKey: 'fullname',
         header: ({ column }) => (
@@ -62,7 +62,9 @@ export const columns: ColumnDef<Teacher>[] = [
             const rawNip = row.getValue('identity_number');
             if (typeof rawNip !== 'string' && typeof rawNip !== 'number') {
                 return (
-                    <div className="text-right font-medium">Invalid NIP</div>
+                    <div className="text-right font-medium">
+                        Invalid identity number
+                    </div>
                 );
             }
             const formatted = rawNip
@@ -72,7 +74,7 @@ export const columns: ColumnDef<Teacher>[] = [
         },
     },
     {
-        accessorFn: row => row.kelas?.name || '-',
+        accessorFn: row => row.class?.name || '-',
         header: 'Kelas',
     },
     {

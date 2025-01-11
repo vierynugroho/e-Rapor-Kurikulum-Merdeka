@@ -1,5 +1,5 @@
 import * as z from 'zod';
-import { useForm } from 'react-hook-form';
+import { SubmitHandler, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 
 import {
@@ -24,19 +24,19 @@ import {
 } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
 import { formSchema } from './validation';
-import { Teacher } from '../../../../types/user-type';
+import { TeacherType } from '../../../../types/user-type';
 import { PasswordInput } from '@/components/ui/password-input';
-
-function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
-    // Handle form submission
-}
+import { postTeachers } from '@/services/page/(user)/teachers';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useToast } from '@/hooks/use-toast';
 
 type FormTeacherProps = {
-    teacher?: Teacher;
+    teacher?: TeacherType;
 };
 
 export default function FormTeacher({ teacher }: FormTeacherProps) {
+    const { toast } = useToast(); // Gunakan hook toast Shadcn
+
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -49,6 +49,37 @@ export default function FormTeacher({ teacher }: FormTeacherProps) {
         },
     });
 
+    const { isSubmitting } = form.formState;
+    const queryClient = useQueryClient();
+
+    const teacherMutation = useMutation({
+        mutationFn: postTeachers,
+        onSuccess: () => {
+            toast({
+                title: 'Berhasil',
+                description: 'Data guru berhasil ditambahkan.',
+                variant: 'default',
+            });
+            queryClient.invalidateQueries({ queryKey: ['teachers'] });
+            form.reset();
+        },
+        onError: error => {
+            toast({
+                title: 'Gagal',
+                description: `${error.message}`,
+                variant: 'destructive',
+            });
+
+            console.error('Error:', error);
+        },
+    });
+
+    const onSubmitForm: SubmitHandler<
+        z.infer<typeof formSchema>
+    > = async data => {
+        teacherMutation.mutate(data);
+    };
+
     return (
         <Card className="mx-auto w-full">
             <CardHeader>
@@ -57,7 +88,7 @@ export default function FormTeacher({ teacher }: FormTeacherProps) {
             <CardContent>
                 <Form {...form} key={teacher?.id || 'add-data'}>
                     <form
-                        onSubmit={form.handleSubmit(onSubmit)}
+                        onSubmit={form.handleSubmit(onSubmitForm)}
                         className="space-y-6"
                     >
                         {/* Full Name Field */}
@@ -208,7 +239,11 @@ export default function FormTeacher({ teacher }: FormTeacherProps) {
 
                         <div className="flex justify-end">
                             <DialogFooter>
-                                <Button type="submit">Simpan</Button>
+                                <Button type="submit">
+                                    {isSubmitting || teacherMutation.isPending
+                                        ? 'Memproses...'
+                                        : 'Simpan'}
+                                </Button>
                             </DialogFooter>
                         </div>
                     </form>
