@@ -1,10 +1,10 @@
 import { AxiosError } from 'axios';
 import { z } from 'zod';
-import { ApiResponseBuilder } from './api-response';
+import { APIResponse } from './api-response';
 
 export class CustomError extends Error {
     statusCode: number;
-    constructor(message: string, statusCode: number = 500) {
+    constructor(statusCode: number = 500, message: string) {
         super(message);
         this.statusCode = statusCode;
         Object.setPrototypeOf(this, CustomError.prototype);
@@ -34,21 +34,21 @@ export function errorHandler(error: unknown) {
 
     // Handle custom application errors
     if (error instanceof CustomError) {
-        return ApiResponseBuilder.error(error.message, error.statusCode);
+        return APIResponse.error(error.message, error.statusCode);
     }
 
     // Handle Zod validation errors
     if (error instanceof z.ZodError) {
-        return ApiResponseBuilder.error('Validation error', 400, error.errors);
+        return APIResponse.error('Validation error', 400, error.errors);
     }
 
     // Handle Axios request errors
     if (error instanceof AxiosError) {
         const statusCode = error.response?.status || 400;
         const message = error.response?.data?.message || 'Axios error';
-        return ApiResponseBuilder.error(message, statusCode);
+        return APIResponse.error(message, statusCode);
     }
 
     // Handle unknown or generic errors
-    return ApiResponseBuilder.error('Something went wrong', 500);
+    return APIResponse.error('Something went wrong', 500);
 }

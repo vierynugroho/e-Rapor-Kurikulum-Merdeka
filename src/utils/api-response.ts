@@ -18,7 +18,7 @@ type ErrorResponse<T> = {
     };
 };
 
-export class ApiResponseBuilder {
+export class APIResponse {
     static success<T>(
         data: T,
         meta?: Partial<ResponseMeta>,

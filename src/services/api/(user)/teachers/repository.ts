@@ -26,6 +26,16 @@ export class TeacherRepository {
         return teachers;
     }
 
+    static async GET_ID(teacherID: number) {
+        const teacher = await prisma.teacher.findUnique({
+            where: {
+                id: teacherID,
+            },
+        });
+
+        return teacher;
+    }
+
     static async GET_EMAIL(email: string) {
         const teacher = await prisma.teacher.findUnique({
             where: {
@@ -40,6 +50,34 @@ export class TeacherRepository {
         const teacher = await prisma.teacher.findUnique({
             where: {
                 identity_number,
+            },
+        });
+
+        return teacher;
+    }
+
+    static async UPDATE(teacherID: number, teacherData: TeacherType) {
+        const teacher = await prisma.teacher.update({
+            where: {
+                id: teacherID,
+            },
+            data: {
+                fullname: teacherData.fullname,
+                email: teacherData.email,
+                identity_number: teacherData.identity_number,
+                classID: teacherData.classID,
+                password: teacherData.password,
+                role: teacherData.role,
+            },
+        });
+
+        return teacher;
+    }
+
+    static async DELETE(teacherID: number) {
+        const teacher = await prisma.teacher.delete({
+            where: {
+                id: teacherID,
             },
         });
 

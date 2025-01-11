@@ -1,15 +1,30 @@
 import { TeacherType } from '@/types/user-type';
-// import { CustomError } from '@/utils/error';
 import { TeacherRepository } from './repository';
 import { CustomError } from '@/utils/error';
 import { Teacher } from '@prisma/client';
 
 export class TeacherService {
+    static async GET(): Promise<Teacher[]> {
+        const teachers = await TeacherRepository.GET();
+
+        return teachers;
+    }
+
+    static async GET_ID(teacherID: number): Promise<Teacher | null> {
+        const teacher = await TeacherRepository.GET_ID(teacherID);
+
+        if (!teacher) {
+            throw new CustomError(404, 'teacher data is not found');
+        }
+
+        return teacher;
+    }
+
     static async CREATE<T extends TeacherType>(request: T) {
         const emailExist = await TeacherRepository.GET_EMAIL(request.email);
 
         if (emailExist) {
-            throw new CustomError('email is already registered', 400);
+            throw new CustomError(400, 'email is already registered');
         }
 
         const identityExist = await TeacherRepository.GET_IDENTITY(
@@ -17,7 +32,7 @@ export class TeacherService {
         );
 
         if (identityExist) {
-            throw new CustomError('identity number is already registered', 400);
+            throw new CustomError(400, 'identity number is already registered');
         }
 
         const teacher = await TeacherRepository.CREATE(request);
@@ -25,9 +40,30 @@ export class TeacherService {
         return teacher;
     }
 
-    static async GET(): Promise<Teacher[]> {
-        const teachers = await TeacherRepository.GET();
-        console.log(teachers);
-        return teachers;
+    static async UPDATE<T extends TeacherType>(
+        teacherID: number,
+        request: T,
+    ): Promise<Teacher | null> {
+        const teacherExist = await TeacherRepository.GET_ID(teacherID);
+
+        if (!teacherExist) {
+            throw new CustomError(404, 'teacher data is not found');
+        }
+
+        const teacher = await TeacherRepository.UPDATE(teacherID, request);
+
+        return teacher;
+    }
+
+    static async DELETE(teacherID: number): Promise<Teacher | null> {
+        const teacherExist = await TeacherRepository.GET_ID(teacherID);
+
+        if (!teacherExist) {
+            throw new CustomError(404, 'teacher data is not found');
+        }
+
+        const teacher = await TeacherRepository.DELETE(teacherID);
+
+        return teacher;
     }
 }

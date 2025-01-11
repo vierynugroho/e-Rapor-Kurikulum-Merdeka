@@ -1,4 +1,4 @@
-import { ApiResponseBuilder } from '@/utils/api-response';
+import { APIResponse } from '@/utils/api-response';
 import { CustomError, errorHandler } from '@/utils/error';
 import { validateSchema } from '@/utils/validator';
 import { NextRequest } from 'next/server';
@@ -11,7 +11,7 @@ export class TeacherController {
             console.log(request.json);
             const data = await TeacherService.GET();
 
-            return ApiResponseBuilder.success(data, {
+            return APIResponse.success(data, {
                 message: 'teachers data retrieved successfully',
             });
         } catch (error) {
@@ -19,14 +19,22 @@ export class TeacherController {
         }
     }
 
-    static async GET_ID(request: NextRequest) {
+    static async GET_ID(
+        request: NextRequest,
+        { params }: { params: { id: string } },
+    ) {
         try {
-            const searchParams = request.nextUrl.searchParams;
-            const query = searchParams.get('query');
-            console.log(query);
+            const { id } = params;
+            const teacherID = parseInt(id);
 
-            return ApiResponseBuilder.success(query, {
-                message: 'teachers data retrieved successfully',
+            if (isNaN(teacherID)) {
+                throw new CustomError(400, 'invalid teacher ID');
+            }
+
+            const teacher = await TeacherService.GET_ID(teacherID);
+
+            return APIResponse.success(teacher, {
+                message: 'teacher data retrieved successfully',
             });
         } catch (error) {
             return errorHandler(error);
@@ -40,7 +48,7 @@ export class TeacherController {
 
             if (data.classID) {
                 if (isNaN(data.classID)) {
-                    throw new CustomError('Invalid Class ID', 400);
+                    throw new CustomError(400, 'Invalid Class ID');
                 }
 
                 data.classID = parseInt(String(data.classID));
@@ -48,8 +56,55 @@ export class TeacherController {
 
             const createPayment = await TeacherService.CREATE(data);
 
-            return ApiResponseBuilder.created(createPayment, {
+            return APIResponse.created(createPayment, {
                 message: 'teacher data created successfully',
+            });
+        } catch (error) {
+            return errorHandler(error);
+        }
+    }
+
+    static async UPDATE(
+        request: NextRequest,
+        { params }: { params: { id: string } },
+    ) {
+        try {
+            const { id } = params;
+            const teacherID = parseInt(id);
+
+            if (isNaN(teacherID)) {
+                throw new CustomError(400, 'invalid teacher ID');
+            }
+
+            const requestBody = await request.json();
+            const data = validateSchema(formSchema, requestBody);
+
+            const teacher = await TeacherService.UPDATE(teacherID, data);
+
+            return APIResponse.success(teacher, {
+                message: 'teacher data updated successfully',
+            });
+        } catch (error) {
+            return errorHandler(error);
+        }
+    }
+
+    static async DELETE(
+        request: NextRequest,
+        { params }: { params: { id: string } },
+    ) {
+        try {
+            const { id } = params;
+            const teacherID = parseInt(id);
+
+            if (isNaN(teacherID)) {
+                throw new CustomError(400, 'invalid teacher ID');
+            }
+
+            const teacher = await TeacherService.DELETE(teacherID);
+
+            return APIResponse.success(teacher, {
+                message: 'teacher data deleted successfully',
             });
         } catch (error) {
             return errorHandler(error);
