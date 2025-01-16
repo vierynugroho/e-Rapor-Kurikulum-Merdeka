@@ -14,14 +14,16 @@ export class TeacherService {
         });
     }
 
-    static async GET_ID(teacherID: number): Promise<Teacher | null> {
+    static async GET_ID(teacherID: number): Promise<Partial<Teacher | null>> {
         const teacher = await TeacherRepository.GET_ID(teacherID);
 
         if (!teacher) {
             throw new CustomError(404, 'teacher data is not found');
         }
 
-        return teacher;
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { password, ...teacherWithoutPassword } = teacher;
+        return teacherWithoutPassword;
     }
 
     static async CREATE<T extends TeacherType>(request: T) {
@@ -41,13 +43,15 @@ export class TeacherService {
 
         const teacher = await TeacherRepository.CREATE(request);
 
-        return teacher;
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { password, ...teacherWithoutPassword } = teacher;
+        return teacherWithoutPassword;
     }
 
     static async UPDATE<T extends Partial<TeacherType>>(
         teacherID: number,
         request: T,
-    ): Promise<Teacher | null> {
+    ): Promise<Partial<Teacher | null>> {
         const teacherExist = await TeacherRepository.GET_ID(teacherID);
 
         if (!teacherExist) {
@@ -61,10 +65,12 @@ export class TeacherService {
 
         const teacher = await TeacherRepository.UPDATE(teacherID, updatedData);
 
-        return teacher;
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { password, ...teacherWithoutPassword } = teacher;
+        return teacherWithoutPassword;
     }
 
-    static async DELETE(teacherID: number): Promise<Teacher | null> {
+    static async DELETE(teacherID: number): Promise<Partial<Teacher | null>> {
         const teacherExist = await TeacherRepository.GET_ID(teacherID);
 
         if (!teacherExist) {
@@ -73,6 +79,8 @@ export class TeacherService {
 
         const teacher = await TeacherRepository.DELETE(teacherID);
 
-        return teacher;
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { password, ...teacherWithoutPassword } = teacher;
+        return teacherWithoutPassword;
     }
 }

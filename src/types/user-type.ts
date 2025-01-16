@@ -24,7 +24,7 @@ export type TeacherType = {
     fullname: string;
     email: string;
     identity_number: string;
-    password: string;
+    password?: string;
     classID?: number | null;
 
     createdAt?: Date;
