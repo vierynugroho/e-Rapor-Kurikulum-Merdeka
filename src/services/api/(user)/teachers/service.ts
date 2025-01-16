@@ -4,10 +4,14 @@ import { CustomError } from '@/utils/error';
 import { Teacher } from '@prisma/client';
 
 export class TeacherService {
-    static async GET(): Promise<Teacher[]> {
+    static async GET(): Promise<Partial<Teacher>[]> {
         const teachers = await TeacherRepository.GET();
 
-        return teachers;
+        return teachers.map(teacher => {
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            const { password, ...teacherWithoutPassword } = teacher;
+            return teacherWithoutPassword;
+        });
     }
 
     static async GET_ID(teacherID: number): Promise<Teacher | null> {
