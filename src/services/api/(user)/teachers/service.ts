@@ -40,7 +40,7 @@ export class TeacherService {
         return teacher;
     }
 
-    static async UPDATE<T extends TeacherType>(
+    static async UPDATE<T extends Partial<TeacherType>>(
         teacherID: number,
         request: T,
     ): Promise<Teacher | null> {
@@ -50,7 +50,12 @@ export class TeacherService {
             throw new CustomError(404, 'teacher data is not found');
         }
 
-        const teacher = await TeacherRepository.UPDATE(teacherID, request);
+        const updatedData = {
+            ...teacherExist,
+            ...request,
+        };
+
+        const teacher = await TeacherRepository.UPDATE(teacherID, updatedData);
 
         return teacher;
     }

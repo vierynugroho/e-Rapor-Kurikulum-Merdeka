@@ -3,7 +3,10 @@ import { CustomError, errorHandler } from '@/utils/error';
 import { validateSchema } from '@/utils/validator';
 import { NextRequest } from 'next/server';
 import { TeacherService } from './service';
-import { formSchema } from '@/app/(users)/teachers/form/validation';
+import {
+    createSchema,
+    updateSchema,
+} from '@/app/(users)/teachers/form/validation';
 
 export class TeacherController {
     static async GET(request: NextRequest) {
@@ -44,7 +47,7 @@ export class TeacherController {
     static async POST(request: Request) {
         try {
             const requestBody = await request.json();
-            const data = validateSchema(formSchema, requestBody);
+            const data = validateSchema(createSchema, requestBody);
 
             if (data.classID) {
                 if (isNaN(data.classID)) {
@@ -77,7 +80,7 @@ export class TeacherController {
             }
 
             const requestBody = await request.json();
-            const data = validateSchema(formSchema, requestBody);
+            const data = validateSchema(updateSchema, requestBody);
 
             const teacher = await TeacherService.UPDATE(teacherID, data);
 
