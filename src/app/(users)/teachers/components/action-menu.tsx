@@ -122,27 +122,27 @@ const ActionMenu: React.FC<ActionMenuProps> = ({ teacher }) => {
                                 Detail Informasi for {teacher.fullname}
                             </DialogDescription>
                         </DialogHeader>
-                        <div className="mx-auto max-w-4xl rounded-lg bg-white p-6 shadow-lg">
+                        <div className="mx-auto max-w-4xl rounded-lg bg-background p-6 text-foreground shadow-lg">
                             <div className="grid gap-6">
                                 {/* Informasi Umum */}
                                 <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                                     <div id="name" className="flex">
-                                        <span className="w-40 font-medium text-gray-700">
+                                        <span className="w-40 font-medium">
                                             Nama:
                                         </span>
-                                        <div className="flex-1 text-gray-900">
+                                        <div className="flex-1">
                                             {teacher.fullname}
                                         </div>
                                     </div>
                                     <div id="identity_number" className="flex">
-                                        <span className="w-40 font-medium text-gray-700">
+                                        <span className="w-40 font-medium">
                                             Nomor Identitas:
                                         </span>
-                                        <div className="flex flex-1 items-center text-gray-900">
+                                        <div className="flex flex-1 items-center">
                                             {teacher.identity_number}
                                             <button
                                                 title="Copy to clipboard"
-                                                className="ml-2 text-gray-500 hover:text-gray-900"
+                                                className="hover: ml-2"
                                                 onClick={() =>
                                                     copyToClipboard(
                                                         teacher.identity_number!,
@@ -158,14 +158,14 @@ const ActionMenu: React.FC<ActionMenuProps> = ({ teacher }) => {
                                 {/* Informasi Kontak */}
                                 <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                                     <div id="email" className="flex">
-                                        <span className="w-40 font-medium text-gray-700">
+                                        <span className="w-40 font-medium">
                                             Email:
                                         </span>
-                                        <div className="flex flex-1 items-center text-gray-900">
+                                        <div className="flex flex-1 items-center">
                                             {teacher.email}
                                             <button
                                                 title="Copy to clipboard"
-                                                className="ml-2 text-gray-500 hover:text-gray-900"
+                                                className="hover: ml-2"
                                                 onClick={() =>
                                                     copyToClipboard(
                                                         teacher.email!,
@@ -177,10 +177,10 @@ const ActionMenu: React.FC<ActionMenuProps> = ({ teacher }) => {
                                         </div>
                                     </div>
                                     <div id="kelas" className="flex">
-                                        <span className="w-40 font-medium text-gray-700">
+                                        <span className="w-40 font-medium">
                                             Kelas:
                                         </span>
-                                        <div className="flex-1 text-gray-900">
+                                        <div className="flex-1">
                                             {teacher.class?.name || '-'}
                                         </div>
                                     </div>
@@ -188,21 +188,19 @@ const ActionMenu: React.FC<ActionMenuProps> = ({ teacher }) => {
 
                                 {/* Peran */}
                                 <div id="peran" className="flex">
-                                    <span className="w-40 font-medium text-gray-700">
+                                    <span className="w-40 font-medium">
                                         Peran:
                                     </span>
-                                    <div className="flex-1 text-gray-900">
-                                        {teacher.role}
-                                    </div>
+                                    <div className="flex-1">{teacher.role}</div>
                                 </div>
 
                                 {/* Tanggal */}
                                 <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                                     <div className="flex">
-                                        <span className="w-40 font-medium text-gray-700">
+                                        <span className="w-40 font-medium">
                                             Dibuat Pada:
                                         </span>
-                                        <div className="flex-1 text-gray-600">
+                                        <div className="flex-1">
                                             {new Intl.DateTimeFormat('id-ID', {
                                                 year: 'numeric',
                                                 month: 'long',
@@ -216,10 +214,10 @@ const ActionMenu: React.FC<ActionMenuProps> = ({ teacher }) => {
                                         </div>
                                     </div>
                                     <div className="flex">
-                                        <span className="w-40 font-medium text-gray-700">
+                                        <span className="w-40 font-medium">
                                             Terakhir Diperbarui:
                                         </span>
-                                        <div className="flex-1 text-gray-600">
+                                        <div className="flex-1">
                                             {new Intl.DateTimeFormat('id-ID', {
                                                 year: 'numeric',
                                                 month: 'long',
