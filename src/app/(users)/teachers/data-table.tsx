@@ -34,7 +34,7 @@ import {
     DialogTitle,
     DialogTrigger,
 } from '@/components/ui/dialog';
-import FormTeacher from './form';
+import CreateFormTeacher from './form/create';
 
 interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[];
@@ -48,6 +48,11 @@ export function DataTable<TData, TValue>({
     const [sorting, setSorting] = React.useState<SortingState>([]);
     const [columnFilters, setColumnFilters] =
         React.useState<ColumnFiltersState>([]);
+    const [isCreateDialogOpen, setIsCreateDialogOpen] = React.useState(false);
+
+    const handleCloseEditDialog = () => {
+        setIsCreateDialogOpen(false);
+    };
 
     const table = useReactTable({
         data,
@@ -82,7 +87,10 @@ export function DataTable<TData, TValue>({
                     className="max-w-sm"
                 />
                 <div className="user-action flex gap-2">
-                    <Dialog>
+                    <Dialog
+                        open={isCreateDialogOpen}
+                        onOpenChange={setIsCreateDialogOpen}
+                    >
                         <DialogTrigger asChild>
                             <Button className="bg-blend-hard-light">
                                 <Plus /> Tambah Data
@@ -96,7 +104,9 @@ export function DataTable<TData, TValue>({
                                 </DialogDescription>
                             </DialogHeader>
                             <div className="grid gap-4 py-4">
-                                <FormTeacher />
+                                <CreateFormTeacher
+                                    onSuccess={handleCloseEditDialog}
+                                />
                             </div>
                         </DialogContent>
                     </Dialog>

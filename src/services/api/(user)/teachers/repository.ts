@@ -9,7 +9,7 @@ export class TeacherRepository {
                 email: teacherData.email,
                 identity_number: teacherData.identity_number,
                 classID: teacherData.classID,
-                password: teacherData.password,
+                password: teacherData.password!,
                 role: teacherData.role,
             },
         });

@@ -23,37 +23,46 @@ import {
     SelectValue,
 } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
-import { formSchema } from './validation';
+import { updateSchema } from './validation';
 import { TeacherType } from '../../../../types/user-type';
 import { PasswordInput } from '@/components/ui/password-input';
-import { postTeachers } from '@/services/page/(user)/teachers';
+import { updateTeacher } from '@/services/page/(user)/teachers';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useToast } from '@/hooks/use-toast';
 
 type FormTeacherProps = {
     teacher?: TeacherType;
+    onSuccess?: () => void;
 };
 
-export default function FormTeacher({ teacher }: FormTeacherProps) {
+export default function UpdateFormTeacher({
+    teacher,
+    onSuccess,
+}: FormTeacherProps) {
     const { toast } = useToast(); // Gunakan hook toast Shadcn
 
-    const form = useForm<z.infer<typeof formSchema>>({
-        resolver: zodResolver(formSchema),
+    const form = useForm<z.infer<typeof updateSchema>>({
+        resolver: zodResolver(updateSchema),
         defaultValues: {
             fullname: teacher?.fullname || '',
             email: teacher?.email || '',
             identity_number: teacher?.identity_number || '',
-            classID: teacher?.kelas?.id || undefined,
+            classID: teacher?.class?.id || undefined,
             role: teacher?.role || 'TEACHER',
             password: teacher?.password,
         },
     });
 
-    const { isSubmitting } = form.formState;
+    const { isLoading } = form.formState;
     const queryClient = useQueryClient();
 
     const teacherMutation = useMutation({
-        mutationFn: postTeachers,
+        mutationFn: (data: z.infer<typeof updateSchema>) => {
+            if (!teacher?.id) {
+                throw new Error('Teacher ID is required for updating data.');
+            }
+            return updateTeacher(teacher.id, data);
+        },
         onSuccess: () => {
             toast({
                 title: 'Berhasil',
@@ -61,7 +70,7 @@ export default function FormTeacher({ teacher }: FormTeacherProps) {
                 variant: 'default',
             });
             queryClient.invalidateQueries({ queryKey: ['teachers'] });
-            form.reset();
+            onSuccess?.();
         },
         onError: error => {
             toast({
@@ -74,9 +83,7 @@ export default function FormTeacher({ teacher }: FormTeacherProps) {
         },
     });
 
-    const onSubmitForm: SubmitHandler<
-        z.infer<typeof formSchema>
-    > = async data => {
+    const onSubmitForm: SubmitHandler<z.infer<typeof updateSchema>> = data => {
         teacherMutation.mutate(data);
     };
 
@@ -86,7 +93,7 @@ export default function FormTeacher({ teacher }: FormTeacherProps) {
                 <CardTitle>Teacher Form</CardTitle>
             </CardHeader>
             <CardContent>
-                <Form {...form} key={teacher?.id || 'add-data'}>
+                <Form {...form}>
                     <form
                         onSubmit={form.handleSubmit(onSubmitForm)}
                         className="space-y-6"
@@ -134,7 +141,7 @@ export default function FormTeacher({ teacher }: FormTeacherProps) {
                                 name="identity_number"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Identity Number</FormLabel>
+                                        <FormLabel>Nomor Identitas</FormLabel>
                                         <FormControl>
                                             <Input
                                                 {...field}
@@ -180,7 +187,7 @@ export default function FormTeacher({ teacher }: FormTeacherProps) {
                                                 form.getValues('role') ===
                                                 'ADMIN'
                                             }
-                                            defaultValue={field?.value?.toString()}
+                                            defaultValue={field.value?.toString()}
                                         >
                                             <FormControl>
                                                 <SelectTrigger>
@@ -239,8 +246,11 @@ export default function FormTeacher({ teacher }: FormTeacherProps) {
 
                         <div className="flex justify-end">
                             <DialogFooter>
-                                <Button type="submit">
-                                    {isSubmitting || teacherMutation.isPending
+                                <Button
+                                    type="submit"
+                                    disabled={teacherMutation.isPending}
+                                >
+                                    {isLoading || teacherMutation.isPending
                                         ? 'Memproses...'
                                         : 'Simpan'}
                                 </Button>

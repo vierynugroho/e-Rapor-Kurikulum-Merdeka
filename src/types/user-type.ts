@@ -21,17 +21,16 @@ export type Student_Development = {
 
 export type TeacherType = {
     id?: number;
-    fullname: string;
-    email: string;
-    identity_number: string;
+    fullname?: string;
+    email?: string;
+    identity_number?: string;
     password?: string;
     classID?: number | null;
 
     createdAt?: Date;
     updateAt?: Date;
 
-    role: UserRole;
-    kelas?: Class | null;
+    role?: UserRole;
     class?: Class | null;
     Student_Score?: Student_Score[];
     Student_Development?: Student_Development[];

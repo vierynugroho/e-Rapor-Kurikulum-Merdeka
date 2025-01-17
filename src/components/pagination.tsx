@@ -24,8 +24,8 @@ export function DataTablePagination<TData>({
     table,
 }: DataTablePaginationProps<TData>) {
     return (
-        <div className="flex items-center justify-between gap-2 px-2">
-            <div className="flex-1 text-sm text-muted-foreground">
+        <div className="flex w-full items-center justify-between gap-2 px-2">
+            <div className="w-full flex-1 text-left text-sm text-muted-foreground">
                 {table.getFilteredRowModel().rows.length} data ditemukan.
             </div>
             <div className="flex items-center space-x-6 lg:space-x-8">
