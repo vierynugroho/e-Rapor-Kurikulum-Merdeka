@@ -1,20 +1,7 @@
-import { DevelopmentLevel, Gender } from '@prisma/client';
+import { DevelopmentLevel, Gender, Religion } from '@prisma/client';
+import { Class } from './teacher';
 
-export interface IStudent {
-    id: number;
-    fullname: string;
-    gender: Gender;
-    religion?: string;
-    parentName?: string;
-    birthPlace: string;
-    birthDate: Date;
-    classID?: number;
-    address?: string;
-    createdAt: Date;
-    updateAt: Date;
-}
-
-export interface IStudentScore {
+export type StudentScore = {
     id: number;
     studentId: number;
     periodId: number;
@@ -24,9 +11,9 @@ export interface IStudentScore {
     value: DevelopmentLevel;
     createdAt: Date;
     updateAt: Date;
-}
+};
 
-export interface IStudentDevelopment {
+export type StudentDevelopment = {
     id: number;
     height?: number;
     weight?: number;
@@ -36,15 +23,46 @@ export interface IStudentDevelopment {
     recordDate: Date;
     createdAt: Date;
     updatedAt: Date;
-}
+};
 
-export interface IStudentUpdate {
+export type CreateStudentType = {
+    fullname: string;
+    gender: Gender;
+    religion: Religion;
+    parentName: string;
+    birthPlace: string;
+    birthDate: string;
+    classID?: number | null;
+    address: string;
+    class?: Class | null;
+};
+
+export type UpdateStudentType = {
     fullname?: string;
     gender?: Gender;
-    religion?: string;
+    religion?: Religion;
     parentName?: string;
     birthPlace?: string;
-    birthDate?: Date;
+    birthDate?: string;
+    classID?: number | null;
+    address?: string;
+    class?: Class | null;
+};
+
+export type StudentType = {
+    id: number;
+    fullname?: string;
+    gender?: Gender;
+    religion?: Religion;
+    parentName?: string;
+    birthPlace?: string;
+    birthDate?: string;
     classID?: number;
     address?: string;
-}
+    createdAt?: Date;
+    updateAt?: Date;
+
+    class?: Class | null;
+    StudentScore?: StudentScore[];
+    StudentDevelopment?: StudentDevelopment[];
+};

@@ -1,15 +1,15 @@
 import { prisma } from '@/lib/prisma';
-import { CreateTeacherType, UpdateTeacherType } from '@/types/teacher';
+import { TeacherType } from '@/types/teacher';
 
-export class TeacherRepository {
-    static async CREATE(teacherData: CreateTeacherType) {
+export class ClassRepository {
+    static async CREATE(teacherData: TeacherType) {
         const teacher = await prisma.teacher.create({
             data: {
                 fullname: teacherData.fullname,
                 email: teacherData.email,
                 identity_number: teacherData.identity_number,
                 classID: teacherData.classID,
-                password: teacherData.password,
+                password: teacherData.password!,
                 role: teacherData.role,
             },
         });
@@ -56,7 +56,7 @@ export class TeacherRepository {
         return teacher;
     }
 
-    static async UPDATE(teacherID: number, teacherData: UpdateTeacherType) {
+    static async UPDATE(teacherID: number, teacherData: TeacherType) {
         const teacher = await prisma.teacher.update({
             where: {
                 id: teacherID,

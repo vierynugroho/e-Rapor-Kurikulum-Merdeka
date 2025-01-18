@@ -36,18 +36,14 @@ const data = {
             plan: 'e-Rapor Kurikulum Merdeka',
         },
     ],
-    navMain: [
+    adminNavMain: [
         {
             title: 'Data Siswa',
             url: '#',
             icon: Users,
             items: [
                 {
-                    title: 'Penilaian',
-                    url: '/students',
-                },
-                {
-                    title: 'Perkembangan',
+                    title: 'Manajemen Data',
                     url: '/students',
                 },
             ],
@@ -108,6 +104,27 @@ const data = {
             ],
         },
     ],
+    teacherNavMain: [
+        {
+            title: 'Data Siswa',
+            url: '#',
+            icon: Users,
+            items: [
+                {
+                    title: 'Siswa Kelas',
+                    url: '/students',
+                },
+                {
+                    title: 'Penilaian',
+                    url: '/penilaian',
+                },
+                {
+                    title: 'Perkembangan',
+                    url: '/perkembangan',
+                },
+            ],
+        },
+    ],
     generals: [
         {
             name: 'Dashboard',
@@ -125,7 +142,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             </SidebarHeader>
             <SidebarContent>
                 <NavGeneral generals={data.generals} />
-                <NavMain items={data.navMain} />
+                <NavMain items={data.adminNavMain} />
+                <NavMain items={data.teacherNavMain} role="Teacher" />
             </SidebarContent>
             <SidebarFooter>
                 <NavUser user={data.user} />

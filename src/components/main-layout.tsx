@@ -18,7 +18,7 @@ import {
 } from '@/components/ui/sidebar';
 import { usePathname } from 'next/navigation';
 
-export default function ThemesLayout({
+export default function MainLayout({
     children,
 }: Readonly<{
     children: React.ReactNode;
@@ -54,6 +54,25 @@ export default function ThemesLayout({
                             orientation="vertical"
                             className="mr-2 h-4"
                         />
+                        {!breadcrumbs ||
+                            (breadcrumbs.length == 0 && (
+                                <Breadcrumb>
+                                    <BreadcrumbList>
+                                        <BreadcrumbItem className="hidden md:block">
+                                            <BreadcrumbLink href="#">
+                                                e-Rapor TK Negeri 2 Sananwetan
+                                                Kota Blitar
+                                            </BreadcrumbLink>
+                                        </BreadcrumbItem>
+                                        <BreadcrumbSeparator className="hidden md:block" />
+                                        <BreadcrumbItem>
+                                            <BreadcrumbPage>
+                                                Dashboard
+                                            </BreadcrumbPage>
+                                        </BreadcrumbItem>
+                                    </BreadcrumbList>
+                                </Breadcrumb>
+                            ))}
                         {breadcrumbs.map(({ href, label }) => (
                             <Breadcrumb key={href}>
                                 <BreadcrumbList>

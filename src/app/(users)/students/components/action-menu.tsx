@@ -27,18 +27,18 @@ import {
     AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
-import { UpdateTeacherType } from '@/types/teacher';
-import UpdateFormTeacher from '../form/update';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useToast } from '@/hooks/use-toast';
 import { deleteTeacher } from '@/services/page/(user)/teachers';
+import { StudentType } from '@/types/student';
+import UpdateFormStudent from '../form/update';
 import { DetailData } from './detail-data';
 
 type ActionMenuProps = {
-    teacher: UpdateTeacherType;
+    student: StudentType;
 };
 
-const ActionMenu: React.FC<ActionMenuProps> = ({ teacher }) => {
+const ActionMenu: React.FC<ActionMenuProps> = ({ student }) => {
     const { toast } = useToast();
     const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -55,10 +55,10 @@ const ActionMenu: React.FC<ActionMenuProps> = ({ teacher }) => {
         onSuccess: () => {
             toast({
                 title: 'Berhasil',
-                description: 'Data guru berhasil dihapus.',
+                description: 'Data siswa berhasil dihapus.',
                 variant: 'default',
             });
-            queryClient.invalidateQueries({ queryKey: ['teachers'] });
+            queryClient.invalidateQueries({ queryKey: ['students'] });
             setIsDropdownOpen(false);
         },
         onError: error => {
@@ -73,8 +73,8 @@ const ActionMenu: React.FC<ActionMenuProps> = ({ teacher }) => {
     });
 
     const handleDelete = () => {
-        if (teacher.id) {
-            deleteMutation.mutate(teacher.id);
+        if (student.id) {
+            deleteMutation.mutate(student.id);
         }
     };
 
@@ -97,12 +97,12 @@ const ActionMenu: React.FC<ActionMenuProps> = ({ teacher }) => {
                     </DialogTrigger>
                     <DialogContent className="sm:max-w-[768px]">
                         <DialogHeader>
-                            <DialogTitle>Detail Guru</DialogTitle>
+                            <DialogTitle>Detail Siswa</DialogTitle>
                             <DialogDescription>
-                                Detail Informasi for {teacher.fullname}
+                                Detail Informasi for {student.fullname}
                             </DialogDescription>
                         </DialogHeader>
-                        <DetailData teacher={teacher} />
+                        <DetailData student={student} />
                     </DialogContent>
                 </Dialog>
 
@@ -124,8 +124,8 @@ const ActionMenu: React.FC<ActionMenuProps> = ({ teacher }) => {
                             </DialogDescription>
                         </DialogHeader>
                         <div className="grid gap-4 py-4">
-                            <UpdateFormTeacher
-                                teacher={teacher}
+                            <UpdateFormStudent
+                                student={student}
                                 onSuccess={handleCloseEditDialog}
                             />
                         </div>
@@ -144,7 +144,7 @@ const ActionMenu: React.FC<ActionMenuProps> = ({ teacher }) => {
                             <AlertDialogTitle>Hapus Guru</AlertDialogTitle>
                             <AlertDialogDescription>
                                 Apakah anda yakin untuk menghapus data{' '}
-                                {teacher.fullname}? Aksi ini tidak bisa
+                                {student.fullname}? Aksi ini tidak bisa
                                 dikembalikan.
                             </AlertDialogDescription>
                         </AlertDialogHeader>

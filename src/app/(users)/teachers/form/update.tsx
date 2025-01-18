@@ -24,7 +24,7 @@ import {
 } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
 import { updateSchema } from './validation';
-import { TeacherType } from '../../../../types/user-type';
+import { TeacherType } from '../../../../types/teacher';
 import { PasswordInput } from '@/components/ui/password-input';
 import { updateTeacher } from '@/services/page/(user)/teachers';
 import { useMutation, useQueryClient } from '@tanstack/react-query';

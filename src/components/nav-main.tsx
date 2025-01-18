@@ -18,23 +18,26 @@ import {
     SidebarMenuSubItem,
 } from '@/components/ui/sidebar';
 
-export function NavMain({
-    items,
-}: {
-    items: {
+type NavItem = {
+    title: string;
+    url: string;
+    icon?: LucideIcon;
+    isActive?: boolean;
+    items?: {
         title: string;
         url: string;
-        icon?: LucideIcon;
-        isActive?: boolean;
-        items?: {
-            title: string;
-            url: string;
-        }[];
     }[];
-}) {
+};
+
+type NavMainProps = {
+    items: NavItem[];
+    role?: string;
+};
+
+export function NavMain({ items, role = 'Admin' }: NavMainProps) {
     return (
         <SidebarGroup>
-            <SidebarGroupLabel>Admin - Manajemen Data</SidebarGroupLabel>
+            <SidebarGroupLabel>{role} - Manajemen Data</SidebarGroupLabel>
             <SidebarMenu>
                 {items.map(item => (
                     <Collapsible

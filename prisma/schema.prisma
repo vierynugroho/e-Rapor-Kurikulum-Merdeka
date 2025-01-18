@@ -25,6 +25,15 @@ enum DevelopmentLevel {
   BSB // Berkembang Sangat Baik
 }
 
+enum Religion {
+  ISLAM
+  KRISTEN
+  KATOLIK
+  KONGHUCU
+  BUDDHA
+  HINDU
+}
+
 enum Semester {
   GANJIL
   GENAP
@@ -118,7 +127,7 @@ model Student {
   id         Int      @id @default(autoincrement())
   fullname   String
   gender     Gender
-  religion   String?
+  religion   Religion
   parentName String?  @map("parent_name")
   birthPlace String   @map("birth_place")
   birthDate  DateTime @map("birth_date")

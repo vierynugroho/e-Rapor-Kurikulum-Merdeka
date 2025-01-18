@@ -24,44 +24,45 @@ import {
 } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
 import { createSchema } from './validation';
-import { TeacherType } from '../../../../types/teacher';
-import { PasswordInput } from '@/components/ui/password-input';
 import { createTeacher } from '@/services/page/(user)/teachers';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useToast } from '@/hooks/use-toast';
+import { StudentType } from '@/types/student';
 
-type FormTeacherProps = {
-    teacher?: TeacherType;
+type FormStudentProps = {
+    student?: StudentType;
     onSuccess?: () => void;
 };
 
-export default function CreateFormTeacher({
-    teacher,
+export default function CreateFormStudent({
+    student,
     onSuccess,
-}: FormTeacherProps) {
+}: FormStudentProps) {
     const { toast } = useToast(); // Gunakan hook toast Shadcn
 
     const form = useForm<z.infer<typeof createSchema>>({
         resolver: zodResolver(createSchema),
         defaultValues: {
-            fullname: teacher?.fullname || '',
-            email: teacher?.email || '',
-            identity_number: teacher?.identity_number || '',
-            classID: teacher?.class?.id || undefined,
-            role: teacher?.role || 'TEACHER',
-            password: teacher?.password,
+            fullname: student?.fullname || '',
+            address: student?.address || '',
+            parentName: student?.parentName || '',
+            classID: student?.class?.id || undefined,
+            religion: student?.religion || 'ISLAM',
+            gender: student?.gender || 'LAKI_LAKI',
+            birthDate: student?.birthDate,
+            birthPlace: student?.birthPlace,
         },
     });
 
     const { isLoading } = form.formState;
     const queryClient = useQueryClient();
 
-    const teacherMutation = useMutation({
+    const studentMutation = useMutation({
         mutationFn: createTeacher,
         onSuccess: () => {
             toast({
                 title: 'Berhasil',
-                description: 'Data guru berhasil ditambahkan.',
+                description: 'Data siswa berhasil ditambahkan.',
                 variant: 'default',
             });
             queryClient.invalidateQueries({ queryKey: ['teachers'] });
@@ -82,16 +83,16 @@ export default function CreateFormTeacher({
     const onSubmitForm: SubmitHandler<
         z.infer<typeof createSchema>
     > = async data => {
-        teacherMutation.mutate(data);
+        studentMutation.mutate(data);
     };
 
     return (
         <Card className="mx-auto w-full">
             <CardHeader>
-                <CardTitle>Teacher Form</CardTitle>
+                <CardTitle>Student Form</CardTitle>
             </CardHeader>
             <CardContent>
-                <Form {...form} key={teacher?.id || 'add-data'}>
+                <Form {...form} key={student?.id || 'add-data'}>
                     <form
                         onSubmit={form.handleSubmit(onSubmitForm)}
                         className="space-y-6"
@@ -117,13 +118,13 @@ export default function CreateFormTeacher({
                         {/* Email Field */}
                         <FormField
                             control={form.control}
-                            name="email"
+                            name="address"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Email</FormLabel>
+                                    <FormLabel>Alamat</FormLabel>
                                     <FormControl>
                                         <Input
-                                            placeholder="Enter email"
+                                            placeholder="Alamat"
                                             {...field}
                                         />
                                     </FormControl>
@@ -136,16 +137,14 @@ export default function CreateFormTeacher({
                         <div className="grid grid-cols-2 gap-4">
                             <FormField
                                 control={form.control}
-                                name="identity_number"
+                                name="parentName"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Nomor Identitas</FormLabel>
+                                        <FormLabel>Wali Murid</FormLabel>
                                         <FormControl>
                                             <Input
                                                 {...field}
-                                                type="number"
-                                                id="identity_number"
-                                                placeholder="Enter ID number"
+                                                placeholder="Wali Murid"
                                             />
                                         </FormControl>
                                         <FormMessage />
@@ -155,14 +154,14 @@ export default function CreateFormTeacher({
 
                             <FormField
                                 control={form.control}
-                                name="password"
+                                name="birthPlace"
                                 render={({ field }) => (
                                     <FormItem>
                                         <FormLabel>Password</FormLabel>
                                         <FormControl>
-                                            <PasswordInput
+                                            <Input
                                                 {...field}
-                                                placeholder="Enter password"
+                                                placeholder="Tempat Lahir"
                                             />
                                         </FormControl>
                                         <FormMessage />
@@ -181,10 +180,6 @@ export default function CreateFormTeacher({
                                         <FormLabel>Kelas</FormLabel>
                                         <Select
                                             onValueChange={field.onChange}
-                                            disabled={
-                                                form.getValues('role') ===
-                                                'ADMIN'
-                                            }
                                             defaultValue={field?.value?.toString()}
                                         >
                                             <FormControl>
@@ -214,7 +209,7 @@ export default function CreateFormTeacher({
 
                             <FormField
                                 control={form.control}
-                                name="role"
+                                name="religion"
                                 render={({ field }) => (
                                     <FormItem>
                                         <FormLabel>Peran</FormLabel>
@@ -224,15 +219,27 @@ export default function CreateFormTeacher({
                                         >
                                             <FormControl>
                                                 <SelectTrigger>
-                                                    <SelectValue placeholder="Pilih Peran" />
+                                                    <SelectValue placeholder="Pilih Agama" />
                                                 </SelectTrigger>
                                             </FormControl>
                                             <SelectContent>
-                                                <SelectItem value="TEACHER">
-                                                    TEACHER
+                                                <SelectItem value="ISLAM">
+                                                    ISLAM
                                                 </SelectItem>
-                                                <SelectItem value="ADMIN">
-                                                    ADMIN
+                                                <SelectItem value="KRISTEN">
+                                                    KRISTEN
+                                                </SelectItem>
+                                                <SelectItem value="KONGHUCU">
+                                                    KONGHUCU
+                                                </SelectItem>
+                                                <SelectItem value="BUDDHA">
+                                                    BUDDHA
+                                                </SelectItem>
+                                                <SelectItem value="KATOLIK">
+                                                    KATOLIK
+                                                </SelectItem>
+                                                <SelectItem value="HINDU">
+                                                    HINDU
                                                 </SelectItem>
                                             </SelectContent>
                                         </Select>
@@ -245,7 +252,7 @@ export default function CreateFormTeacher({
                         <div className="flex justify-end">
                             <DialogFooter>
                                 <Button type="submit">
-                                    {isLoading || teacherMutation.isPending
+                                    {isLoading || studentMutation.isPending
                                         ? 'Memproses...'
                                         : 'Simpan'}
                                 </Button>

@@ -1,6 +1,6 @@
 import React from 'react';
 import { ColumnDef } from '@tanstack/react-table';
-import { TeacherType } from '../../../types/user-type';
+import { TeacherType } from '../../../types/teacher';
 import { ArrowUpDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import ActionMenu from './components/action-menu';

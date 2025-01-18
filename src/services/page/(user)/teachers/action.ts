@@ -1,5 +1,5 @@
 import { apiClient } from '@/lib/axios';
-import { TeacherType } from '@/types/user-type';
+import { TeacherType } from '@/types/teacher';
 
 export const getTeachers = async () => {
     return apiClient.get<TeacherType[]>('/teachers');
