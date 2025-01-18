@@ -16,7 +16,7 @@ export type CreateTeacherType = {
     classID?: number | null;
 
     createdAt?: Date;
-    updateAt?: Date;
+    updatedAt?: Date;
 
     role: UserRole;
     class?: Class | null;
@@ -33,7 +33,7 @@ export type UpdateTeacherType = {
     classID?: number | null;
 
     createdAt?: Date;
-    updateAt?: Date;
+    updatedAt?: Date;
 
     role?: UserRole;
     class?: Class | null;
@@ -50,7 +50,7 @@ export type TeacherType = {
     classID?: number | null;
 
     createdAt?: Date;
-    updateAt?: Date;
+    updatedAt?: Date;
 
     role?: UserRole;
     class?: Class | null;

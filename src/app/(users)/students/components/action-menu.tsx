@@ -118,9 +118,9 @@ const ActionMenu: React.FC<ActionMenuProps> = ({ student }) => {
                     </DialogTrigger>
                     <DialogContent className="sm:max-w-[425px] md:max-w-[768px]">
                         <DialogHeader>
-                            <DialogTitle>Edit Data Guru</DialogTitle>
+                            <DialogTitle>Edit Data Siswa</DialogTitle>
                             <DialogDescription>
-                                Perbarui data guru sekolah anda di sini
+                                Perbarui data siswa sekolah anda di sini
                             </DialogDescription>
                         </DialogHeader>
                         <div className="grid gap-4 py-4">
@@ -141,7 +141,7 @@ const ActionMenu: React.FC<ActionMenuProps> = ({ student }) => {
                     </AlertDialogTrigger>
                     <AlertDialogContent>
                         <AlertDialogHeader>
-                            <AlertDialogTitle>Hapus Guru</AlertDialogTitle>
+                            <AlertDialogTitle>Hapus Siswa</AlertDialogTitle>
                             <AlertDialogDescription>
                                 Apakah anda yakin untuk menghapus data{' '}
                                 {student.fullname}? Aksi ini tidak bisa

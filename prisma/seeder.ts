@@ -4,6 +4,7 @@ const prisma = new PrismaClient();
 
 async function main() {
     // Seed Classes
+    console.log('seeding class!');
     await prisma.class.createMany({
         data: [
             {
@@ -27,6 +28,7 @@ async function main() {
     });
 
     // Seed Teachers
+    console.log('seeding teachers!');
     await prisma.teacher.create({
         data: {
             fullname: 'John Doe',
@@ -50,6 +52,7 @@ async function main() {
     });
 
     // Seed Students
+    console.log('seeding students!');
     await prisma.student.createMany({
         data: [
             {

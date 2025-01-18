@@ -10,7 +10,7 @@ export type StudentScore = {
     description?: string;
     value: DevelopmentLevel;
     createdAt: Date;
-    updateAt: Date;
+    updatedAt: Date;
 };
 
 export type StudentDevelopment = {
@@ -60,7 +60,7 @@ export type StudentType = {
     classID?: number;
     address?: string;
     createdAt?: Date;
-    updateAt?: Date;
+    updatedAt?: Date;
 
     class?: Class | null;
     StudentScore?: StudentScore[];

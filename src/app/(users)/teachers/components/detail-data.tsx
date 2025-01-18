@@ -1,8 +1,13 @@
 import { useToast } from '@/hooks/use-toast';
+import { TeacherType } from '@/types/teacher';
 import { CopyIcon } from 'lucide-react';
 import React from 'react';
 
-export const DetailData = ({ teacher }) => {
+type DetailDataProps = {
+    teacher: TeacherType;
+};
+
+export const DetailData: React.FC<DetailDataProps> = ({ teacher }) => {
     const { toast } = useToast();
     const copyToClipboard = (text: string) => {
         navigator.clipboard
@@ -28,13 +33,12 @@ export const DetailData = ({ teacher }) => {
         <>
             <div className="mx-auto max-w-4xl rounded-lg bg-background p-6 text-foreground shadow-lg">
                 <div className="grid gap-6">
-                    {/* Informasi Umum */}
                     <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                        <div id="name" className="flex">
+                        <div className="flex">
                             <span className="w-40 font-medium">Nama:</span>
                             <div className="flex-1">{teacher.fullname}</div>
                         </div>
-                        <div id="identity_number" className="flex">
+                        <div className="flex">
                             <span className="w-40 font-medium">
                                 Nomor Identitas:
                             </span>
@@ -55,9 +59,8 @@ export const DetailData = ({ teacher }) => {
                         </div>
                     </div>
 
-                    {/* Informasi Kontak */}
                     <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                        <div id="email" className="flex">
+                        <div className="flex">
                             <span className="w-40 font-medium">Email:</span>
                             <div className="flex flex-1 items-center">
                                 {teacher.email}
@@ -72,7 +75,7 @@ export const DetailData = ({ teacher }) => {
                                 </button>
                             </div>
                         </div>
-                        <div id="kelas" className="flex">
+                        <div className="flex">
                             <span className="w-40 font-medium">Kelas:</span>
                             <div className="flex-1">
                                 {teacher.class?.name || '-'}
@@ -80,13 +83,11 @@ export const DetailData = ({ teacher }) => {
                         </div>
                     </div>
 
-                    {/* Peran */}
-                    <div id="peran" className="flex">
+                    <div className="flex">
                         <span className="w-40 font-medium">Peran:</span>
                         <div className="flex-1">{teacher.role}</div>
                     </div>
 
-                    {/* Tanggal */}
                     <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                         <div className="flex">
                             <span className="w-40 font-medium">
@@ -115,7 +116,7 @@ export const DetailData = ({ teacher }) => {
                                     hour: '2-digit',
                                     minute: '2-digit',
                                     second: '2-digit',
-                                }).format(new Date(teacher.updateAt!))}
+                                }).format(new Date(teacher.updatedAt!))}
                             </div>
                         </div>
                     </div>

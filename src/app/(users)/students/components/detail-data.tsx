@@ -1,8 +1,14 @@
 import { useToast } from '@/hooks/use-toast';
+import { StudentType } from '@/types/student';
+import { formatDateTime } from '@/utils/format';
 import { CopyIcon } from 'lucide-react';
 import React from 'react';
 
-export const DetailData = ({ student }) => {
+type DetailDataProps = {
+    student: StudentType;
+};
+
+export const DetailData: React.FC<DetailDataProps> = ({ student }) => {
     const { toast } = useToast();
     const copyToClipboard = (text: string) => {
         navigator.clipboard
@@ -30,11 +36,11 @@ export const DetailData = ({ student }) => {
                 <div className="grid gap-6">
                     {/* Informasi Umum */}
                     <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                        <div id="name" className="flex">
+                        <div className="flex">
                             <span className="w-40 font-medium">Nama:</span>
                             <div className="flex-1">{student.fullname}</div>
                         </div>
-                        <div id="identity_number" className="flex">
+                        <div className="flex">
                             <span className="w-40 font-medium">
                                 ID Peserta Didik
                             </span>
@@ -53,15 +59,14 @@ export const DetailData = ({ student }) => {
                         </div>
                     </div>
 
-                    {/* Informasi Kontak */}
                     <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                        <div id="email" className="flex">
+                        <div className="flex">
                             <span className="w-40 font-medium">Alamat:</span>
                             <div className="flex flex-1 items-center">
                                 {student.address}
                             </div>
                         </div>
-                        <div id="kelas" className="flex">
+                        <div className="flex">
                             <span className="w-40 font-medium">Kelas:</span>
                             <div className="flex-1">
                                 {student.class?.name || '-'}
@@ -69,27 +74,26 @@ export const DetailData = ({ student }) => {
                         </div>
                     </div>
 
-                    {/* Peran */}
-                    <div id="peran" className="flex">
-                        <span className="w-40 font-medium">Wali Murid:</span>
-                        <div className="flex-1">{student.parentName}</div>
+                    <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                        <div className="flex">
+                            <span className="w-40 font-medium">
+                                Wali Murid:
+                            </span>
+                            <div className="flex-1">{student.parentName}</div>
+                        </div>
+                        <div className="flex">
+                            <span className="w-40 font-medium">Agama</span>
+                            <div className="flex-1">{student.religion}</div>
+                        </div>
                     </div>
 
-                    {/* Tanggal */}
                     <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                         <div className="flex">
                             <span className="w-40 font-medium">
                                 Dibuat Pada:
                             </span>
                             <div className="flex-1">
-                                {new Intl.DateTimeFormat('id-ID', {
-                                    year: 'numeric',
-                                    month: 'long',
-                                    day: 'numeric',
-                                    hour: '2-digit',
-                                    minute: '2-digit',
-                                    second: '2-digit',
-                                }).format(new Date(student.createdAt!))}
+                                {formatDateTime(student.createdAt!)}
                             </div>
                         </div>
                         <div className="flex">
@@ -97,14 +101,7 @@ export const DetailData = ({ student }) => {
                                 Terakhir Diperbarui:
                             </span>
                             <div className="flex-1">
-                                {new Intl.DateTimeFormat('id-ID', {
-                                    year: 'numeric',
-                                    month: 'long',
-                                    day: 'numeric',
-                                    hour: '2-digit',
-                                    minute: '2-digit',
-                                    second: '2-digit',
-                                }).format(new Date(student.updateAt!))}
+                                {formatDateTime(student.updatedAt!)}
                             </div>
                         </div>
                     </div>

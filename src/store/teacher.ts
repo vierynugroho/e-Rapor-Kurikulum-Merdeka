@@ -11,7 +11,7 @@ interface ITeacher {
     password: string;
     classID?: number;
     createdAt?: Date;
-    updateAt?: Date;
+    updatedAt?: Date;
     role: UserRole;
 }
 
@@ -35,7 +35,7 @@ interface ITeacherStore {
     // Actions
     setTeachers: (teachers: ITeacher[]) => void;
     addTeacher: (
-        teacher: Omit<ITeacher, 'id' | 'createdAt' | 'updateAt'>,
+        teacher: Omit<ITeacher, 'id' | 'createdAt' | 'updatedAt'>,
     ) => void;
     updateTeacher: (id: number, updateData: ITeacherUpdate) => void;
     deleteTeacher: (id: number) => void;
@@ -60,7 +60,7 @@ export const useTeacherStore = create<ITeacherStore>((set, get) => ({
         const newTeacher: ITeacher = {
             id: Date.now(), // Temporary ID (should be handled by backend)
             createdAt: new Date(),
-            updateAt: new Date(),
+            updatedAt: new Date(),
             ...teacherData,
         };
 
@@ -76,7 +76,7 @@ export const useTeacherStore = create<ITeacherStore>((set, get) => ({
                     ? {
                           ...teacher,
                           ...updateData,
-                          updateAt: new Date(),
+                          updatedAt: new Date(),
                       }
                     : teacher,
             ),
