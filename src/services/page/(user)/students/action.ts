@@ -6,15 +6,15 @@ export const getStudents = async () => {
 };
 
 export const getStudent = async (studentID: number) => {
-    return apiClient.get<StudentType[]>(`students/${studentID}`);
+    return apiClient.get<StudentType[]>(`/students/${studentID}`);
 };
 
 export const createStudent = async (data: StudentType) => {
-    return apiClient.post<StudentType>('students', data);
+    return apiClient.post<StudentType>('/students', data);
 };
 
-export const updateStudent = async (data: StudentType) => {
-    return apiClient.post<StudentType>('students', data);
+export const updateStudent = async (studentID: number, data: StudentType) => {
+    return apiClient.put<StudentType>(`/students/${studentID}`, data);
 };
 
 export const deleteStudent = async (studentID: number) => {

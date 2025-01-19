@@ -35,9 +35,11 @@ export type CreateStudentType = {
     classID?: number | null;
     address: string;
     class?: Class | null;
+    id?: number;
 };
 
 export type UpdateStudentType = {
+    id?: number;
     fullname?: string;
     gender?: Gender;
     religion?: Religion;
@@ -50,7 +52,7 @@ export type UpdateStudentType = {
 };
 
 export type StudentType = {
-    id: number;
+    id?: number;
     fullname?: string;
     gender?: Gender;
     religion?: Religion;

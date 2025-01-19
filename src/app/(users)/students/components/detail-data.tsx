@@ -50,7 +50,7 @@ export const DetailData: React.FC<DetailDataProps> = ({ student }) => {
                                     title="Copy to clipboard"
                                     className="hover: ml-2"
                                     onClick={() =>
-                                        copyToClipboard(student.id.toString()!)
+                                        copyToClipboard(student.id!.toString()!)
                                     }
                                 >
                                     <CopyIcon size={16} />
@@ -84,6 +84,23 @@ export const DetailData: React.FC<DetailDataProps> = ({ student }) => {
                         <div className="flex">
                             <span className="w-40 font-medium">Agama</span>
                             <div className="flex-1">{student.religion}</div>
+                        </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                        <div className="flex">
+                            <span className="w-40 font-medium">
+                                Tempat Lahir
+                            </span>
+                            <div className="flex-1">{student.birthPlace}</div>
+                        </div>
+                        <div className="flex">
+                            <span className="w-40 font-medium">
+                                Tanggal Lahir
+                            </span>
+                            <div className="flex-1">
+                                {formatDateTime(student.birthDate!)}
+                            </div>
                         </div>
                     </div>
 

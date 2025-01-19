@@ -24,10 +24,11 @@ import {
 } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
 import { updateSchema } from './validation';
-import { updateTeacher } from '@/services/page/(user)/teachers';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useToast } from '@/hooks/use-toast';
 import { StudentType } from '@/types/student';
+import { updateStudent } from '@/services/page/(user)/students';
+import { TerritoryCombobox } from '../components/single-territory-combobox';
 
 type FormStudentProps = {
     student?: StudentType;
@@ -39,7 +40,6 @@ export default function UpdateFormStudent({
     onSuccess,
 }: FormStudentProps) {
     const { toast } = useToast(); // Gunakan hook toast Shadcn
-
     const form = useForm<z.infer<typeof updateSchema>>({
         resolver: zodResolver(updateSchema),
         defaultValues: {
@@ -54,15 +54,15 @@ export default function UpdateFormStudent({
         },
     });
 
-    const { isLoading } = form.formState;
+    const { isLoading: stateLoading } = form.formState;
     const queryClient = useQueryClient();
 
     const studentMutation = useMutation({
         mutationFn: (data: z.infer<typeof updateSchema>) => {
             if (!student?.id) {
-                throw new Error('Teacher ID is required for updating data.');
+                throw new Error('Student ID is required for updating data.');
             }
-            return updateTeacher(student.id, data);
+            return updateStudent(student.id, data);
         },
         onSuccess: () => {
             toast({
@@ -70,7 +70,7 @@ export default function UpdateFormStudent({
                 description: 'Data siswa berhasil diubah.',
                 variant: 'default',
             });
-            queryClient.invalidateQueries({ queryKey: ['teachers'] });
+            queryClient.invalidateQueries({ queryKey: ['students'] });
             onSuccess?.();
         },
         onError: error => {
@@ -99,7 +99,6 @@ export default function UpdateFormStudent({
                         onSubmit={form.handleSubmit(onSubmitForm)}
                         className="space-y-6"
                     >
-                        {/* Full Name Field */}
                         <FormField
                             control={form.control}
                             name="fullname"
@@ -117,7 +116,6 @@ export default function UpdateFormStudent({
                             )}
                         />
 
-                        {/* Email Field */}
                         <FormField
                             control={form.control}
                             name="address"
@@ -135,7 +133,6 @@ export default function UpdateFormStudent({
                             )}
                         />
 
-                        {/* Identity Number and Password in same row */}
                         <div className="grid grid-cols-2 gap-4">
                             <FormField
                                 control={form.control}
@@ -154,25 +151,13 @@ export default function UpdateFormStudent({
                                 )}
                             />
 
-                            <FormField
+                            <TerritoryCombobox
                                 control={form.control}
-                                name="birthPlace"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Password</FormLabel>
-                                        <FormControl>
-                                            <Input
-                                                {...field}
-                                                placeholder="Tempat Lahir"
-                                            />
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
+                                name={'birthPlace'}
+                                label="Pilih Tempat Lahir"
                             />
                         </div>
 
-                        {/* Class and Role in same row */}
                         <div className="grid grid-cols-2 gap-4">
                             <FormField
                                 control={form.control}
@@ -214,7 +199,7 @@ export default function UpdateFormStudent({
                                 name="religion"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Peran</FormLabel>
+                                        <FormLabel>Agama</FormLabel>
                                         <Select
                                             onValueChange={field.onChange}
                                             defaultValue={field.value}
@@ -254,7 +239,7 @@ export default function UpdateFormStudent({
                         <div className="flex justify-end">
                             <DialogFooter>
                                 <Button type="submit">
-                                    {isLoading || studentMutation.isPending
+                                    {stateLoading || studentMutation.isPending
                                         ? 'Memproses...'
                                         : 'Simpan'}
                                 </Button>
