@@ -29,6 +29,7 @@ import { useToast } from '@/hooks/use-toast';
 import { StudentType } from '@/types/student';
 import { updateStudent } from '@/services/page/(user)/students';
 import { TerritoryCombobox } from '../components/single-territory-combobox';
+import TerritoryForm from '../components/territory-form';
 
 type FormStudentProps = {
     student?: StudentType;
@@ -156,6 +157,10 @@ export default function UpdateFormStudent({
                                 name={'birthPlace'}
                                 label="Pilih Tempat Lahir"
                             />
+                        </div>
+
+                        <div className="grid">
+                            <TerritoryForm control={form.control} />
                         </div>
 
                         <div className="grid grid-cols-2 gap-4">

@@ -31,9 +31,20 @@ interface District {
     uuid: string;
 }
 
+interface Village {
+    id: string;
+    district_id: string;
+    name: string;
+    alt_name: string;
+    latitude: number;
+    longitude: number;
+    uuid: string;
+}
+
 interface TerritoryStore {
     provinces: Province[];
     regencies: Regency[];
+    villages: Village[];
     allRegencies: Regency[];
     districts: District[];
     selectedProvinceId: string | null;
@@ -42,6 +53,7 @@ interface TerritoryStore {
     error: string | null;
     fetchProvinces: () => Promise<void>;
     fetchAllRegencies: () => Promise<void>;
+    fetchVillages: (districtId: string) => Promise<void>;
     fetchRegencies: (provinceId: string) => Promise<void>;
     fetchDistricts: (regencyId: string) => Promise<void>;
     setSelectedProvinceId: (id: string | null) => void;
@@ -52,6 +64,7 @@ export const useTerritoryStore = create<TerritoryStore>((set, get) => ({
     provinces: [],
     regencies: [],
     districts: [],
+    villages: [],
     allRegencies: [],
     selectedProvinceId: null,
     selectedRegencyId: null,
@@ -72,7 +85,8 @@ export const useTerritoryStore = create<TerritoryStore>((set, get) => ({
     fetchRegencies: async (provinceId: string) => {
         set({ isLoading: true, error: null });
         try {
-            const regencies = await indonesia.getAllRegencies(provinceId);
+            const regencies =
+                await indonesia.getRegenciesOfProvinceId(provinceId);
             set({ regencies, isLoading: false });
         } catch (error) {
             set({ error: 'Failed to fetch regencies', isLoading: false });
@@ -98,10 +112,23 @@ export const useTerritoryStore = create<TerritoryStore>((set, get) => ({
     fetchDistricts: async (regencyId: string) => {
         set({ isLoading: true, error: null });
         try {
-            const districts = await indonesia.getAllDistricts(regencyId);
+            const districts =
+                await indonesia.getDistrictsOfRegencyId(regencyId);
             set({ districts, isLoading: false });
         } catch (error) {
             set({ error: 'Failed to fetch districts', isLoading: false });
+            console.log(error);
+        }
+    },
+
+    fetchVillages: async (districtId: string) => {
+        set({ isLoading: true, error: null });
+        try {
+            const villages =
+                await indonesia.getVillagesOfDistrictId(districtId);
+            set({ villages, isLoading: false });
+        } catch (error) {
+            set({ error: 'Failed to fetch villages', isLoading: false });
             console.log(error);
         }
     },
