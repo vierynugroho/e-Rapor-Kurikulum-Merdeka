@@ -40,7 +40,8 @@ export default function UpdateFormStudent({
     student,
     onSuccess,
 }: FormStudentProps) {
-    const { toast } = useToast(); // Gunakan hook toast Shadcn
+    const { toast } = useToast();
+
     const form = useForm<z.infer<typeof updateSchema>>({
         resolver: zodResolver(updateSchema),
         defaultValues: {
@@ -86,6 +87,10 @@ export default function UpdateFormStudent({
     });
 
     const onSubmitForm: SubmitHandler<z.infer<typeof updateSchema>> = data => {
+        console.log(data.address);
+        if (typeof data.address === 'object') {
+            data.address = JSON.stringify(data.address); // Ubah objek menjadi string
+        }
         studentMutation.mutate(data);
     };
 
@@ -109,23 +114,6 @@ export default function UpdateFormStudent({
                                     <FormControl>
                                         <Input
                                             placeholder="Enter full name"
-                                            {...field}
-                                        />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-
-                        <FormField
-                            control={form.control}
-                            name="address"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Alamat</FormLabel>
-                                    <FormControl>
-                                        <Input
-                                            placeholder="Alamat"
                                             {...field}
                                         />
                                     </FormControl>
@@ -160,7 +148,10 @@ export default function UpdateFormStudent({
                         </div>
 
                         <div className="grid">
-                            <TerritoryForm control={form.control} />
+                            <TerritoryForm
+                                control={form.control}
+                                name={'address'}
+                            />
                         </div>
 
                         <div className="grid grid-cols-2 gap-4">
