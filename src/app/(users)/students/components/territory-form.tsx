@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     Command,
     CommandInput,
@@ -21,6 +21,14 @@ import {
 import { useTerritoryStore } from '@/store/territory';
 
 const TerritoryForm = ({ control, name }) => {
+    // Local state to track current selections
+    const [currentSelections, setCurrentSelections] = useState({
+        province: null,
+        regency: null,
+        district: null,
+        village: null,
+    });
+
     const {
         provinces,
         regencies,
@@ -30,46 +38,55 @@ const TerritoryForm = ({ control, name }) => {
         fetchRegencies,
         fetchDistricts,
         fetchVillages,
-        selectedProvinceId,
-        selectedRegencyId,
-        setSelectedProvinceId,
-        setSelectedRegencyId,
     } = useTerritoryStore();
 
     useEffect(() => {
         fetchProvinces();
     }, [fetchProvinces]);
 
+    // Helper function to format address string
+    const formatAddress = (village, district, regency, province) => {
+        const parts = [
+            village?.name,
+            district?.name,
+            regency?.name,
+            province?.name,
+        ].filter(Boolean);
+        return parts.join(', ');
+    };
+
     return (
         <FormField
             control={control}
-            name={name} // Parent field name (e.g., "address")
-            render={({ field }) => (
-                <FormItem className="flex flex-col">
-                    <Card className="w-full bg-black">
-                        <CardContent className="space-y-4 p-6">
-                            <h2 className="mb-4 text-lg font-semibold">
-                                Alamat
-                            </h2>
-                            <div className="grid grid-cols-2 gap-4">
-                                {/* Provinsi */}
-                                <FormItem className="space-y-2">
-                                    <FormLabel htmlFor="province">
-                                        Provinsi
-                                    </FormLabel>
-                                    <FormControl>
+            name={name}
+            render={({ field }) => {
+                return (
+                    <FormItem className="flex flex-col">
+                        <Card className="w-full bg-black">
+                            <CardContent className="space-y-4 p-6">
+                                <h2 className="mb-4 text-lg font-semibold">
+                                    Alamat
+                                </h2>
+                                <div className="grid grid-cols-2 gap-4">
+                                    {/* Provinsi */}
+                                    <FormItem className="space-y-2">
+                                        <FormLabel htmlFor="province">
+                                            Provinsi
+                                        </FormLabel>
                                         <Popover>
                                             <PopoverTrigger asChild>
-                                                <button
-                                                    type="button"
-                                                    className="w-full rounded border px-4 py-2 text-left"
-                                                >
-                                                    {field.value?.province
-                                                        ?.name ||
-                                                        'Pilih provinsi...'}
-                                                </button>
+                                                <FormControl>
+                                                    <button
+                                                        type="button"
+                                                        className="w-full rounded border px-4 py-2 text-left"
+                                                    >
+                                                        {currentSelections
+                                                            .province?.name ||
+                                                            'Pilih provinsi...'}
+                                                    </button>
+                                                </FormControl>
                                             </PopoverTrigger>
-                                            <PopoverContent>
+                                            <PopoverContent className="w-[200px] p-0">
                                                 <Command>
                                                     <CommandInput placeholder="Cari provinsi..." />
                                                     <CommandList>
@@ -80,12 +97,8 @@ const TerritoryForm = ({ control, name }) => {
                                                                         province.id
                                                                     }
                                                                     onSelect={() => {
-                                                                        setSelectedProvinceId(
-                                                                            province.id,
-                                                                        );
-                                                                        field.onChange(
+                                                                        const newSelections =
                                                                             {
-                                                                                ...field.value,
                                                                                 province:
                                                                                     {
                                                                                         id: province.id,
@@ -97,10 +110,17 @@ const TerritoryForm = ({ control, name }) => {
                                                                                     null,
                                                                                 village:
                                                                                     null,
-                                                                            },
+                                                                            };
+                                                                        setCurrentSelections(
+                                                                            newSelections,
                                                                         );
-                                                                        setSelectedRegencyId(
-                                                                            null,
+                                                                        field.onChange(
+                                                                            formatAddress(
+                                                                                null,
+                                                                                null,
+                                                                                null,
+                                                                                newSelections.province,
+                                                                            ),
                                                                         );
                                                                         fetchRegencies(
                                                                             province.id,
@@ -117,31 +137,31 @@ const TerritoryForm = ({ control, name }) => {
                                                 </Command>
                                             </PopoverContent>
                                         </Popover>
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
+                                        <FormMessage />
+                                    </FormItem>
 
-                                {/* Kabupaten */}
-                                <FormItem className="space-y-2">
-                                    <FormLabel htmlFor="regency">
-                                        Kabupaten
-                                    </FormLabel>
-                                    <FormControl>
+                                    {/* Kabupaten */}
+                                    <FormItem className="space-y-2">
+                                        <FormLabel htmlFor="regency">
+                                            Kabupaten
+                                        </FormLabel>
                                         <Popover>
                                             <PopoverTrigger asChild>
-                                                <button
-                                                    type="button"
-                                                    className="w-full rounded border px-4 py-2 text-left"
-                                                    disabled={
-                                                        !selectedProvinceId
-                                                    }
-                                                >
-                                                    {field.value?.regency
-                                                        ?.name ||
-                                                        'Pilih kabupaten...'}
-                                                </button>
+                                                <FormControl>
+                                                    <button
+                                                        type="button"
+                                                        className="w-full rounded border px-4 py-2 text-left"
+                                                        disabled={
+                                                            !currentSelections.province
+                                                        }
+                                                    >
+                                                        {currentSelections
+                                                            .regency?.name ||
+                                                            'Pilih kabupaten...'}
+                                                    </button>
+                                                </FormControl>
                                             </PopoverTrigger>
-                                            <PopoverContent>
+                                            <PopoverContent className="w-[200px] p-0">
                                                 <Command>
                                                     <CommandInput placeholder="Cari kabupaten..." />
                                                     <CommandList>
@@ -152,12 +172,9 @@ const TerritoryForm = ({ control, name }) => {
                                                                         regency.id
                                                                     }
                                                                     onSelect={() => {
-                                                                        setSelectedRegencyId(
-                                                                            regency.id,
-                                                                        );
-                                                                        field.onChange(
+                                                                        const newSelections =
                                                                             {
-                                                                                ...field.value,
+                                                                                ...currentSelections,
                                                                                 regency:
                                                                                     {
                                                                                         id: regency.id,
@@ -167,7 +184,17 @@ const TerritoryForm = ({ control, name }) => {
                                                                                     null,
                                                                                 village:
                                                                                     null,
-                                                                            },
+                                                                            };
+                                                                        setCurrentSelections(
+                                                                            newSelections,
+                                                                        );
+                                                                        field.onChange(
+                                                                            formatAddress(
+                                                                                null,
+                                                                                null,
+                                                                                newSelections.regency,
+                                                                                currentSelections.province,
+                                                                            ),
                                                                         );
                                                                         fetchDistricts(
                                                                             regency.id,
@@ -184,31 +211,31 @@ const TerritoryForm = ({ control, name }) => {
                                                 </Command>
                                             </PopoverContent>
                                         </Popover>
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
+                                        <FormMessage />
+                                    </FormItem>
 
-                                {/* Kecamatan */}
-                                <FormItem className="space-y-2">
-                                    <FormLabel htmlFor="district">
-                                        Kecamatan
-                                    </FormLabel>
-                                    <FormControl>
+                                    {/* Kecamatan */}
+                                    <FormItem className="space-y-2">
+                                        <FormLabel htmlFor="district">
+                                            Kecamatan
+                                        </FormLabel>
                                         <Popover>
                                             <PopoverTrigger asChild>
-                                                <button
-                                                    type="button"
-                                                    className="w-full rounded border px-4 py-2 text-left"
-                                                    disabled={
-                                                        !selectedRegencyId
-                                                    }
-                                                >
-                                                    {field.value?.district
-                                                        ?.name ||
-                                                        'Pilih kecamatan...'}
-                                                </button>
+                                                <FormControl>
+                                                    <button
+                                                        type="button"
+                                                        className="w-full rounded border px-4 py-2 text-left"
+                                                        disabled={
+                                                            !currentSelections.regency
+                                                        }
+                                                    >
+                                                        {currentSelections
+                                                            .district?.name ||
+                                                            'Pilih kecamatan...'}
+                                                    </button>
+                                                </FormControl>
                                             </PopoverTrigger>
-                                            <PopoverContent>
+                                            <PopoverContent className="w-[200px] p-0">
                                                 <Command>
                                                     <CommandInput placeholder="Cari kecamatan..." />
                                                     <CommandList>
@@ -219,9 +246,9 @@ const TerritoryForm = ({ control, name }) => {
                                                                         district.id
                                                                     }
                                                                     onSelect={() => {
-                                                                        field.onChange(
+                                                                        const newSelections =
                                                                             {
-                                                                                ...field.value,
+                                                                                ...currentSelections,
                                                                                 district:
                                                                                     {
                                                                                         id: district.id,
@@ -229,7 +256,17 @@ const TerritoryForm = ({ control, name }) => {
                                                                                     },
                                                                                 village:
                                                                                     null,
-                                                                            },
+                                                                            };
+                                                                        setCurrentSelections(
+                                                                            newSelections,
+                                                                        );
+                                                                        field.onChange(
+                                                                            formatAddress(
+                                                                                null,
+                                                                                newSelections.district,
+                                                                                currentSelections.regency,
+                                                                                currentSelections.province,
+                                                                            ),
                                                                         );
                                                                         fetchVillages(
                                                                             district.id,
@@ -246,29 +283,31 @@ const TerritoryForm = ({ control, name }) => {
                                                 </Command>
                                             </PopoverContent>
                                         </Popover>
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
+                                        <FormMessage />
+                                    </FormItem>
 
-                                {/* Desa */}
-                                <FormItem className="space-y-2">
-                                    <FormLabel htmlFor="village">
-                                        Desa
-                                    </FormLabel>
-                                    <FormControl>
+                                    {/* Desa */}
+                                    <FormItem className="space-y-2">
+                                        <FormLabel htmlFor="village">
+                                            Desa
+                                        </FormLabel>
                                         <Popover>
                                             <PopoverTrigger asChild>
-                                                <button
-                                                    type="button"
-                                                    className="w-full rounded border px-4 py-2 text-left"
-                                                    disabled={!districts.length}
-                                                >
-                                                    {field.value?.village
-                                                        ?.name ||
-                                                        'Pilih desa...'}
-                                                </button>
+                                                <FormControl>
+                                                    <button
+                                                        type="button"
+                                                        className="w-full rounded border px-4 py-2 text-left"
+                                                        disabled={
+                                                            !currentSelections.district
+                                                        }
+                                                    >
+                                                        {currentSelections
+                                                            .village?.name ||
+                                                            'Pilih desa...'}
+                                                    </button>
+                                                </FormControl>
                                             </PopoverTrigger>
-                                            <PopoverContent>
+                                            <PopoverContent className="w-[200px] p-0">
                                                 <Command>
                                                     <CommandInput placeholder="Cari desa..." />
                                                     <CommandList>
@@ -279,15 +318,25 @@ const TerritoryForm = ({ control, name }) => {
                                                                         village.id
                                                                     }
                                                                     onSelect={() => {
-                                                                        field.onChange(
+                                                                        const newSelections =
                                                                             {
-                                                                                ...field.value,
+                                                                                ...currentSelections,
                                                                                 village:
                                                                                     {
                                                                                         id: village.id,
                                                                                         name: village.name,
                                                                                     },
-                                                                            },
+                                                                            };
+                                                                        setCurrentSelections(
+                                                                            newSelections,
+                                                                        );
+                                                                        field.onChange(
+                                                                            formatAddress(
+                                                                                newSelections.village,
+                                                                                currentSelections.district,
+                                                                                currentSelections.regency,
+                                                                                currentSelections.province,
+                                                                            ),
                                                                         );
                                                                     }}
                                                                 >
@@ -301,14 +350,14 @@ const TerritoryForm = ({ control, name }) => {
                                                 </Command>
                                             </PopoverContent>
                                         </Popover>
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            </div>
-                        </CardContent>
-                    </Card>
-                </FormItem>
-            )}
+                                        <FormMessage />
+                                    </FormItem>
+                                </div>
+                            </CardContent>
+                        </Card>
+                    </FormItem>
+                );
+            }}
         />
     );
 };

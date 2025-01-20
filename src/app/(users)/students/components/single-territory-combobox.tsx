@@ -38,7 +38,7 @@ export function TerritoryCombobox({ control, name, label = 'Pilih Tempat' }) {
         if (allRegencies.length === 0 && !isLoading) {
             fetchAllRegencies();
         }
-    }, []);
+    }, [allRegencies.length, fetchAllRegencies, isLoading]);
 
     const handleSelect = React.useCallback(
         (currentValue: string, field) => {
