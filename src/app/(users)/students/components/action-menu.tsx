@@ -29,10 +29,10 @@ import {
 import { Button } from '@/components/ui/button';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useToast } from '@/hooks/use-toast';
-import { deleteTeacher } from '@/services/page/(user)/teachers';
 import { StudentType } from '@/types/student';
 import UpdateFormStudent from '../form/update';
 import { DetailData } from './detail-data';
+import { deleteStudent } from '@/services/page/(user)/students';
 
 type ActionMenuProps = {
     student: StudentType;
@@ -51,7 +51,7 @@ const ActionMenu: React.FC<ActionMenuProps> = ({ student }) => {
     const queryClient = useQueryClient();
 
     const deleteMutation = useMutation({
-        mutationFn: deleteTeacher,
+        mutationFn: deleteStudent,
         onSuccess: () => {
             toast({
                 title: 'Berhasil',

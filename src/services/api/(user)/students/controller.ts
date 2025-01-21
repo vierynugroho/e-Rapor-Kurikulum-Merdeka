@@ -49,8 +49,12 @@ export class StudentController {
             const requestBody = await request.json();
             const data = validateSchema(createSchema, requestBody);
 
-            if (isNaN(data.classID)) {
-                throw new CustomError(400, 'Invalid Class ID');
+            if (data.classID) {
+                if (isNaN(data.classID)) {
+                    throw new CustomError(400, 'Invalid Class ID');
+                }
+
+                data.classID = parseInt(String(data.classID));
             }
 
             const createPayment = await StudentService.CREATE(data);
@@ -77,6 +81,14 @@ export class StudentController {
 
             const requestBody = await request.json();
             const data = validateSchema(updateSchema, requestBody);
+
+            if (data.classID) {
+                if (isNaN(data.classID)) {
+                    throw new CustomError(400, 'Invalid Class ID');
+                }
+
+                data.classID = parseInt(String(data.classID));
+            }
 
             const student = await StudentService.UPDATE(studentID, data);
 

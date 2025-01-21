@@ -84,6 +84,7 @@ export default function UpdateFormTeacher({
     });
 
     const onSubmitForm: SubmitHandler<z.infer<typeof updateSchema>> = data => {
+        data.classID = parseInt(data.classID);
         teacherMutation.mutate(data);
     };
 
