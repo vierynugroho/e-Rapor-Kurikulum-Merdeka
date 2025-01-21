@@ -9,8 +9,8 @@ export type StudentScore = {
     indicatorId?: number;
     description?: string;
     value: DevelopmentLevel;
-    createdAt: Date;
-    updatedAt: Date;
+    createdAt: string | Date;
+    updatedAt: string | Date;
 };
 
 export type StudentDevelopment = {
@@ -20,9 +20,9 @@ export type StudentDevelopment = {
     notes?: string;
     studentId: number;
     teacherId: number;
-    recordDate: Date;
-    createdAt: Date;
-    updatedAt: Date;
+    recordDate: string | Date;
+    createdAt: string | Date;
+    updatedAt: string | Date;
 };
 
 export type CreateStudentType = {
@@ -31,36 +31,38 @@ export type CreateStudentType = {
     religion: Religion;
     parentName: string;
     birthPlace: string;
-    birthDate: string;
+    birthDate: string | Date;
     classID?: number | null;
     address: string;
     class?: Class | null;
+    id?: number;
 };
 
 export type UpdateStudentType = {
+    id?: number;
     fullname?: string;
     gender?: Gender;
     religion?: Religion;
     parentName?: string;
     birthPlace?: string;
-    birthDate?: string;
+    birthDate?: string | Date;
     classID?: number | null;
     address?: string;
     class?: Class | null;
 };
 
 export type StudentType = {
-    id: number;
+    id?: number;
     fullname?: string;
     gender?: Gender;
     religion?: Religion;
     parentName?: string;
     birthPlace?: string;
-    birthDate?: string;
+    birthDate?: string | Date;
     classID?: number;
     address?: string;
-    createdAt?: Date;
-    updatedAt?: Date;
+    createdAt?: string | Date;
+    updatedAt?: string | Date;
 
     class?: Class | null;
     StudentScore?: StudentScore[];

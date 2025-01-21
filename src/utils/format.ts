@@ -1,4 +1,4 @@
-export const formatDateTime = (datetime: Date) => {
+export const formatDateTime = (datetime: Date | string) => {
     return new Intl.DateTimeFormat('id-ID', {
         year: 'numeric',
         month: 'long',

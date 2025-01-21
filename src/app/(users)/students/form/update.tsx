@@ -13,7 +13,7 @@ import {
 
 import { DialogFooter } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 
 import {
     Select,
@@ -24,10 +24,21 @@ import {
 } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
 import { updateSchema } from './validation';
-import { updateTeacher } from '@/services/page/(user)/teachers';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useToast } from '@/hooks/use-toast';
 import { StudentType } from '@/types/student';
+import { updateStudent } from '@/services/page/(user)/students';
+import { TerritoryCombobox } from '../components/single-territory-combobox';
+import TerritoryForm from '../components/territory-form';
+import { Calendar } from '@/components/ui/calendar';
+import {
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+} from '@/components/ui/popover';
+import { format } from 'date-fns';
+import { cn } from '@/lib/utils';
+import { Calendar as CalendarIcon } from 'lucide-react';
 
 type FormStudentProps = {
     student?: StudentType;
@@ -38,7 +49,7 @@ export default function UpdateFormStudent({
     student,
     onSuccess,
 }: FormStudentProps) {
-    const { toast } = useToast(); // Gunakan hook toast Shadcn
+    const { toast } = useToast();
 
     const form = useForm<z.infer<typeof updateSchema>>({
         resolver: zodResolver(updateSchema),
@@ -49,20 +60,22 @@ export default function UpdateFormStudent({
             classID: student?.class?.id || undefined,
             religion: student?.religion || 'ISLAM',
             gender: student?.gender || 'LAKI_LAKI',
-            birthDate: student?.birthDate,
+            birthDate: student?.birthDate
+                ? new Date(student.birthDate)
+                : undefined,
             birthPlace: student?.birthPlace,
         },
     });
 
-    const { isLoading } = form.formState;
+    const { isLoading: stateLoading } = form.formState;
     const queryClient = useQueryClient();
 
     const studentMutation = useMutation({
         mutationFn: (data: z.infer<typeof updateSchema>) => {
             if (!student?.id) {
-                throw new Error('Teacher ID is required for updating data.');
+                throw new Error('Student ID is required for updating data.');
             }
-            return updateTeacher(student.id, data);
+            return updateStudent(student.id, data);
         },
         onSuccess: () => {
             toast({
@@ -70,7 +83,7 @@ export default function UpdateFormStudent({
                 description: 'Data siswa berhasil diubah.',
                 variant: 'default',
             });
-            queryClient.invalidateQueries({ queryKey: ['teachers'] });
+            queryClient.invalidateQueries({ queryKey: ['students'] });
             onSuccess?.();
         },
         onError: error => {
@@ -85,21 +98,21 @@ export default function UpdateFormStudent({
     });
 
     const onSubmitForm: SubmitHandler<z.infer<typeof updateSchema>> = data => {
+        console.log(data.address);
+        if (typeof data.address === 'object') {
+            data.address = JSON.stringify(data.address);
+        }
         studentMutation.mutate(data);
     };
 
     return (
-        <Card className="mx-auto w-full">
-            <CardHeader>
-                <CardTitle>Student Form</CardTitle>
-            </CardHeader>
-            <CardContent>
-                <Form {...form} key={student?.id || 'add-data'}>
-                    <form
-                        onSubmit={form.handleSubmit(onSubmitForm)}
-                        className="space-y-6"
-                    >
-                        {/* Full Name Field */}
+        <Card className="max-h-[90vh] w-full max-w-3xl overflow-hidden">
+            <Form {...form} key={student?.id || 'add-data'}>
+                <form
+                    onSubmit={form.handleSubmit(onSubmitForm)}
+                    className="flex h-full flex-col"
+                >
+                    <CardContent className="max-h-[calc(90vh-8rem)] space-y-4 overflow-y-auto p-6">
                         <FormField
                             control={form.control}
                             name="fullname"
@@ -117,26 +130,7 @@ export default function UpdateFormStudent({
                             )}
                         />
 
-                        {/* Email Field */}
-                        <FormField
-                            control={form.control}
-                            name="address"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Alamat</FormLabel>
-                                    <FormControl>
-                                        <Input
-                                            placeholder="Alamat"
-                                            {...field}
-                                        />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-
-                        {/* Identity Number and Password in same row */}
-                        <div className="grid grid-cols-2 gap-4">
+                        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                             <FormField
                                 control={form.control}
                                 name="parentName"
@@ -145,8 +139,8 @@ export default function UpdateFormStudent({
                                         <FormLabel>Wali Murid</FormLabel>
                                         <FormControl>
                                             <Input
-                                                {...field}
                                                 placeholder="Wali Murid"
+                                                {...field}
                                             />
                                         </FormControl>
                                         <FormMessage />
@@ -156,24 +150,108 @@ export default function UpdateFormStudent({
 
                             <FormField
                                 control={form.control}
-                                name="birthPlace"
+                                name="gender"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Password</FormLabel>
-                                        <FormControl>
-                                            <Input
-                                                {...field}
-                                                placeholder="Tempat Lahir"
-                                            />
-                                        </FormControl>
+                                        <FormLabel>Jenis Kelamin</FormLabel>
+                                        <Select
+                                            onValueChange={field.onChange}
+                                            defaultValue={field?.value?.toString()}
+                                        >
+                                            <FormControl>
+                                                <SelectTrigger>
+                                                    <SelectValue placeholder="Pilih Jenis Kelamin" />
+                                                </SelectTrigger>
+                                            </FormControl>
+                                            <SelectContent>
+                                                <SelectItem value="LAKI_LAKI">
+                                                    LAKI-LAKI
+                                                </SelectItem>
+                                                <SelectItem value="PEREMPUAN">
+                                                    PEREMPUAN
+                                                </SelectItem>
+                                            </SelectContent>
+                                        </Select>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                        </div>
+                        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                            <TerritoryCombobox
+                                control={form.control}
+                                name="birthPlace"
+                                label="Pilih Tempat Lahir"
+                            />
+
+                            <FormField
+                                control={form.control}
+                                name="birthDate"
+                                render={({ field }) => (
+                                    <FormItem className="flex flex-col">
+                                        <FormLabel>Tanggal Lahir</FormLabel>
+                                        <Popover>
+                                            <PopoverTrigger asChild>
+                                                <FormControl>
+                                                    <Button
+                                                        variant="outline"
+                                                        className={cn(
+                                                            'w-full pl-3 text-left font-normal',
+                                                            !field.value &&
+                                                                'text-muted-foreground',
+                                                        )}
+                                                    >
+                                                        <CalendarIcon className="mr-2 h-4 w-4" />
+                                                        {field.value ? (
+                                                            format(
+                                                                field.value,
+                                                                'PPP',
+                                                            )
+                                                        ) : (
+                                                            <span>
+                                                                Pilih tanggal
+                                                                lahir
+                                                            </span>
+                                                        )}
+                                                    </Button>
+                                                </FormControl>
+                                            </PopoverTrigger>
+                                            <PopoverContent
+                                                className="w-auto p-0"
+                                                align="start"
+                                            >
+                                                <Calendar
+                                                    mode="single"
+                                                    selected={
+                                                        field.value as Date
+                                                    }
+                                                    onSelect={(
+                                                        date: Date | undefined,
+                                                    ) => field.onChange(date)}
+                                                    disabled={(date: Date) =>
+                                                        date > new Date() ||
+                                                        date <
+                                                            new Date(
+                                                                '1900-01-01',
+                                                            )
+                                                    }
+                                                    initialFocus
+                                                />
+                                            </PopoverContent>
+                                        </Popover>
                                         <FormMessage />
                                     </FormItem>
                                 )}
                             />
                         </div>
 
-                        {/* Class and Role in same row */}
-                        <div className="grid grid-cols-2 gap-4">
+                        <TerritoryForm
+                            control={form.control}
+                            name="address"
+                            label="Alamat"
+                        />
+
+                        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                             <FormField
                                 control={form.control}
                                 name="classID"
@@ -209,12 +287,14 @@ export default function UpdateFormStudent({
                                 )}
                             />
 
+                            {/* Gender & Birth Date */}
+
                             <FormField
                                 control={form.control}
                                 name="religion"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Peran</FormLabel>
+                                        <FormLabel>Agama</FormLabel>
                                         <Select
                                             onValueChange={field.onChange}
                                             defaultValue={field.value}
@@ -250,19 +330,18 @@ export default function UpdateFormStudent({
                                 )}
                             />
                         </div>
-
-                        <div className="flex justify-end">
-                            <DialogFooter>
-                                <Button type="submit">
-                                    {isLoading || studentMutation.isPending
-                                        ? 'Memproses...'
-                                        : 'Simpan'}
-                                </Button>
-                            </DialogFooter>
-                        </div>
-                    </form>
-                </Form>
-            </CardContent>
+                    </CardContent>
+                    <div className="sticky bottom-0 border-t bg-card p-4">
+                        <DialogFooter>
+                            <Button type="submit" disabled={stateLoading}>
+                                {stateLoading || studentMutation.isPending
+                                    ? 'Memproses...'
+                                    : 'Simpan'}
+                            </Button>
+                        </DialogFooter>
+                    </div>
+                </form>
+            </Form>
         </Card>
     );
 }

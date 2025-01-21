@@ -82,6 +82,14 @@ export class TeacherController {
             const requestBody = await request.json();
             const data = validateSchema(updateSchema, requestBody);
 
+            if (data.classID) {
+                if (isNaN(data.classID)) {
+                    throw new CustomError(400, 'Invalid Class ID');
+                }
+
+                data.classID = parseInt(String(data.classID));
+            }
+
             const teacher = await TeacherService.UPDATE(teacherID, data);
 
             return APIResponse.success(teacher, {
