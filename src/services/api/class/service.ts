@@ -1,86 +1,61 @@
-import { TeacherType } from '@/types/teacher';
 import { ClassRepository } from './repository';
 import { CustomError } from '@/utils/error';
-import { Teacher } from '@prisma/client';
+import { Class } from '@prisma/client';
+import { ClassType } from '@/types/class';
 
 export class ClassService {
-    static async GET(): Promise<Partial<Teacher>[]> {
-        const teachers = await ClassRepository.GET();
-
-        return teachers.map(teacher => {
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            const { password, ...teacherWithoutPassword } = teacher;
-            return teacherWithoutPassword;
-        });
+    static async GET(): Promise<Partial<Class>[]> {
+        const classes = await ClassRepository.GET();
+        return classes;
     }
 
-    static async GET_ID(teacherID: number): Promise<Partial<Teacher | null>> {
-        const teacher = await ClassRepository.GET_ID(teacherID);
+    static async GET_ID(classID: number): Promise<Partial<Class | null>> {
+        const classData = await ClassRepository.GET_ID(classID);
 
-        if (!teacher) {
-            throw new CustomError(404, 'teacher data is not found');
-        }
-
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const { password, ...teacherWithoutPassword } = teacher;
-        return teacherWithoutPassword;
+        return classData;
     }
 
-    static async CREATE<T extends TeacherType>(request: T) {
-        const emailExist = await ClassRepository.GET_EMAIL(request.email);
-
-        if (emailExist) {
-            throw new CustomError(400, 'email is already registered');
-        }
-
-        const identityExist = await ClassRepository.GET_IDENTITY(
-            request.identity_number,
-        );
+    static async CREATE<T extends ClassType>(request: T) {
+        const identityExist = await ClassRepository.GET_IDENTITY(request.name);
 
         if (identityExist) {
             throw new CustomError(400, 'identity number is already registered');
         }
 
-        const teacher = await ClassRepository.CREATE(request);
+        const newClass = await ClassRepository.CREATE(request);
 
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const { password, ...teacherWithoutPassword } = teacher;
-        return teacherWithoutPassword;
+        return newClass;
     }
 
-    static async UPDATE<T extends Partial<TeacherType>>(
-        teacherID: number,
+    static async UPDATE<T extends Partial<ClassType>>(
+        classID: number,
         request: T,
-    ): Promise<Partial<Teacher | null>> {
-        const teacherExist = await ClassRepository.GET_ID(teacherID);
+    ): Promise<Partial<Class | null>> {
+        const classExist = await ClassRepository.GET_ID(classID);
 
-        if (!teacherExist) {
-            throw new CustomError(404, 'teacher data is not found');
+        if (!classExist) {
+            throw new CustomError(404, 'class data is not found');
         }
 
         const updatedData = {
-            ...teacherExist,
+            ...classExist,
             ...request,
         };
 
-        const teacher = await ClassRepository.UPDATE(teacherID, updatedData);
+        const updatedClass = await ClassRepository.UPDATE(classID, updatedData);
 
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const { password, ...teacherWithoutPassword } = teacher;
-        return teacherWithoutPassword;
+        return updatedClass;
     }
 
-    static async DELETE(teacherID: number): Promise<Partial<Teacher | null>> {
-        const teacherExist = await ClassRepository.GET_ID(teacherID);
+    static async DELETE(classID: number): Promise<Partial<Class | null>> {
+        const classExist = await ClassRepository.GET_ID(classID);
 
-        if (!teacherExist) {
-            throw new CustomError(404, 'teacher data is not found');
+        if (!classExist) {
+            throw new CustomError(404, 'class data is not found');
         }
 
-        const teacher = await ClassRepository.DELETE(teacherID);
+        const deletedClass = await ClassRepository.DELETE(classID);
 
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const { password, ...teacherWithoutPassword } = teacher;
-        return teacherWithoutPassword;
+        return deletedClass;
     }
 }
