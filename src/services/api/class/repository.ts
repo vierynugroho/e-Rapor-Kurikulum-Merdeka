@@ -1,86 +1,65 @@
 import { prisma } from '@/lib/prisma';
-import { TeacherType } from '@/types/teacher';
+import { CreateClassType, UpdateClassType } from '@/types/class';
 
 export class ClassRepository {
-    static async CREATE(teacherData: TeacherType) {
-        const teacher = await prisma.teacher.create({
+    static async CREATE(classData: CreateClassType) {
+        const newClass = await prisma.class.create({
             data: {
-                fullname: teacherData.fullname,
-                email: teacherData.email,
-                identity_number: teacherData.identity_number,
-                classID: teacherData.classID,
-                password: teacherData.password!,
-                role: teacherData.role,
+                name: classData.name,
             },
         });
-        return teacher;
+        return newClass;
     }
 
     static async GET() {
-        const teachers = await prisma.teacher.findMany({
-            include: {
-                class: true,
+        const classes = await prisma.class.findMany();
+
+        return classes;
+    }
+
+    static async GET_ID(classID: number) {
+        const classData = await prisma.class.findUnique({
+            where: {
+                id: classID,
             },
         });
 
-        return teachers;
+        return classData;
     }
 
-    static async GET_ID(teacherID: number) {
-        const teacher = await prisma.teacher.findUnique({
+    static async GET_IDENTITY(class_name: string) {
+        const classData = await prisma.class.findFirst({
             where: {
-                id: teacherID,
+                name: {
+                    mode: 'insensitive',
+                    equals: class_name,
+                },
             },
         });
 
-        return teacher;
+        return classData;
     }
 
-    static async GET_EMAIL(email: string) {
-        const teacher = await prisma.teacher.findUnique({
+    static async UPDATE(classID: number, classData: UpdateClassType) {
+        const updatedClass = await prisma.class.update({
             where: {
-                email,
-            },
-        });
-
-        return teacher;
-    }
-
-    static async GET_IDENTITY(identity_number: string) {
-        const teacher = await prisma.teacher.findUnique({
-            where: {
-                identity_number,
-            },
-        });
-
-        return teacher;
-    }
-
-    static async UPDATE(teacherID: number, teacherData: TeacherType) {
-        const teacher = await prisma.teacher.update({
-            where: {
-                id: teacherID,
+                id: classID,
             },
             data: {
-                fullname: teacherData.fullname,
-                email: teacherData.email,
-                identity_number: teacherData.identity_number,
-                classID: teacherData.classID,
-                password: teacherData.password,
-                role: teacherData.role,
+                name: classData.name,
             },
         });
 
-        return teacher;
+        return updatedClass;
     }
 
-    static async DELETE(teacherID: number) {
-        const teacher = await prisma.teacher.delete({
+    static async DELETE(classID: number) {
+        const deletedClass = await prisma.class.delete({
             where: {
-                id: teacherID,
+                id: classID,
             },
         });
 
-        return teacher;
+        return deletedClass;
     }
 }

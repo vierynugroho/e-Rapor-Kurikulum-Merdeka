@@ -2,17 +2,17 @@ import { APIResponse } from '@/utils/api-response';
 import { CustomError, errorHandler } from '@/utils/error';
 import { validateSchema } from '@/utils/validator';
 import { NextRequest } from 'next/server';
-import { ClassService } from './service';
-import { createSchema, updateSchema } from '@/app/classes/form/validation';
+import { ThemeService } from './service';
+import { createSchema, updateSchema } from '@/app/themes/form/validation';
 
-export class ClassController {
+export class ThemeController {
     static async GET(request: NextRequest) {
         try {
             console.log(request.json);
-            const data = await ClassService.GET();
+            const data = await ThemeService.GET();
 
             return APIResponse.success(data, {
-                message: 'classes data retrieved successfully',
+                message: 'themes data retrieved successfully',
             });
         } catch (error) {
             return errorHandler(error);
@@ -25,16 +25,16 @@ export class ClassController {
     ) {
         try {
             const { id } = params;
-            const classID = parseInt(id);
+            const themeID = parseInt(id);
 
-            if (isNaN(classID)) {
+            if (isNaN(themeID)) {
                 throw new CustomError(400, 'invalid class ID');
             }
 
-            const classData = await ClassService.GET_ID(classID);
+            const themeData = await ThemeService.GET_ID(themeID);
 
-            return APIResponse.success(classData, {
-                message: 'class data retrieved successfully',
+            return APIResponse.success(themeData, {
+                message: 'theme data retrieved successfully',
             });
         } catch (error) {
             return errorHandler(error);
@@ -46,10 +46,10 @@ export class ClassController {
             const requestBody = await request.json();
             const data = validateSchema(createSchema, requestBody);
 
-            const createdClass = await ClassService.CREATE(data);
+            const createdTheme = await ThemeService.CREATE(data);
 
-            return APIResponse.created(createdClass, {
-                message: 'class data created successfully',
+            return APIResponse.created(createdTheme, {
+                message: 'theme data created successfully',
             });
         } catch (error) {
             return errorHandler(error);
@@ -62,19 +62,19 @@ export class ClassController {
     ) {
         try {
             const { id } = params;
-            const classID = parseInt(id);
+            const themeID = parseInt(id);
 
-            if (isNaN(classID)) {
-                throw new CustomError(400, 'invalid class ID');
+            if (isNaN(themeID)) {
+                throw new CustomError(400, 'invalid theme ID');
             }
 
             const requestBody = await request.json();
             const data = validateSchema(updateSchema, requestBody);
 
-            const updatedClass = await ClassService.UPDATE(classID, data);
+            const updatedTheme = await ThemeService.UPDATE(themeID, data);
 
-            return APIResponse.success(updatedClass, {
-                message: 'class data updated successfully',
+            return APIResponse.success(updatedTheme, {
+                message: 'theme data updated successfully',
             });
         } catch (error) {
             return errorHandler(error);
@@ -87,16 +87,16 @@ export class ClassController {
     ) {
         try {
             const { id } = params;
-            const classID = parseInt(id);
+            const themeID = parseInt(id);
 
-            if (isNaN(classID)) {
-                throw new CustomError(400, 'invalid class ID');
+            if (isNaN(themeID)) {
+                throw new CustomError(400, 'invalid theme ID');
             }
 
-            const deletedClass = await ClassService.DELETE(classID);
+            const deletedTheme = await ThemeService.DELETE(themeID);
 
-            return APIResponse.success(deletedClass, {
-                message: 'class data deleted successfully',
+            return APIResponse.success(deletedTheme, {
+                message: 'theme data deleted successfully',
             });
         } catch (error) {
             return errorHandler(error);
