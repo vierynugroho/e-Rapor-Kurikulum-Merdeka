@@ -75,13 +75,12 @@ export function DataTable<TData, TValue>({
                 <Input
                     placeholder="Filter berdasarkan nama..."
                     value={
-                        (table
-                            .getColumn('fullname')
-                            ?.getFilterValue() as string) ?? ''
+                        (table.getColumn('name')?.getFilterValue() as string) ??
+                        ''
                     }
                     onChange={event =>
                         table
-                            .getColumn('fullname')
+                            .getColumn('name')
                             ?.setFilterValue(event.target.value)
                     }
                     className="max-w-sm"
@@ -98,9 +97,9 @@ export function DataTable<TData, TValue>({
                         </DialogTrigger>
                         <DialogContent className="sm:max-w-[425px] md:max-w-[768px]">
                             <DialogHeader>
-                                <DialogTitle>Tambah Data Guru</DialogTitle>
+                                <DialogTitle>Tambah Data Kelas</DialogTitle>
                                 <DialogDescription>
-                                    Buat data guru baru sekolah anda di sini
+                                    Buat data kelas baru sekolah anda di sini
                                 </DialogDescription>
                             </DialogHeader>
                             <div className="grid gap-4 py-4">

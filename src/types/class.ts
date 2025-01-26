@@ -1,6 +1,6 @@
 export type ClassType = {
     id?: number;
-    name: string;
+    name?: string;
 
     createdAt?: Date;
     updatedAt?: Date;

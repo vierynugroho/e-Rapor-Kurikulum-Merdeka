@@ -1,15 +1,15 @@
 'use client';
 
-import { getTeachers } from '@/services/page/(user)/teachers';
 import { columns } from './columns';
 import { DataTable } from './data-table';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Loader2 } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
+import { getClasses } from '@/services/page/class';
 
 export default function TeachersPage() {
     const { data, isLoading, error } = useQuery({
-        queryFn: getTeachers,
+        queryFn: getClasses,
         queryKey: ['classes'],
     });
 
