@@ -15,61 +15,48 @@ import { DialogFooter } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
 import { updateSchema } from './validation';
-import { TeacherType } from '../../../../types/teacher';
-import { PasswordInput } from '@/components/ui/password-input';
-import { updateTeacher } from '@/services/page/(user)/teachers';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useToast } from '@/hooks/use-toast';
+import { updateClass } from '@/services/page/class';
+import { ClassType } from '@/types/class';
 
-type FormTeacherProps = {
-    teacher?: TeacherType;
+type FormClassProps = {
+    classes?: ClassType;
     onSuccess?: () => void;
 };
 
-export default function UpdateFormTeacher({
-    teacher,
+export default function UpdateFormClass({
+    classes,
     onSuccess,
-}: FormTeacherProps) {
+}: FormClassProps) {
     const { toast } = useToast(); // Gunakan hook toast Shadcn
 
     const form = useForm<z.infer<typeof updateSchema>>({
         resolver: zodResolver(updateSchema),
         defaultValues: {
-            fullname: teacher?.fullname || '',
-            email: teacher?.email || '',
-            identity_number: teacher?.identity_number || '',
-            classID: teacher?.class?.id || undefined,
-            role: teacher?.role || 'TEACHER',
-            password: teacher?.password,
+            name: classes?.name || '',
         },
     });
 
     const { isLoading } = form.formState;
     const queryClient = useQueryClient();
 
-    const teacherMutation = useMutation({
+    const classMutation = useMutation({
         mutationFn: (data: z.infer<typeof updateSchema>) => {
-            if (!teacher?.id) {
-                throw new Error('Teacher ID is required for updating data.');
+            if (!classes?.id) {
+                throw new Error('Class ID is required for updating data.');
             }
-            return updateTeacher(teacher.id, data);
+            return updateClass(classes.id, data);
         },
         onSuccess: () => {
             toast({
                 title: 'Berhasil',
-                description: 'Data guru berhasil ditambahkan.',
+                description: 'Data kelas berhasil ditambahkan.',
                 variant: 'default',
             });
-            queryClient.invalidateQueries({ queryKey: ['teachers'] });
+            queryClient.invalidateQueries({ queryKey: ['classes'] });
             onSuccess?.();
         },
         onError: error => {
@@ -84,14 +71,13 @@ export default function UpdateFormTeacher({
     });
 
     const onSubmitForm: SubmitHandler<z.infer<typeof updateSchema>> = data => {
-        data.classID = parseInt(data.classID);
-        teacherMutation.mutate(data);
+        classMutation.mutate(data);
     };
 
     return (
         <Card className="mx-auto w-full">
             <CardHeader>
-                <CardTitle>Teacher Form</CardTitle>
+                <CardTitle>Class Form</CardTitle>
             </CardHeader>
             <CardContent>
                 <Form {...form}>
@@ -102,13 +88,13 @@ export default function UpdateFormTeacher({
                         {/* Full Name Field */}
                         <FormField
                             control={form.control}
-                            name="fullname"
+                            name="name"
                             render={({ field }) => (
                                 <FormItem>
                                     <FormLabel>Nama</FormLabel>
                                     <FormControl>
                                         <Input
-                                            placeholder="Enter full name"
+                                            placeholder="Enter class name"
                                             {...field}
                                         />
                                     </FormControl>
@@ -116,142 +102,14 @@ export default function UpdateFormTeacher({
                                 </FormItem>
                             )}
                         />
-
-                        {/* Email Field */}
-                        <FormField
-                            control={form.control}
-                            name="email"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Email</FormLabel>
-                                    <FormControl>
-                                        <Input
-                                            placeholder="Enter email"
-                                            {...field}
-                                        />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-
-                        {/* Identity Number and Password in same row */}
-                        <div className="grid grid-cols-2 gap-4">
-                            <FormField
-                                control={form.control}
-                                name="identity_number"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Nomor Identitas</FormLabel>
-                                        <FormControl>
-                                            <Input
-                                                {...field}
-                                                type="number"
-                                                id="identity_number"
-                                                placeholder="Enter ID number"
-                                            />
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-
-                            <FormField
-                                control={form.control}
-                                name="password"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Password</FormLabel>
-                                        <FormControl>
-                                            <PasswordInput
-                                                {...field}
-                                                placeholder="Enter password"
-                                            />
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-                        </div>
-
-                        {/* Class and Role in same row */}
-                        <div className="grid grid-cols-2 gap-4">
-                            <FormField
-                                control={form.control}
-                                name="classID"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Kelas</FormLabel>
-                                        <Select
-                                            onValueChange={field.onChange}
-                                            disabled={
-                                                form.getValues('role') ===
-                                                'ADMIN'
-                                            }
-                                            defaultValue={field.value?.toString()}
-                                        >
-                                            <FormControl>
-                                                <SelectTrigger>
-                                                    <SelectValue placeholder="Pilih Kelas" />
-                                                </SelectTrigger>
-                                            </FormControl>
-                                            <SelectContent>
-                                                <SelectItem value="1">
-                                                    Kelas A1
-                                                </SelectItem>
-                                                <SelectItem value="2">
-                                                    Kelas A2
-                                                </SelectItem>
-                                                <SelectItem value="3">
-                                                    Kelas B1
-                                                </SelectItem>
-                                                <SelectItem value="4">
-                                                    Kelas B2
-                                                </SelectItem>
-                                            </SelectContent>
-                                        </Select>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-
-                            <FormField
-                                control={form.control}
-                                name="role"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Peran</FormLabel>
-                                        <Select
-                                            onValueChange={field.onChange}
-                                            defaultValue={field.value}
-                                        >
-                                            <FormControl>
-                                                <SelectTrigger>
-                                                    <SelectValue placeholder="Pilih Peran" />
-                                                </SelectTrigger>
-                                            </FormControl>
-                                            <SelectContent>
-                                                <SelectItem value="TEACHER">
-                                                    TEACHER
-                                                </SelectItem>
-                                                <SelectItem value="ADMIN">
-                                                    ADMIN
-                                                </SelectItem>
-                                            </SelectContent>
-                                        </Select>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-                        </div>
 
                         <div className="flex justify-end">
                             <DialogFooter>
                                 <Button
                                     type="submit"
-                                    disabled={teacherMutation.isPending}
+                                    disabled={classMutation.isPending}
                                 >
-                                    {isLoading || teacherMutation.isPending
+                                    {isLoading || classMutation.isPending
                                         ? 'Memproses...'
                                         : 'Simpan'}
                                 </Button>

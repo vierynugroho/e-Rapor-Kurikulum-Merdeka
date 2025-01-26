@@ -27,18 +27,18 @@ import {
     AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
-import { UpdateTeacherType } from '@/types/teacher';
-import UpdateFormTeacher from '../form/update';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useToast } from '@/hooks/use-toast';
-import { deleteTeacher } from '@/services/page/(user)/teachers';
 import { DetailData } from './detail-data';
+import UpdateFormClass from '../form/update';
+import { deleteClass } from '@/services/page/class';
+import { UpdateClassType } from '@/types/class';
 
 type ActionMenuProps = {
-    teacher: UpdateTeacherType;
+    classes: UpdateClassType;
 };
 
-const ActionMenu: React.FC<ActionMenuProps> = ({ teacher }) => {
+const ActionMenu: React.FC<ActionMenuProps> = ({ classes }) => {
     const { toast } = useToast();
     const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -51,14 +51,14 @@ const ActionMenu: React.FC<ActionMenuProps> = ({ teacher }) => {
     const queryClient = useQueryClient();
 
     const deleteMutation = useMutation({
-        mutationFn: deleteTeacher,
+        mutationFn: deleteClass,
         onSuccess: () => {
             toast({
                 title: 'Berhasil',
-                description: 'Data guru berhasil dihapus.',
+                description: 'Data kelas berhasil dihapus.',
                 variant: 'default',
             });
-            queryClient.invalidateQueries({ queryKey: ['teachers'] });
+            queryClient.invalidateQueries({ queryKey: ['classes'] });
             setIsDropdownOpen(false);
         },
         onError: error => {
@@ -73,8 +73,8 @@ const ActionMenu: React.FC<ActionMenuProps> = ({ teacher }) => {
     });
 
     const handleDelete = () => {
-        if (teacher.id) {
-            deleteMutation.mutate(teacher.id);
+        if (classes.id) {
+            deleteMutation.mutate(classes.id);
         }
     };
 
@@ -97,12 +97,12 @@ const ActionMenu: React.FC<ActionMenuProps> = ({ teacher }) => {
                     </DialogTrigger>
                     <DialogContent className="sm:max-w-[768px]">
                         <DialogHeader>
-                            <DialogTitle>Detail Guru</DialogTitle>
+                            <DialogTitle>Detail Kelas</DialogTitle>
                             <DialogDescription>
-                                Detail Informasi for {teacher.fullname}
+                                Detail Informasi for {classes.name}
                             </DialogDescription>
                         </DialogHeader>
-                        <DetailData teacher={teacher} />
+                        <DetailData classes={classes} />
                     </DialogContent>
                 </Dialog>
 
@@ -118,14 +118,14 @@ const ActionMenu: React.FC<ActionMenuProps> = ({ teacher }) => {
                     </DialogTrigger>
                     <DialogContent className="sm:max-w-[425px] md:max-w-[768px]">
                         <DialogHeader>
-                            <DialogTitle>Edit Data Guru</DialogTitle>
+                            <DialogTitle>Edit Data Kelas</DialogTitle>
                             <DialogDescription>
-                                Perbarui data guru sekolah anda di sini
+                                Perbarui data kelas sekolah anda di sini
                             </DialogDescription>
                         </DialogHeader>
                         <div className="grid gap-4 py-4">
-                            <UpdateFormTeacher
-                                teacher={teacher}
+                            <UpdateFormClass
+                                classes={classes}
                                 onSuccess={handleCloseEditDialog}
                             />
                         </div>
@@ -144,7 +144,7 @@ const ActionMenu: React.FC<ActionMenuProps> = ({ teacher }) => {
                             <AlertDialogTitle>Hapus Guru</AlertDialogTitle>
                             <AlertDialogDescription>
                                 Apakah anda yakin untuk menghapus data{' '}
-                                {teacher.fullname}? Aksi ini tidak bisa
+                                {classes.name}? Aksi ini tidak bisa
                                 dikembalikan.
                             </AlertDialogDescription>
                         </AlertDialogHeader>

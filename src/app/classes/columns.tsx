@@ -7,6 +7,10 @@ import { ClassType } from '@/types/class';
 
 export const columns: ColumnDef<ClassType>[] = [
     {
+        id: 'ID',
+        accessorKey: 'id',
+    },
+    {
         accessorKey: 'name',
         header: ({ column }) => (
             <Button
@@ -20,12 +24,11 @@ export const columns: ColumnDef<ClassType>[] = [
             </Button>
         ),
     },
-
     {
         id: 'Aksi',
         cell: ({ row }) => {
-            const teacher = row.original;
-            return <ActionMenu teacher={teacher} />;
+            const classes = row.original;
+            return <ActionMenu classes={classes} />;
         },
     },
 ];

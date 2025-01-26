@@ -1,7 +1,7 @@
 import { ClassRepository } from './repository';
 import { CustomError } from '@/utils/error';
 import { Class } from '@prisma/client';
-import { ClassType } from '@/types/class';
+import { CreateClassType, UpdateClassType } from '@/types/class';
 
 export class ClassService {
     static async GET(): Promise<Partial<Class>[]> {
@@ -15,11 +15,11 @@ export class ClassService {
         return classData;
     }
 
-    static async CREATE<T extends ClassType>(request: T) {
+    static async CREATE<T extends CreateClassType>(request: T) {
         const identityExist = await ClassRepository.GET_IDENTITY(request.name);
 
         if (identityExist) {
-            throw new CustomError(400, 'identity number is already registered');
+            throw new CustomError(400, 'class is already registered');
         }
 
         const newClass = await ClassRepository.CREATE(request);
@@ -27,7 +27,7 @@ export class ClassService {
         return newClass;
     }
 
-    static async UPDATE<T extends Partial<ClassType>>(
+    static async UPDATE<T extends Partial<UpdateClassType>>(
         classID: number,
         request: T,
     ): Promise<Partial<Class | null>> {
@@ -35,6 +35,12 @@ export class ClassService {
 
         if (!classExist) {
             throw new CustomError(404, 'class data is not found');
+        }
+
+        const identityExist = await ClassRepository.GET_IDENTITY(request.name!);
+
+        if (identityExist) {
+            throw new CustomError(400, 'class is already registered');
         }
 
         const updatedData = {
