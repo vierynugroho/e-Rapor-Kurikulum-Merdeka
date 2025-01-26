@@ -100,3 +100,44 @@ body {
     -webkit-appearance: none;
     margin: 0;
 }
+
+/*! -------------- Scroll -------------- */
+/* Seluruh elemen scrollbar */
+::-webkit-scrollbar {
+    width: 12px;
+    /* Lebar scrollbar */
+    height: 12px;
+    /* Tinggi scrollbar (horizontal) */
+}
+
+/* Track scrollbar (latar belakang) */
+::-webkit-scrollbar-track {
+    background: #f4f4f400;
+    /* Warna track */
+    border-radius: 10px;
+    /* Membuat track melengkung */
+}
+
+/* Thumb (bagian yang digeser) */
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(45deg, #afa8b7, #3b4555);
+    /* Gradasi warna */
+    border-radius: 10px;
+    /* Membuat thumb melengkung */
+    border: 2px solid #f4f4f4;
+    /* Memberi jarak di sekitar thumb */
+}
+
+/* Thumb saat di-hover */
+::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(45deg, #afa8b7, #3b4555);
+    /* Ubah gradasi saat hover */
+}
+
+/* Thumb saat aktif (saat sedang digeser) */
+::-webkit-scrollbar-thumb:active {
+    background: #a8bacf;
+    /* Warna solid saat aktif */
+}
+
+/* Scroll */

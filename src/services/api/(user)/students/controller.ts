@@ -6,7 +6,7 @@ import { StudentService } from './service';
 import {
     createSchema,
     updateSchema,
-} from '@/app/(users)/students/form/validation';
+} from '@/app/(dashboard)/(users)/students/form/validation';
 
 export class StudentController {
     static async GET(request: NextRequest) {

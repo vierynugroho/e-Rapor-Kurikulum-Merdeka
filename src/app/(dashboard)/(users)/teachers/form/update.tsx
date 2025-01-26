@@ -23,10 +23,10 @@ import {
     SelectValue,
 } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
-import { createSchema } from './validation';
-import { TeacherType } from '../../../../types/teacher';
+import { updateSchema } from './validation';
+import { TeacherType } from '../../../../../types/teacher';
 import { PasswordInput } from '@/components/ui/password-input';
-import { createTeacher } from '@/services/page/(user)/teachers';
+import { updateTeacher } from '@/services/page/(user)/teachers';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useToast } from '@/hooks/use-toast';
 
@@ -35,14 +35,14 @@ type FormTeacherProps = {
     onSuccess?: () => void;
 };
 
-export default function CreateFormTeacher({
+export default function UpdateFormTeacher({
     teacher,
     onSuccess,
 }: FormTeacherProps) {
     const { toast } = useToast(); // Gunakan hook toast Shadcn
 
-    const form = useForm<z.infer<typeof createSchema>>({
-        resolver: zodResolver(createSchema),
+    const form = useForm<z.infer<typeof updateSchema>>({
+        resolver: zodResolver(updateSchema),
         defaultValues: {
             fullname: teacher?.fullname || '',
             email: teacher?.email || '',
@@ -57,7 +57,12 @@ export default function CreateFormTeacher({
     const queryClient = useQueryClient();
 
     const teacherMutation = useMutation({
-        mutationFn: createTeacher,
+        mutationFn: (data: z.infer<typeof updateSchema>) => {
+            if (!teacher?.id) {
+                throw new Error('Teacher ID is required for updating data.');
+            }
+            return updateTeacher(teacher.id, data);
+        },
         onSuccess: () => {
             toast({
                 title: 'Berhasil',
@@ -65,7 +70,6 @@ export default function CreateFormTeacher({
                 variant: 'default',
             });
             queryClient.invalidateQueries({ queryKey: ['teachers'] });
-            form.reset();
             onSuccess?.();
         },
         onError: error => {
@@ -79,9 +83,8 @@ export default function CreateFormTeacher({
         },
     });
 
-    const onSubmitForm: SubmitHandler<
-        z.infer<typeof createSchema>
-    > = async data => {
+    const onSubmitForm: SubmitHandler<z.infer<typeof updateSchema>> = data => {
+        data.classID = parseInt(data.classID);
         teacherMutation.mutate(data);
     };
 
@@ -91,7 +94,7 @@ export default function CreateFormTeacher({
                 <CardTitle>Teacher Form</CardTitle>
             </CardHeader>
             <CardContent>
-                <Form {...form} key={teacher?.id || 'add-data'}>
+                <Form {...form}>
                     <form
                         onSubmit={form.handleSubmit(onSubmitForm)}
                         className="space-y-6"
@@ -185,7 +188,7 @@ export default function CreateFormTeacher({
                                                 form.getValues('role') ===
                                                 'ADMIN'
                                             }
-                                            defaultValue={field?.value?.toString()}
+                                            defaultValue={field.value?.toString()}
                                         >
                                             <FormControl>
                                                 <SelectTrigger>
@@ -244,7 +247,10 @@ export default function CreateFormTeacher({
 
                         <div className="flex justify-end">
                             <DialogFooter>
-                                <Button type="submit">
+                                <Button
+                                    type="submit"
+                                    disabled={teacherMutation.isPending}
+                                >
                                     {isLoading || teacherMutation.isPending
                                         ? 'Memproses...'
                                         : 'Simpan'}
