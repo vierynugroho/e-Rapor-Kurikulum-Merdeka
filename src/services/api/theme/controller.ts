@@ -3,7 +3,10 @@ import { CustomError, errorHandler } from '@/utils/error';
 import { validateSchema } from '@/utils/validator';
 import { NextRequest } from 'next/server';
 import { ThemeService } from './service';
-import { createSchema, updateSchema } from '@/app/themes/form/validation';
+import {
+    createSchema,
+    updateSchema,
+} from '@/app/(dashboard)/themes/form/validation';
 
 export class ThemeController {
     static async GET(request: NextRequest) {
@@ -28,7 +31,7 @@ export class ThemeController {
             const themeID = parseInt(id);
 
             if (isNaN(themeID)) {
-                throw new CustomError(400, 'invalid class ID');
+                throw new CustomError(400, 'invalid theme ID');
             }
 
             const themeData = await ThemeService.GET_ID(themeID);

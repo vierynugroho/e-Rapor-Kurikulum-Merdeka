@@ -3,7 +3,10 @@ import { CustomError, errorHandler } from '@/utils/error';
 import { validateSchema } from '@/utils/validator';
 import { NextRequest } from 'next/server';
 import { ClassService } from './service';
-import { createSchema, updateSchema } from '@/app/classes/form/validation';
+import {
+    createSchema,
+    updateSchema,
+} from '@/app/(dashboard)/classes/form/validation';
 
 export class ClassController {
     static async GET(request: NextRequest) {

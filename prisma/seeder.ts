@@ -1,8 +1,10 @@
+import { Argon } from '@/utils/cryptography';
 import { PrismaClient, Gender, Religion, UserRole } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
 async function main() {
+    const encryptedPassword = await Argon.encrypt('password');
     // Seed Classes
     console.log('seeding class!');
     await prisma.class.createMany({
@@ -31,10 +33,10 @@ async function main() {
     console.log('seeding teachers!');
     await prisma.teacher.create({
         data: {
-            fullname: 'John Doe',
-            email: 'johndoe@example.com',
+            fullname: 'Guru Kelas',
+            email: 'guru@example.com',
             identity_number: '123456789',
-            password: 'securepassword',
+            password: encryptedPassword,
             role: UserRole.TEACHER,
             classID: 1,
         },
@@ -42,12 +44,11 @@ async function main() {
 
     await prisma.teacher.create({
         data: {
-            fullname: 'Jane Smith',
-            email: 'janesmith@example.com',
+            fullname: 'Admin Sekolah',
+            email: 'admin@example.com',
             identity_number: '987654321',
-            password: 'anotherpassword',
+            password: encryptedPassword,
             role: UserRole.ADMIN,
-            classID: 3,
         },
     });
 
