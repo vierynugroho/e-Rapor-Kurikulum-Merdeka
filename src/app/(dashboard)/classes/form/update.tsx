@@ -53,7 +53,7 @@ export default function UpdateFormClass({
         onSuccess: () => {
             toast({
                 title: 'Berhasil',
-                description: 'Data kelas berhasil ditambahkan.',
+                description: 'Data kelas berhasil diperbarui.',
                 variant: 'default',
             });
             queryClient.invalidateQueries({ queryKey: ['classes'] });

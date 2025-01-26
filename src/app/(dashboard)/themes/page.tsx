@@ -1,16 +1,16 @@
 'use client';
 
-import { getTeachers } from '@/services/page/(user)/teachers';
 import { columns } from './columns';
 import { DataTable } from './data-table';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Loader2 } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
+import { getThemes } from '@/services/page/theme';
 
-export default function TeachersPage() {
+export default function ThemePage() {
     const { data, isLoading, error } = useQuery({
-        queryFn: getTeachers,
-        queryKey: ['classes'],
+        queryFn: getThemes,
+        queryKey: ['themes'],
     });
 
     if (isLoading) {
@@ -25,7 +25,7 @@ export default function TeachersPage() {
         return (
             <Alert variant="destructive" className="m-4">
                 <AlertDescription>
-                    Failed to load teachers: {error.message}
+                    Failed to load themes: {error.message}
                 </AlertDescription>
             </Alert>
         );

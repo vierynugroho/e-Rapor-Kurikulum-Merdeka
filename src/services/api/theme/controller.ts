@@ -31,7 +31,7 @@ export class ThemeController {
             const themeID = parseInt(id);
 
             if (isNaN(themeID)) {
-                throw new CustomError(400, 'invalid class ID');
+                throw new CustomError(400, 'invalid theme ID');
             }
 
             const themeData = await ThemeService.GET_ID(themeID);

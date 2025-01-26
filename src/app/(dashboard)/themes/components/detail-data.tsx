@@ -1,94 +1,23 @@
-import { useToast } from '@/hooks/use-toast';
-import { TeacherType } from '@/types/teacher';
-import { CopyIcon } from 'lucide-react';
+import { ThemeType } from '@/types/theme';
 import React from 'react';
 
 type DetailDataProps = {
-    teacher: TeacherType;
+    data: ThemeType;
 };
 
-export const DetailData: React.FC<DetailDataProps> = ({ teacher }) => {
-    const { toast } = useToast();
-    const copyToClipboard = (text: string) => {
-        navigator.clipboard
-            .writeText(text)
-            .then(() => {
-                toast({
-                    title: 'Berhasil',
-                    description: 'Teks berhasil disalin ke clipboard!',
-                    variant: 'default',
-                });
-            })
-            .catch(err => {
-                toast({
-                    title: 'Gagal',
-                    description: err.message,
-                    variant: 'destructive',
-                });
-                console.error('Gagal menyalin teks: ', err);
-            });
-    };
-
+export const DetailData: React.FC<DetailDataProps> = ({ data }) => {
     return (
         <>
-            <div className="mx-auto max-w-4xl rounded-lg bg-background p-6 text-foreground shadow-lg">
+            <div className="max-w-4xl rounded-lg bg-background p-6 text-foreground shadow-lg">
                 <div className="grid gap-6">
-                    <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                    <div className="grid">
                         <div className="flex">
-                            <span className="w-40 font-medium">Nama:</span>
-                            <div className="flex-1">{teacher.fullname}</div>
-                        </div>
-                        <div className="flex">
-                            <span className="w-40 font-medium">
-                                Nomor Identitas:
-                            </span>
-                            <div className="flex flex-1 items-center">
-                                {teacher.identity_number}
-                                <button
-                                    title="Copy to clipboard"
-                                    className="hover: ml-2"
-                                    onClick={() =>
-                                        copyToClipboard(
-                                            teacher.identity_number!,
-                                        )
-                                    }
-                                >
-                                    <CopyIcon size={16} />
-                                </button>
-                            </div>
+                            <span className="w-40 font-medium">Judul:</span>
+                            <div className="flex-1">{data.title}</div>
                         </div>
                     </div>
 
-                    <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                        <div className="flex">
-                            <span className="w-40 font-medium">Email:</span>
-                            <div className="flex flex-1 items-center">
-                                {teacher.email}
-                                <button
-                                    title="Copy to clipboard"
-                                    className="hover: ml-2"
-                                    onClick={() =>
-                                        copyToClipboard(teacher.email!)
-                                    }
-                                >
-                                    <CopyIcon size={16} />
-                                </button>
-                            </div>
-                        </div>
-                        <div className="flex">
-                            <span className="w-40 font-medium">Kelas:</span>
-                            <div className="flex-1">
-                                {teacher.class?.name || '-'}
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="flex">
-                        <span className="w-40 font-medium">Peran:</span>
-                        <div className="flex-1">{teacher.role}</div>
-                    </div>
-
-                    <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                    <div className="grid">
                         <div className="flex">
                             <span className="w-40 font-medium">
                                 Dibuat Pada:
@@ -101,9 +30,12 @@ export const DetailData: React.FC<DetailDataProps> = ({ teacher }) => {
                                     hour: '2-digit',
                                     minute: '2-digit',
                                     second: '2-digit',
-                                }).format(new Date(teacher.createdAt!))}
+                                }).format(new Date(data.createdAt!))}
                             </div>
                         </div>
+                    </div>
+
+                    <div className="grid">
                         <div className="flex">
                             <span className="w-40 font-medium">
                                 Terakhir Diperbarui:
@@ -116,7 +48,7 @@ export const DetailData: React.FC<DetailDataProps> = ({ teacher }) => {
                                     hour: '2-digit',
                                     minute: '2-digit',
                                     second: '2-digit',
-                                }).format(new Date(teacher.updatedAt!))}
+                                }).format(new Date(data.updatedAt!))}
                             </div>
                         </div>
                     </div>

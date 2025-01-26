@@ -7,7 +7,7 @@ import { Loader2 } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { getClasses } from '@/services/page/class';
 
-export default function TeachersPage() {
+export default function ClassPage() {
     const { data, isLoading, error } = useQuery({
         queryFn: getClasses,
         queryKey: ['classes'],
@@ -25,7 +25,7 @@ export default function TeachersPage() {
         return (
             <Alert variant="destructive" className="m-4">
                 <AlertDescription>
-                    Failed to load teachers: {error.message}
+                    Failed to load classes: {error.message}
                 </AlertDescription>
             </Alert>
         );

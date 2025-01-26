@@ -34,7 +34,7 @@ import {
     DialogTitle,
     DialogTrigger,
 } from '@/components/ui/dialog';
-import CreateFormTeacher from './form/create';
+import CreateFormTheme from './form/create';
 
 interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[];
@@ -73,15 +73,15 @@ export function DataTable<TData, TValue>({
         <div>
             <div className="flex items-center justify-between py-4">
                 <Input
-                    placeholder="Filter berdasarkan nama..."
+                    placeholder="Filter berdasarkan judul..."
                     value={
                         (table
-                            .getColumn('fullname')
+                            .getColumn('title')
                             ?.getFilterValue() as string) ?? ''
                     }
                     onChange={event =>
                         table
-                            .getColumn('fullname')
+                            .getColumn('title')
                             ?.setFilterValue(event.target.value)
                     }
                     className="max-w-sm"
@@ -98,13 +98,13 @@ export function DataTable<TData, TValue>({
                         </DialogTrigger>
                         <DialogContent className="sm:max-w-[425px] md:max-w-[768px]">
                             <DialogHeader>
-                                <DialogTitle>Tambah Data Guru</DialogTitle>
+                                <DialogTitle>Tambah Data Tema</DialogTitle>
                                 <DialogDescription>
-                                    Buat data guru baru sekolah anda di sini
+                                    Buat data tema baru sekolah anda di sini
                                 </DialogDescription>
                             </DialogHeader>
                             <div className="grid gap-4 py-4">
-                                <CreateFormTeacher
+                                <CreateFormTheme
                                     onSuccess={handleCloseEditDialog}
                                 />
                             </div>

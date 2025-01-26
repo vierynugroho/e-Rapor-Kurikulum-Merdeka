@@ -66,7 +66,7 @@ export default function UpdateFormTeacher({
         onSuccess: () => {
             toast({
                 title: 'Berhasil',
-                description: 'Data guru berhasil ditambahkan.',
+                description: 'Data guru berhasil diperbarui.',
                 variant: 'default',
             });
             queryClient.invalidateQueries({ queryKey: ['teachers'] });

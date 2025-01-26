@@ -34,7 +34,7 @@ import {
     DialogTitle,
     DialogTrigger,
 } from '@/components/ui/dialog';
-import CreateFormTeacher from './form/create';
+import CreateFormStudent from './form/create';
 
 interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[];
@@ -104,7 +104,7 @@ export function DataTable<TData, TValue>({
                                 </DialogDescription>
                             </DialogHeader>
                             <div className="grid gap-4 py-4">
-                                <CreateFormTeacher
+                                <CreateFormStudent
                                     onSuccess={handleCloseEditDialog}
                                 />
                             </div>

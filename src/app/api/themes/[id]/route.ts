@@ -1,3 +1,3 @@
-import { TeacherController } from '@/services/api/(user)/teachers';
+import { ThemeController } from '@/services/api/theme';
 
-export const { GET_ID: GET, UPDATE: PUT, DELETE } = TeacherController;
+export const { GET_ID: GET, UPDATE: PUT, DELETE } = ThemeController;

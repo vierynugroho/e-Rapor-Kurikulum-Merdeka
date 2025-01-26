@@ -3,11 +3,16 @@ import { ColumnDef } from '@tanstack/react-table';
 import { ArrowUpDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import ActionMenu from './components/action-menu';
-import { ClassType } from '@/types/class';
+import { ThemeType } from '@/types/theme';
 
-export const columns: ColumnDef<ClassType>[] = [
+export const columns: ColumnDef<ThemeType>[] = [
     {
-        accessorKey: 'name',
+        id: 'ID',
+        accessorKey: 'id',
+        header: 'ID',
+    },
+    {
+        accessorKey: 'title',
         header: ({ column }) => (
             <Button
                 variant="ghost"
@@ -15,7 +20,7 @@ export const columns: ColumnDef<ClassType>[] = [
                     column.toggleSorting(column.getIsSorted() === 'asc')
                 }
             >
-                Nama
+                Judul
                 <ArrowUpDown className="ml-2 h-4 w-4" />
             </Button>
         ),
@@ -24,8 +29,8 @@ export const columns: ColumnDef<ClassType>[] = [
     {
         id: 'Aksi',
         cell: ({ row }) => {
-            const teacher = row.original;
-            return <ActionMenu teacher={teacher} />;
+            const themes = row.original;
+            return <ActionMenu data={themes} />;
         },
     },
 ];

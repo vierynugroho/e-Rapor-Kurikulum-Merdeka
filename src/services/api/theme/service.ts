@@ -1,7 +1,7 @@
 import { CustomError } from '@/utils/error';
 import { Theme } from '@prisma/client';
 import { ThemeRepository } from './repository';
-import { ThemeType, UpdateThemeType } from '@/types/theme';
+import { CreateThemeType, UpdateThemeType } from '@/types/theme';
 
 export class ThemeService {
     static async GET(): Promise<Partial<Theme>[]> {
@@ -15,11 +15,11 @@ export class ThemeService {
         return classData;
     }
 
-    static async CREATE<T extends ThemeType>(request: T) {
+    static async CREATE<T extends CreateThemeType>(request: T) {
         const identityExist = await ThemeRepository.GET_IDENTITY(request.title);
 
         if (identityExist) {
-            throw new CustomError(400, 'identity number is already registered');
+            throw new CustomError(400, 'this theme is already registered');
         }
 
         const newClass = await ThemeRepository.CREATE(request);
@@ -34,7 +34,15 @@ export class ThemeService {
         const classExist = await ThemeRepository.GET_ID(classID);
 
         if (!classExist) {
-            throw new CustomError(404, 'class data is not found');
+            throw new CustomError(404, 'theme data is not found');
+        }
+
+        const identityExist = await ThemeRepository.GET_IDENTITY(
+            request.title!,
+        );
+
+        if (identityExist) {
+            throw new CustomError(400, 'this theme is already registered');
         }
 
         const updatedData = {
@@ -51,7 +59,7 @@ export class ThemeService {
         const classExist = await ThemeRepository.GET_ID(classID);
 
         if (!classExist) {
-            throw new CustomError(404, 'class data is not found');
+            throw new CustomError(404, 'theme data is not found');
         }
 
         const deletedClass = await ThemeRepository.DELETE(classID);

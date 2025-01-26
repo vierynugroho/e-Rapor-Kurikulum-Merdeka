@@ -80,7 +80,7 @@ export default function UpdateFormStudent({
         onSuccess: () => {
             toast({
                 title: 'Berhasil',
-                description: 'Data siswa berhasil diubah.',
+                description: 'Data siswa berhasil diperbarui.',
                 variant: 'default',
             });
             queryClient.invalidateQueries({ queryKey: ['students'] });

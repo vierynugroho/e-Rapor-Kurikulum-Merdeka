@@ -1,9 +1,11 @@
 export type ThemeType = {
     id?: number;
-    title: string;
+    title?: string;
 
     createdAt?: Date;
     updatedAt?: Date;
+
+    indicator?: [];
 };
 
 export type UpdateThemeType = {

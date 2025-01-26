@@ -7,7 +7,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Loader2 } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 
-export default function TeachersPage() {
+export default function TeacherPage() {
     const { data, isLoading, error } = useQuery({
         queryFn: getTeachers,
         queryKey: ['teachers'],

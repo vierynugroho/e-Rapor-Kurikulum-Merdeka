@@ -9,6 +9,7 @@ export const columns: ColumnDef<ClassType>[] = [
     {
         id: 'ID',
         accessorKey: 'id',
+        header: 'ID',
     },
     {
         accessorKey: 'name',
