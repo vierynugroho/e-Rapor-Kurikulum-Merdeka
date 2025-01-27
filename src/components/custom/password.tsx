@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
 
-const PasswordInput = React.forwardRef<
+const PasswordComponent = React.forwardRef<
     HTMLInputElement,
     React.ComponentProps<'input'>
 >(({ className, ...props }, ref) => {
@@ -53,6 +53,6 @@ const PasswordInput = React.forwardRef<
         </div>
     );
 });
-PasswordInput.displayName = 'PasswordInput';
+PasswordComponent.displayName = 'PasswordComponent';
 
-export { PasswordInput };
+export { PasswordComponent };

@@ -1,44 +1,20 @@
 import * as z from 'zod';
-import { SubmitHandler, useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { format } from 'date-fns';
-
-import {
-    Form,
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
-} from '@/components/ui/form';
-
-import { DialogFooter } from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
-import { Card, CardContent } from '@/components/ui/card';
-
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from '@/components/ui/select';
-import { Calendar } from '@/components/ui/calendar';
-import {
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
-} from '@/components/ui/popover';
+import TerritoryForm from '../../../../../components/territory-form';
 import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { DateInput } from '@/components/form/date-input';
+import { DialogFooter } from '@/components/ui/dialog';
+import { Form } from '@/components/ui/form';
+import { SelectInput } from '@/components/form/select-input';
+import { StudentType } from '@/types/student';
+import { SubmitHandler, useForm } from 'react-hook-form';
+import { TerritoryCombobox } from '../../../../../components/single-territory-combobox';
+import { TextInput } from '@/components/form/text-input';
 import { createSchema } from './validation';
+import { createStudent } from '@/services/page/(user)/students';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useToast } from '@/hooks/use-toast';
-import { StudentType } from '@/types/student';
-import { Calendar as CalendarIcon } from 'lucide-react';
-import { createStudent } from '@/services/page/(user)/students';
-import { TerritoryCombobox } from '../components/single-territory-combobox';
-import TerritoryForm from '../components/territory-form';
-import { cn } from '@/lib/utils';
+import { zodResolver } from '@hookform/resolvers/zod';
 
 type FormStudentProps = {
     student?: StudentType;
@@ -58,8 +34,8 @@ export default function CreateFormStudent({
             address: student?.address || '',
             parentName: student?.parentName || '',
             classID: student?.class?.id || undefined,
-            religion: student?.religion || 'ISLAM',
-            gender: student?.gender || 'LAKI_LAKI',
+            religion: student?.religion || undefined,
+            gender: student?.gender || undefined,
             birthDate: student?.birthDate
                 ? new Date(student.birthDate)
                 : undefined,
@@ -108,68 +84,30 @@ export default function CreateFormStudent({
                     className="flex h-full flex-col"
                 >
                     <CardContent className="max-h-[calc(90vh-8rem)] space-y-4 overflow-y-auto p-6">
-                        <FormField
+                        <TextInput
                             control={form.control}
                             name="fullname"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Nama</FormLabel>
-                                    <FormControl>
-                                        <Input
-                                            placeholder="Enter full name"
-                                            {...field}
-                                        />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
+                            label="Nama Lengkap"
+                            placeholder="Masukkan nama"
                         />
 
                         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                            <FormField
+                            <TextInput
                                 control={form.control}
                                 name="parentName"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Wali Murid</FormLabel>
-                                        <FormControl>
-                                            <Input
-                                                placeholder="Wali Murid"
-                                                {...field}
-                                            />
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
+                                label="Wali Murid"
+                                placeholder="Masukkan nama wali murid"
                             />
 
-                            <FormField
+                            <SelectInput
                                 control={form.control}
                                 name="gender"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Jenis Kelamin</FormLabel>
-                                        <Select
-                                            onValueChange={field.onChange}
-                                            defaultValue={field?.value?.toString()}
-                                        >
-                                            <FormControl>
-                                                <SelectTrigger>
-                                                    <SelectValue placeholder="Pilih Jenis Kelamin" />
-                                                </SelectTrigger>
-                                            </FormControl>
-                                            <SelectContent>
-                                                <SelectItem value="LAKI_LAKI">
-                                                    LAKI-LAKI
-                                                </SelectItem>
-                                                <SelectItem value="PEREMPUAN">
-                                                    PEREMPUAN
-                                                </SelectItem>
-                                            </SelectContent>
-                                        </Select>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
+                                label="Jenis Kelamin"
+                                placeholder="Pilih Jenis Kelamin"
+                                options={[
+                                    { value: 'LAKI_LAKI', label: 'LAKI-LAKI' },
+                                    { value: 'PEREMPUAN', label: 'PEREMPUAN' },
+                                ]}
                             />
                         </div>
                         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
@@ -179,64 +117,13 @@ export default function CreateFormStudent({
                                 label="Pilih Tempat Lahir"
                             />
 
-                            <FormField
+                            <DateInput
                                 control={form.control}
                                 name="birthDate"
-                                render={({ field }) => (
-                                    <FormItem className="flex flex-col">
-                                        <FormLabel>Tanggal Lahir</FormLabel>
-                                        <Popover>
-                                            <PopoverTrigger asChild>
-                                                <FormControl>
-                                                    <Button
-                                                        variant="outline"
-                                                        className={cn(
-                                                            'w-full pl-3 text-left font-normal',
-                                                            !field.value &&
-                                                                'text-muted-foreground',
-                                                        )}
-                                                    >
-                                                        <CalendarIcon className="mr-2 h-4 w-4" />
-                                                        {field.value ? (
-                                                            format(
-                                                                field.value,
-                                                                'PPP',
-                                                            )
-                                                        ) : (
-                                                            <span>
-                                                                Pilih tanggal
-                                                                lahir
-                                                            </span>
-                                                        )}
-                                                    </Button>
-                                                </FormControl>
-                                            </PopoverTrigger>
-                                            <PopoverContent
-                                                className="w-auto p-0"
-                                                align="start"
-                                            >
-                                                <Calendar
-                                                    mode="single"
-                                                    selected={
-                                                        field.value as Date
-                                                    }
-                                                    onSelect={(
-                                                        date: Date | undefined,
-                                                    ) => field.onChange(date)}
-                                                    disabled={(date: Date) =>
-                                                        date > new Date() ||
-                                                        date <
-                                                            new Date(
-                                                                '1900-01-01',
-                                                            )
-                                                    }
-                                                    initialFocus
-                                                />
-                                            </PopoverContent>
-                                        </Popover>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
+                                label="Tanggal Lahir"
+                                placeholder="Pilih tanggal lahir"
+                                minDate={new Date('1900-01-01')}
+                                maxDate={new Date()}
                             />
                         </div>
 
@@ -247,82 +134,32 @@ export default function CreateFormStudent({
                         />
 
                         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                            <FormField
+                            <SelectInput
                                 control={form.control}
                                 name="classID"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Kelas</FormLabel>
-                                        <Select
-                                            onValueChange={field.onChange}
-                                            defaultValue={field?.value?.toString()}
-                                        >
-                                            <FormControl>
-                                                <SelectTrigger>
-                                                    <SelectValue placeholder="Pilih Kelas" />
-                                                </SelectTrigger>
-                                            </FormControl>
-                                            <SelectContent>
-                                                <SelectItem value="1">
-                                                    Kelas A1
-                                                </SelectItem>
-                                                <SelectItem value="2">
-                                                    Kelas A2
-                                                </SelectItem>
-                                                <SelectItem value="3">
-                                                    Kelas B1
-                                                </SelectItem>
-                                                <SelectItem value="4">
-                                                    Kelas B2
-                                                </SelectItem>
-                                            </SelectContent>
-                                        </Select>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
+                                label="Kelas"
+                                placeholder="Pilih Kelas"
+                                options={[
+                                    { value: '1', label: 'KELAS A1' },
+                                    { value: '2', label: 'KELAS A2' },
+                                    { value: '3', label: 'KELAS B1' },
+                                    { value: '4', label: 'KELAS B2' },
+                                ]}
                             />
 
-                            {/* Gender & Birth Date */}
-
-                            <FormField
+                            <SelectInput
                                 control={form.control}
                                 name="religion"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Agama</FormLabel>
-                                        <Select
-                                            onValueChange={field.onChange}
-                                            defaultValue={field.value}
-                                        >
-                                            <FormControl>
-                                                <SelectTrigger>
-                                                    <SelectValue placeholder="Pilih Agama" />
-                                                </SelectTrigger>
-                                            </FormControl>
-                                            <SelectContent>
-                                                <SelectItem value="ISLAM">
-                                                    ISLAM
-                                                </SelectItem>
-                                                <SelectItem value="KRISTEN">
-                                                    KRISTEN
-                                                </SelectItem>
-                                                <SelectItem value="KONGHUCU">
-                                                    KONGHUCU
-                                                </SelectItem>
-                                                <SelectItem value="BUDDHA">
-                                                    BUDDHA
-                                                </SelectItem>
-                                                <SelectItem value="KATOLIK">
-                                                    KATOLIK
-                                                </SelectItem>
-                                                <SelectItem value="HINDU">
-                                                    HINDU
-                                                </SelectItem>
-                                            </SelectContent>
-                                        </Select>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
+                                label="Agama"
+                                placeholder="Pilih Agama"
+                                options={[
+                                    { value: 'ISLAM', label: 'ISLAM' },
+                                    { value: 'KRISTEN', label: 'KRISTEN' },
+                                    { value: 'HINDU', label: 'HINDU' },
+                                    { value: 'BUDDHA', label: 'BUDDHA' },
+                                    { value: 'KONGHUCU', label: 'KONGHUCU' },
+                                    { value: 'KATOLIK', label: 'KATOLIK' },
+                                ]}
                             />
                         </div>
                     </CardContent>

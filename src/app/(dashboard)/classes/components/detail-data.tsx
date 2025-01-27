@@ -2,10 +2,10 @@ import { ClassType } from '@/types/class';
 import React from 'react';
 
 type DetailDataProps = {
-    classes: ClassType;
+    data: ClassType;
 };
 
-export const DetailData: React.FC<DetailDataProps> = ({ classes }) => {
+export const DetailData: React.FC<DetailDataProps> = ({ data }) => {
     return (
         <>
             <div className="max-w-4xl rounded-lg bg-background p-6 text-foreground shadow-lg">
@@ -13,7 +13,7 @@ export const DetailData: React.FC<DetailDataProps> = ({ classes }) => {
                     <div className="grid">
                         <div className="flex">
                             <span className="w-40 font-medium">Nama:</span>
-                            <div className="flex-1">{classes.name}</div>
+                            <div className="flex-1">{data.name}</div>
                         </div>
                     </div>
 
@@ -30,7 +30,7 @@ export const DetailData: React.FC<DetailDataProps> = ({ classes }) => {
                                     hour: '2-digit',
                                     minute: '2-digit',
                                     second: '2-digit',
-                                }).format(new Date(classes.createdAt!))}
+                                }).format(new Date(data.createdAt!))}
                             </div>
                         </div>
                     </div>
@@ -48,7 +48,7 @@ export const DetailData: React.FC<DetailDataProps> = ({ classes }) => {
                                     hour: '2-digit',
                                     minute: '2-digit',
                                     second: '2-digit',
-                                }).format(new Date(classes.updatedAt!))}
+                                }).format(new Date(data.updatedAt!))}
                             </div>
                         </div>
                     </div>
