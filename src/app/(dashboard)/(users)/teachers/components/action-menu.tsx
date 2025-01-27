@@ -102,7 +102,7 @@ const ActionMenu: React.FC<ActionMenuProps> = ({ teacher }) => {
                                 Detail Informasi for {teacher.fullname}
                             </DialogDescription>
                         </DialogHeader>
-                        <DetailData teacher={teacher} />
+                        <DetailData data={teacher} />
                     </DialogContent>
                 </Dialog>
 

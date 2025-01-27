@@ -1,26 +1,16 @@
 import * as z from 'zod';
-import { SubmitHandler, useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-
-import {
-    Form,
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
-} from '@/components/ui/form';
-
-import { DialogFooter } from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
-
 import { Button } from '@/components/ui/button';
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
+import { CreateThemeType } from '@/types/theme';
+import { DialogFooter } from '@/components/ui/dialog';
+import { Form } from '@/components/ui/form';
+import { SubmitHandler, useForm } from 'react-hook-form';
+import { TextInput } from '@/components/form/text-input';
 import { createSchema } from './validation';
+import { createTheme } from '@/services/page/theme';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useToast } from '@/hooks/use-toast';
-import { CreateThemeType } from '@/types/theme';
-import { createTheme } from '@/services/page/theme';
+import { zodResolver } from '@hookform/resolvers/zod';
 
 type FormClassProps = {
     themes?: CreateThemeType;
@@ -28,7 +18,7 @@ type FormClassProps = {
 };
 
 export default function CreateFormTheme({ themes, onSuccess }: FormClassProps) {
-    const { toast } = useToast(); // Gunakan hook toast Shadcn
+    const { toast } = useToast();
 
     const form = useForm<z.infer<typeof createSchema>>({
         resolver: zodResolver(createSchema),
@@ -80,22 +70,11 @@ export default function CreateFormTheme({ themes, onSuccess }: FormClassProps) {
                         onSubmit={form.handleSubmit(onSubmitForm)}
                         className="space-y-6"
                     >
-                        {/* Class Title Field */}
-                        <FormField
+                        <TextInput
                             control={form.control}
                             name="title"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Nama</FormLabel>
-                                    <FormControl>
-                                        <Input
-                                            placeholder="Enter theme title"
-                                            {...field}
-                                        />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
+                            label="Judul Tema"
+                            placeholder="Masukkan judul tema pembelajaran"
                         />
 
                         <div className="flex justify-end">

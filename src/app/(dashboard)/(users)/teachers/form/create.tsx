@@ -1,34 +1,18 @@
 import * as z from 'zod';
-import { SubmitHandler, useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-
-import {
-    Form,
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
-} from '@/components/ui/form';
-
-import { DialogFooter } from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
-
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
-import { createSchema } from './validation';
+import { Card, CardContent } from '@/components/ui/card';
+import { DialogFooter } from '@/components/ui/dialog';
+import { Form } from '@/components/ui/form';
+import { PasswordInput } from '@/components/form/password-input';
+import { SelectInput } from '@/components/form/select-input';
+import { SubmitHandler, useForm } from 'react-hook-form';
 import { TeacherType } from '../../../../../types/teacher';
-import { PasswordInput } from '@/components/ui/password-input';
+import { TextInput } from '@/components/form/text-input';
+import { createSchema } from './validation';
 import { createTeacher } from '@/services/page/(user)/teachers';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useToast } from '@/hooks/use-toast';
+import { zodResolver } from '@hookform/resolvers/zod';
 
 type FormTeacherProps = {
     teacher?: TeacherType;
@@ -39,7 +23,7 @@ export default function CreateFormTeacher({
     teacher,
     onSuccess,
 }: FormTeacherProps) {
-    const { toast } = useToast(); // Gunakan hook toast Shadcn
+    const { toast } = useToast();
 
     const form = useForm<z.infer<typeof createSchema>>({
         resolver: zodResolver(createSchema),
@@ -48,12 +32,12 @@ export default function CreateFormTeacher({
             email: teacher?.email || '',
             identity_number: teacher?.identity_number || '',
             classID: teacher?.class?.id || undefined,
-            role: teacher?.role || 'TEACHER',
+            role: teacher?.role || undefined,
             password: teacher?.password,
         },
     });
 
-    const { isLoading } = form.formState;
+    const { isLoading: stateLoading } = form.formState;
     const queryClient = useQueryClient();
 
     const teacherMutation = useMutation({
@@ -86,174 +70,82 @@ export default function CreateFormTeacher({
     };
 
     return (
-        <Card className="mx-auto w-full">
-            <CardHeader>
-                <CardTitle>Teacher Form</CardTitle>
-            </CardHeader>
-            <CardContent>
-                <Form {...form} key={teacher?.id || 'add-data'}>
-                    <form
-                        onSubmit={form.handleSubmit(onSubmitForm)}
-                        className="space-y-6"
-                    >
-                        {/* Full Name Field */}
-                        <FormField
+        <Card className="max-h-[90vh] w-full max-w-3xl overflow-hidden">
+            <Form {...form} key={teacher?.id || 'add-data'}>
+                <form
+                    onSubmit={form.handleSubmit(onSubmitForm)}
+                    className="space-y-6"
+                >
+                    <CardContent className="my-4">
+                        <TextInput
                             control={form.control}
                             name="fullname"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Nama</FormLabel>
-                                    <FormControl>
-                                        <Input
-                                            placeholder="Enter full name"
-                                            {...field}
-                                        />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
+                            label="Nama Lengkap"
+                            placeholder="Masukkan nama"
                         />
 
-                        {/* Email Field */}
-                        <FormField
+                        <TextInput
                             control={form.control}
                             name="email"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Email</FormLabel>
-                                    <FormControl>
-                                        <Input
-                                            placeholder="Enter email"
-                                            {...field}
-                                        />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
+                            label="Email"
+                            placeholder="Masukkan email"
+                            type="email"
                         />
 
-                        {/* Identity Number and Password in same row */}
                         <div className="grid grid-cols-2 gap-4">
-                            <FormField
+                            <TextInput
                                 control={form.control}
                                 name="identity_number"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Nomor Identitas</FormLabel>
-                                        <FormControl>
-                                            <Input
-                                                {...field}
-                                                type="number"
-                                                id="identity_number"
-                                                placeholder="Enter ID number"
-                                            />
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
+                                label="Nama Identitas"
+                                placeholder="Masukkan nomor identitas"
+                                id="identity_number"
                             />
 
-                            <FormField
+                            <PasswordInput
                                 control={form.control}
                                 name="password"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Password</FormLabel>
-                                        <FormControl>
-                                            <PasswordInput
-                                                {...field}
-                                                placeholder="Enter password"
-                                            />
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
+                                label="Kata Sandi"
+                                placeholder="Masukkan kata sandi"
                             />
                         </div>
 
-                        {/* Class and Role in same row */}
                         <div className="grid grid-cols-2 gap-4">
-                            <FormField
+                            <SelectInput
                                 control={form.control}
                                 name="classID"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Kelas</FormLabel>
-                                        <Select
-                                            onValueChange={field.onChange}
-                                            disabled={
-                                                form.getValues('role') ===
-                                                'ADMIN'
-                                            }
-                                            defaultValue={field?.value?.toString()}
-                                        >
-                                            <FormControl>
-                                                <SelectTrigger>
-                                                    <SelectValue placeholder="Pilih Kelas" />
-                                                </SelectTrigger>
-                                            </FormControl>
-                                            <SelectContent>
-                                                <SelectItem value="1">
-                                                    Kelas A1
-                                                </SelectItem>
-                                                <SelectItem value="2">
-                                                    Kelas A2
-                                                </SelectItem>
-                                                <SelectItem value="3">
-                                                    Kelas B1
-                                                </SelectItem>
-                                                <SelectItem value="4">
-                                                    Kelas B2
-                                                </SelectItem>
-                                            </SelectContent>
-                                        </Select>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
+                                label="Kelas"
+                                placeholder="Pilih Kelas"
+                                options={[
+                                    { value: '1', label: 'KELAS A1' },
+                                    { value: '2', label: 'KELAS A2' },
+                                    { value: '3', label: 'KELAS B1' },
+                                    { value: '4', label: 'KELAS B2' },
+                                ]}
                             />
 
-                            <FormField
+                            <SelectInput
                                 control={form.control}
                                 name="role"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Peran</FormLabel>
-                                        <Select
-                                            onValueChange={field.onChange}
-                                            defaultValue={field.value}
-                                        >
-                                            <FormControl>
-                                                <SelectTrigger>
-                                                    <SelectValue placeholder="Pilih Peran" />
-                                                </SelectTrigger>
-                                            </FormControl>
-                                            <SelectContent>
-                                                <SelectItem value="TEACHER">
-                                                    TEACHER
-                                                </SelectItem>
-                                                <SelectItem value="ADMIN">
-                                                    ADMIN
-                                                </SelectItem>
-                                            </SelectContent>
-                                        </Select>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
+                                label="Peran"
+                                placeholder="Pilih Peran"
+                                options={[
+                                    { value: 'TEACHER', label: 'GURU' },
+                                    { value: 'ADMIN', label: 'ADMIN' },
+                                ]}
                             />
                         </div>
-
-                        <div className="flex justify-end">
-                            <DialogFooter>
-                                <Button type="submit">
-                                    {isLoading || teacherMutation.isPending
-                                        ? 'Memproses...'
-                                        : 'Simpan'}
-                                </Button>
-                            </DialogFooter>
-                        </div>
-                    </form>
-                </Form>
-            </CardContent>
+                    </CardContent>
+                    <div className="sticky bottom-0 border-t bg-card p-4">
+                        <DialogFooter>
+                            <Button type="submit" disabled={stateLoading}>
+                                {stateLoading || teacherMutation.isPending
+                                    ? 'Memproses...'
+                                    : 'Simpan'}
+                            </Button>
+                        </DialogFooter>
+                    </div>
+                </form>
+            </Form>
         </Card>
     );
 }
