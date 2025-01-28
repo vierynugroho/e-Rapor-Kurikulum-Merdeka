@@ -18,12 +18,18 @@ export class IndicatorService {
     }
 
     static async CREATE<T extends CreateIndicatorType>(request: T) {
-        const identityExist = await IndicatorRepository.GET_IDENTITY(
-            request.title,
-        );
+        if (request.themeID) {
+            const identityExist = await IndicatorRepository.GET_IDENTITY(
+                request.title,
+                request.themeID,
+            );
 
-        if (identityExist) {
-            throw new CustomError(400, 'this indicator is already registered');
+            if (identityExist) {
+                throw new CustomError(
+                    400,
+                    'this indicator is already registered',
+                );
+            }
         }
 
         const newIndicator = await IndicatorRepository.CREATE(request);
@@ -39,14 +45,6 @@ export class IndicatorService {
 
         if (!indicatorExist) {
             throw new CustomError(404, 'indicator data is not found');
-        }
-
-        const identityExist = await IndicatorRepository.GET_IDENTITY(
-            request.title!,
-        );
-
-        if (identityExist) {
-            throw new CustomError(400, 'this indicator is already registered');
         }
 
         const updatedData = {

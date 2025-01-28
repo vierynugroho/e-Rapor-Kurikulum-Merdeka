@@ -37,13 +37,17 @@ export class IndicatorRepository {
         return indicatorData;
     }
 
-    static async GET_IDENTITY(indicatorTitle: string) {
+    static async GET_IDENTITY(
+        indicatorTitle: string,
+        indicatorThemeID: number,
+    ) {
         const indicatorData = await prisma.indicator.findFirst({
             where: {
                 title: {
                     mode: 'insensitive',
                     equals: indicatorTitle,
                 },
+                themeId: indicatorThemeID,
             },
         });
 

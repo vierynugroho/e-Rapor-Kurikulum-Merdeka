@@ -96,9 +96,10 @@ export default function CreateFormTeacher({
                             <TextInput
                                 control={form.control}
                                 name="identity_number"
-                                label="Nama Identitas"
+                                label="Nomor Identitas"
                                 placeholder="Masukkan nomor identitas"
                                 id="identity_number"
+                                type="number"
                             />
 
                             <PasswordInput
