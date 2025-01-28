@@ -36,7 +36,7 @@ export default function UpdateFormPeriod({
     const { isLoading } = form.formState;
     const queryClient = useQueryClient();
 
-    const classMutation = useMutation({
+    const mutation = useMutation({
         mutationFn: (data: z.infer<typeof updateSchema>) => {
             console.log(data);
             if (!period?.id) {
@@ -65,7 +65,7 @@ export default function UpdateFormPeriod({
     });
 
     const onSubmitForm: SubmitHandler<z.infer<typeof updateSchema>> = data => {
-        classMutation.mutate(data);
+        mutation.mutate(data);
     };
 
     return (
@@ -112,9 +112,9 @@ export default function UpdateFormPeriod({
                             <DialogFooter>
                                 <Button
                                     type="submit"
-                                    disabled={classMutation.isPending}
+                                    disabled={mutation.isPending}
                                 >
-                                    {isLoading || classMutation.isPending
+                                    {isLoading || mutation.isPending
                                         ? 'Memproses...'
                                         : 'Simpan'}
                                 </Button>

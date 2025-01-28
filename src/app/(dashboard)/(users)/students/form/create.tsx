@@ -1,5 +1,5 @@
 import * as z from 'zod';
-import TerritoryForm from '../../../../../components/territory-form';
+import TerritoryForm from '../../../../../components/form/territory-form';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { DateInput } from '@/components/form/date-input';
@@ -8,7 +8,7 @@ import { Form } from '@/components/ui/form';
 import { SelectInput } from '@/components/form/select-input';
 import { StudentType } from '@/types/student';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import { TerritoryCombobox } from '../../../../../components/single-territory-combobox';
+import { TerritoryCombobox } from '../../../../../components/form/single-territory-combobox';
 import { TextInput } from '@/components/form/text-input';
 import { createSchema } from './validation';
 import { createStudent } from '@/services/page/(user)/students';
@@ -46,7 +46,7 @@ export default function CreateFormStudent({
     const { isLoading: stateLoading } = form.formState;
     const queryClient = useQueryClient();
 
-    const studentMutation = useMutation({
+    const mutation = useMutation({
         mutationFn: createStudent,
         onSuccess: () => {
             toast({
@@ -73,7 +73,7 @@ export default function CreateFormStudent({
         if (typeof data.address === 'object') {
             data.address = JSON.stringify(data.address);
         }
-        studentMutation.mutate(data);
+        mutation.mutate(data);
     };
 
     return (
@@ -166,7 +166,7 @@ export default function CreateFormStudent({
                     <div className="sticky bottom-0 border-t bg-card p-4">
                         <DialogFooter>
                             <Button type="submit" disabled={stateLoading}>
-                                {stateLoading || studentMutation.isPending
+                                {stateLoading || mutation.isPending
                                     ? 'Memproses...'
                                     : 'Simpan'}
                             </Button>

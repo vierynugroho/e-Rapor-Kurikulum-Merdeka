@@ -40,7 +40,7 @@ export default function UpdateFormTeacher({
     const { isLoading: stateLoading } = form.formState;
     const queryClient = useQueryClient();
 
-    const teacherMutation = useMutation({
+    const mutation = useMutation({
         mutationFn: (data: z.infer<typeof updateSchema>) => {
             if (!teacher?.id) {
                 throw new Error('Teacher ID is required for updating data.');
@@ -69,7 +69,7 @@ export default function UpdateFormTeacher({
 
     const onSubmitForm: SubmitHandler<z.infer<typeof updateSchema>> = data => {
         data.classID = parseInt(data.classID);
-        teacherMutation.mutate(data);
+        mutation.mutate(data);
     };
 
     return (
@@ -141,7 +141,7 @@ export default function UpdateFormTeacher({
                     <div className="sticky bottom-0 border-t bg-card p-4">
                         <DialogFooter>
                             <Button type="submit" disabled={stateLoading}>
-                                {stateLoading || teacherMutation.isPending
+                                {stateLoading || mutation.isPending
                                     ? 'Memproses...'
                                     : 'Simpan'}
                             </Button>

@@ -40,7 +40,7 @@ export default function CreateFormTeacher({
     const { isLoading: stateLoading } = form.formState;
     const queryClient = useQueryClient();
 
-    const teacherMutation = useMutation({
+    const mutation = useMutation({
         mutationFn: createTeacher,
         onSuccess: () => {
             toast({
@@ -66,7 +66,7 @@ export default function CreateFormTeacher({
     const onSubmitForm: SubmitHandler<
         z.infer<typeof createSchema>
     > = async data => {
-        teacherMutation.mutate(data);
+        mutation.mutate(data);
     };
 
     return (
@@ -138,7 +138,7 @@ export default function CreateFormTeacher({
                     <div className="sticky bottom-0 border-t bg-card p-4">
                         <DialogFooter>
                             <Button type="submit" disabled={stateLoading}>
-                                {stateLoading || teacherMutation.isPending
+                                {stateLoading || mutation.isPending
                                     ? 'Memproses...'
                                     : 'Simpan'}
                             </Button>

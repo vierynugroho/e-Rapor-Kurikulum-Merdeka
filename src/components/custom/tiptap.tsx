@@ -137,7 +137,7 @@ const TipTapEditorComponent: React.FC<TipTapEditorProps> = ({
         content: value,
         editorProps: {
             attributes: {
-                class: 'prose prose-sm sm:prose-base mx-auto focus:outline-none p-4 min-h-[200px]',
+                class: 'prose prose-sm sm:prose-base focus:outline-none p-4 min-h-[200px] text-foreground',
             },
         },
         onUpdate: ({ editor }) => {

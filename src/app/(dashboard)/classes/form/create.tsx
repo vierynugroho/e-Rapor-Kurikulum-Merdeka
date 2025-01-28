@@ -33,7 +33,7 @@ export default function CreateFormClass({
     const { isLoading } = form.formState;
     const queryClient = useQueryClient();
 
-    const classMutation = useMutation({
+    const mutation = useMutation({
         mutationFn: createClass,
         onSuccess: () => {
             toast({
@@ -59,7 +59,7 @@ export default function CreateFormClass({
     const onSubmitForm: SubmitHandler<
         z.infer<typeof createSchema>
     > = async data => {
-        classMutation.mutate(data);
+        mutation.mutate(data);
     };
 
     return (
@@ -83,7 +83,7 @@ export default function CreateFormClass({
                         <div className="flex justify-end">
                             <DialogFooter>
                                 <Button type="submit">
-                                    {isLoading || classMutation.isPending
+                                    {isLoading || mutation.isPending
                                         ? 'Memproses...'
                                         : 'Simpan'}
                                 </Button>

@@ -36,7 +36,7 @@ export default function CreateFormPeriod({
     const { isLoading } = form.formState;
     const queryClient = useQueryClient();
 
-    const periodMutation = useMutation({
+    const mutation = useMutation({
         mutationFn: createPeriod,
         onSuccess: () => {
             toast({
@@ -62,7 +62,7 @@ export default function CreateFormPeriod({
     const onSubmitForm: SubmitHandler<
         z.infer<typeof createSchema>
     > = async data => {
-        periodMutation.mutate(data);
+        mutation.mutate(data);
     };
 
     return (
@@ -108,7 +108,7 @@ export default function CreateFormPeriod({
                         <div className="flex justify-end">
                             <DialogFooter>
                                 <Button type="submit">
-                                    {isLoading || periodMutation.isPending
+                                    {isLoading || mutation.isPending
                                         ? 'Memproses...'
                                         : 'Simpan'}
                                 </Button>

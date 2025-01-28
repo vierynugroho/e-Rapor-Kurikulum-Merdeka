@@ -30,7 +30,7 @@ export default function UpdateFormTheme({ themes, onSuccess }: FormThemeProps) {
     const { isLoading } = form.formState;
     const queryClient = useQueryClient();
 
-    const classMutation = useMutation({
+    const mutation = useMutation({
         mutationFn: (data: z.infer<typeof updateSchema>) => {
             console.log(data);
             if (!themes?.id) {
@@ -59,7 +59,7 @@ export default function UpdateFormTheme({ themes, onSuccess }: FormThemeProps) {
     });
 
     const onSubmitForm: SubmitHandler<z.infer<typeof updateSchema>> = data => {
-        classMutation.mutate(data);
+        mutation.mutate(data);
     };
 
     return (
@@ -84,9 +84,9 @@ export default function UpdateFormTheme({ themes, onSuccess }: FormThemeProps) {
                             <DialogFooter>
                                 <Button
                                     type="submit"
-                                    disabled={classMutation.isPending}
+                                    disabled={mutation.isPending}
                                 >
-                                    {isLoading || classMutation.isPending
+                                    {isLoading || mutation.isPending
                                         ? 'Memproses...'
                                         : 'Simpan'}
                                 </Button>
