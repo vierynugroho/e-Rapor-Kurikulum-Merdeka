@@ -12,15 +12,17 @@ const prisma = new PrismaClient();
 
 async function main() {
     const encryptedPassword = await argon.hash('password');
+
     // Seed Classes
-    console.log('seeding class!');
+    console.log('seeding start!');
+    console.log('seeding class...');
     await prisma.class.createMany({
         data: [
             {
-                name: 'Class A1',
+                name: 'Kelas A1',
             },
             {
-                name: 'Class A2',
+                name: 'Kelas A2',
             },
         ],
     });
@@ -28,20 +30,19 @@ async function main() {
     await prisma.class.createMany({
         data: [
             {
-                name: 'Class B1',
+                name: 'Kelas B1',
             },
             {
-                name: 'Class B2',
+                name: 'Kelas B2',
             },
         ],
     });
 
-    // Seed Teachers
-    console.log('seeding teachers!');
+    console.log('seeding teachers...');
     await prisma.teacher.create({
         data: {
             fullname: 'Guru Kelas',
-            email: 'guru@example.com',
+            email: 'guru@sanewa.com',
             identity_number: '123456789',
             password: encryptedPassword,
             role: UserRole.TEACHER,
@@ -52,15 +53,14 @@ async function main() {
     await prisma.teacher.create({
         data: {
             fullname: 'Admin Sekolah',
-            email: 'admin@example.com',
+            email: 'admin@sanewa.com',
             identity_number: '987654321',
             password: encryptedPassword,
             role: UserRole.ADMIN,
         },
     });
 
-    // Seed Students
-    console.log('seeding students!');
+    console.log('seeding students...');
     await prisma.student.createMany({
         data: [
             {
@@ -76,7 +76,7 @@ async function main() {
             {
                 fullname: 'Maria Kristina',
                 gender: Gender.PEREMPUAN,
-                religion: Religion.KATOLIK,
+                religion: Religion.KRISTEN,
                 parentName: 'Fransiscus',
                 birthPlace: 'Bandung',
                 birthDate: new Date(2009, 8, 25),
@@ -96,8 +96,7 @@ async function main() {
         ],
     });
 
-    // Seed Teachers
-    console.log('seeding theme!');
+    console.log('seeding themes...');
     await prisma.theme.createMany({
         data: [
             {
@@ -115,7 +114,7 @@ async function main() {
         ],
     });
 
-    console.log('seeding period!');
+    console.log('seeding periods...');
     await prisma.period.createMany({
         data: [
             {
@@ -136,7 +135,7 @@ async function main() {
         ],
     });
 
-    console.log('seeding indicator!');
+    console.log('seeding indicators...');
     await prisma.indicator.createMany({
         data: [
             {

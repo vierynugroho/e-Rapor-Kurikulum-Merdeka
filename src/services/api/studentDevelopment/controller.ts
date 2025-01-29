@@ -6,7 +6,7 @@ import { StudentDevelopmentService } from './service';
 import {
     createSchema,
     updateSchema,
-} from '@/app/(dashboard)/(teacher)/developments/form/validation';
+} from '@/app/(pages)/(teacher)/developments/form/validation';
 import { CreateStudentDevelopment } from '@/types/student';
 
 export class StudentDevelopmentController {
@@ -86,11 +86,11 @@ export class StudentDevelopmentController {
             const requestBody = await request.json();
             const data = validateSchema(updateSchema, requestBody);
 
-            if (data.teacherId) {
-                data.teacherId = parseInt(data.teacherId);
+            if (data.teacherID) {
+                data.teacherID = parseInt(data.teacherID);
             }
-            if (data.studentId) {
-                data.studentId = parseInt(data.studentId);
+            if (data.studentID) {
+                data.studentID = parseInt(data.studentID);
             }
 
             const updatedStudentDevelopment =
