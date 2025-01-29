@@ -6,7 +6,7 @@ import { StudentService } from './service';
 import {
     createSchema,
     updateSchema,
-} from '@/app/(dashboard)/(users)/students/form/validation';
+} from '@/app/(dashboard)/(admin)/(users)/students/form/validation';
 
 export class StudentController {
     static async GET(request: NextRequest) {
@@ -28,13 +28,13 @@ export class StudentController {
     ) {
         try {
             const { id } = params;
-            const studentID = parseInt(id);
+            const teacherID = parseInt(id);
 
-            if (isNaN(studentID)) {
-                throw new CustomError(400, 'invalid student ID');
+            if (isNaN(teacherID)) {
+                throw new CustomError(400, 'invalid teacher ID');
             }
 
-            const student = await StudentService.GET_ID(studentID);
+            const student = await StudentService.GET_BY_CLASS(teacherID);
 
             return APIResponse.success(student, {
                 message: 'student data retrieved successfully',

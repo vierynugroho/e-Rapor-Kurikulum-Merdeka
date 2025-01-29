@@ -116,11 +116,11 @@ const data = {
                 },
                 {
                     title: 'Penilaian',
-                    url: '/penilaian',
+                    url: '/assesments',
                 },
                 {
                     title: 'Perkembangan',
-                    url: '/perkembangan',
+                    url: '/developments',
                 },
             ],
         },

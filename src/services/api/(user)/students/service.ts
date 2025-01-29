@@ -10,14 +10,10 @@ export class StudentService {
         return students;
     }
 
-    static async GET_ID(studentID: number): Promise<Partial<Student | null>> {
-        const student = await StudentRepository.GET_ID(studentID);
+    static async GET_BY_CLASS(teacherID: number): Promise<Partial<Student[]>> {
+        const students = await StudentRepository.GET_BY_CLASS(teacherID);
 
-        if (!student) {
-            throw new CustomError(404, 'student data is not found');
-        }
-
-        return student;
+        return students;
     }
 
     static async CREATE<T extends CreateStudentType>(request: T) {

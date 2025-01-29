@@ -1,30 +1,76 @@
-import { DevelopmentLevel, Gender, Religion } from '@prisma/client';
+import {
+    DevelopmentLevel,
+    Gender,
+    Indicator,
+    Period,
+    Religion,
+    Student,
+    Teacher,
+} from '@prisma/client';
 import { Class } from './teacher';
 
 export type StudentScore = {
-    id: number;
+    id?: number;
     studentId: number;
     periodId: number;
     teacherId: number;
-    indicatorId?: number;
-    description?: string;
+    indicatorId: number;
+    description: string;
     value: DevelopmentLevel;
-    createdAt: string | Date;
-    updatedAt: string | Date;
+    createdAt?: string | Date;
+    updatedAt?: string | Date;
+
+    student?: Student | null;
+    teacher?: Teacher | null;
+    indicator?: Indicator | null;
+    period?: Period | null;
 };
 
+//TODO: Student Development
 export type StudentDevelopment = {
-    id: number;
+    id?: number;
+    height: number;
+    weight: number;
+    notes?: string;
+    studentID: number;
+    teacherID: number;
+    recordDate?: string | Date;
+    createdAt?: string | Date;
+    updatedAt?: string | Date;
+
+    student?: Student | null;
+    teacher?: Teacher | null;
+};
+export type CreateStudentDevelopment = {
+    id?: number;
+    height: number;
+    weight: number;
+    notes: string;
+    studentID?: number;
+    teacherID?: number;
+    recordDate?: string | Date;
+    createdAt?: string | Date;
+    updatedAt?: string | Date;
+
+    student?: Student | null;
+    teacher?: Teacher | null;
+};
+export type UpdateStudentDevelopment = {
+    id?: number;
     height?: number;
     weight?: number;
     notes?: string;
-    studentId: number;
-    teacherId: number;
-    recordDate: string | Date;
-    createdAt: string | Date;
-    updatedAt: string | Date;
+    studentID?: number;
+    teacherID?: number;
+    recordDate?: string | Date;
+    createdAt?: string | Date;
+    updatedAt?: string | Date;
+
+    student?: Student | null;
+    teacher?: Teacher | null;
 };
 
+//TODO: Student Data
 export type CreateStudentType = {
     fullname: string;
     gender: Gender;

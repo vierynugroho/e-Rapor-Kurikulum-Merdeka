@@ -1,5 +1,6 @@
 import { prisma } from '@/lib/prisma';
 import { CreateStudentType, UpdateStudentType } from '@/types/student';
+import { CustomError } from '@/utils/error';
 import { Gender } from '@prisma/client';
 
 export class StudentRepository {
@@ -40,6 +41,38 @@ export class StudentRepository {
         });
 
         return student;
+    }
+
+    static async GET_BY_CLASS(teacherID: number) {
+        const teacherClass = await prisma.teacher.findUnique({
+            where: {
+                id: teacherID,
+            },
+            select: {
+                classID: true,
+            },
+        });
+
+        if (!teacherClass) {
+            throw new CustomError(404, 'Teacher not found');
+        }
+
+        // Get students in teacher's class who don't have development records
+        const students = await prisma.student.findMany({
+            where: {
+                classID: teacherClass.classID,
+                NOT: {
+                    Development: {
+                        some: {}, // Excludes students who have any development records
+                    },
+                },
+            },
+            orderBy: {
+                fullname: 'asc', // Optional: sort by name
+            },
+        });
+
+        return students;
     }
 
     static async GET_IDENTITY(fullname: string) {

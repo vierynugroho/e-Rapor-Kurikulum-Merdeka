@@ -112,12 +112,12 @@ model Indicator {
   title          String
   description    String
   assesment_type AssessmentAspects
-  themeId        Int?
+  themeId        Int
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("update_at")
 
-  theme         Theme?          @relation(fields: [themeId], references: [id])
+  theme         Theme           @relation(fields: [themeId], references: [id])
   Student_Score Student_Score[]
 
   @@map("indicators")
@@ -180,8 +180,8 @@ model Student_Development {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  teacherID Teacher @relation(fields: [teacherId], references: [id])
-  studentID Student @relation(fields: [studentId], references: [id])
+  teacher Teacher @relation(fields: [teacherId], references: [id])
+  student Student @relation(fields: [studentId], references: [id])
 
   @@map("student_developments")
 }

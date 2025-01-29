@@ -1,10 +1,17 @@
-import { Argon } from '@/utils/cryptography';
-import { PrismaClient, Gender, Religion, UserRole } from '@prisma/client';
+import * as argon from 'argon2';
+import {
+    PrismaClient,
+    Gender,
+    Religion,
+    UserRole,
+    Semester,
+    AssessmentAspects,
+} from '@prisma/client';
 
 const prisma = new PrismaClient();
 
 async function main() {
-    const encryptedPassword = await Argon.encrypt('password');
+    const encryptedPassword = await argon.hash('password');
     // Seed Classes
     console.log('seeding class!');
     await prisma.class.createMany({
@@ -85,6 +92,71 @@ async function main() {
                 birthDate: new Date(2011, 3, 10),
                 classID: 3,
                 address: 'Jl. Pahlawan No. 5',
+            },
+        ],
+    });
+
+    // Seed Teachers
+    console.log('seeding theme!');
+    await prisma.theme.createMany({
+        data: [
+            {
+                title: 'Transportasi',
+            },
+            {
+                title: 'Flora',
+            },
+            {
+                title: 'Fauna',
+            },
+            {
+                title: 'Olahraga',
+            },
+        ],
+    });
+
+    console.log('seeding period!');
+    await prisma.period.createMany({
+        data: [
+            {
+                year: '2024',
+                semester: Semester.GANJIL,
+                isActive: false,
+            },
+            {
+                year: '2024',
+                semester: Semester.GENAP,
+                isActive: false,
+            },
+            {
+                year: '2025',
+                semester: Semester.GANJIL,
+                isActive: true,
+            },
+        ],
+    });
+
+    console.log('seeding indicator!');
+    await prisma.indicator.createMany({
+        data: [
+            {
+                title: 'Pendidikan Karakter',
+                description: 'Jati Diri: Pendidikan Karakter',
+                assesment_type: AssessmentAspects.JATI_DIRI,
+                themeId: 1,
+            },
+            {
+                title: 'Pendidikan SAINTEK',
+                description: 'Jati Diri: Pendidikan SAINS dan Teknologi',
+                assesment_type:
+                    AssessmentAspects.DASAR_LITERASI_MATEMATIKA_SAINS_TEKNOLOGI_REKAYASA_DAN_SENI,
+                themeId: 1,
+            },
+            {
+                title: 'Pendidikan Agama',
+                description: 'Agama: Pendidikan Agama dan Budi Pekerti',
+                assesment_type: AssessmentAspects.NILAI_AGAMA_DAN_BUDI_PEKERTI,
+                themeId: 1,
             },
         ],
     });
