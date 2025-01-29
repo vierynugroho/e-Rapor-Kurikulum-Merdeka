@@ -6,7 +6,7 @@ import { ClassService } from './service';
 import {
     createSchema,
     updateSchema,
-} from '@/app/(dashboard)/(admin)/classes/form/validation';
+} from '@/app/(pages)/(admin)/classes/form/validation';
 
 export class ClassController {
     static async GET(request: NextRequest) {
