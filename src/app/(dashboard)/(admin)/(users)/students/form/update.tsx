@@ -1,5 +1,5 @@
 import * as z from 'zod';
-import TerritoryForm from '../../../../../components/form/territory-form';
+import TerritoryForm from '../../../../../../components/form/territory-form';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { DateInput } from '@/components/form/date-input';
@@ -8,10 +8,10 @@ import { Form } from '@/components/ui/form';
 import { SelectInput } from '@/components/form/select-input';
 import { StudentType } from '@/types/student';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import { TerritoryCombobox } from '../../../../../components/form/single-territory-combobox';
+import { TerritoryCombobox } from '../../../../../../components/form/single-territory-combobox';
 import { TextInput } from '@/components/form/text-input';
-import { createSchema } from './validation';
-import { createStudent } from '@/services/page/(user)/students';
+import { updateSchema } from './validation';
+import { updateStudent } from '@/services/page/(user)/students';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useToast } from '@/hooks/use-toast';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -21,21 +21,21 @@ type FormStudentProps = {
     onSuccess?: () => void;
 };
 
-export default function CreateFormStudent({
+export default function UpdateFormStudent({
     student,
     onSuccess,
 }: FormStudentProps) {
     const { toast } = useToast();
 
-    const form = useForm<z.infer<typeof createSchema>>({
-        resolver: zodResolver(createSchema),
+    const form = useForm<z.infer<typeof updateSchema>>({
+        resolver: zodResolver(updateSchema),
         defaultValues: {
             fullname: student?.fullname || '',
             address: student?.address || '',
             parentName: student?.parentName || '',
             classID: student?.class?.id || undefined,
-            religion: student?.religion || undefined,
-            gender: student?.gender || undefined,
+            religion: student?.religion || 'ISLAM',
+            gender: student?.gender || 'LAKI_LAKI',
             birthDate: student?.birthDate
                 ? new Date(student.birthDate)
                 : undefined,
@@ -47,11 +47,16 @@ export default function CreateFormStudent({
     const queryClient = useQueryClient();
 
     const mutation = useMutation({
-        mutationFn: createStudent,
+        mutationFn: (data: z.infer<typeof updateSchema>) => {
+            if (!student?.id) {
+                throw new Error('Student ID is required for updating data.');
+            }
+            return updateStudent(student.id, data);
+        },
         onSuccess: () => {
             toast({
                 title: 'Berhasil',
-                description: 'Data siswa berhasil ditambahkan.',
+                description: 'Data siswa berhasil diperbarui.',
                 variant: 'default',
             });
             queryClient.invalidateQueries({ queryKey: ['students'] });
@@ -68,8 +73,8 @@ export default function CreateFormStudent({
         },
     });
 
-    const onSubmitForm: SubmitHandler<z.infer<typeof createSchema>> = data => {
-        console.log(data);
+    const onSubmitForm: SubmitHandler<z.infer<typeof updateSchema>> = data => {
+        console.log(data.address);
         if (typeof data.address === 'object') {
             data.address = JSON.stringify(data.address);
         }
@@ -96,7 +101,7 @@ export default function CreateFormStudent({
                                 control={form.control}
                                 name="parentName"
                                 label="Wali Murid"
-                                placeholder="Masukkan nama wali murid"
+                                placeholder="Wali Murid"
                             />
 
                             <SelectInput

@@ -4,8 +4,6 @@ import type { NextRequest } from 'next/server';
 import { UserLoggedInType } from './types/user';
 
 export async function middleware(request: NextRequest) {
-    console.log('=======================');
-    console.log(request.method);
     const response = NextResponse.next();
 
     // CORS headers

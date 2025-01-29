@@ -180,8 +180,8 @@ model Student_Development {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  teacherID Teacher @relation(fields: [teacherId], references: [id])
-  studentID Student @relation(fields: [studentId], references: [id])
+  teacher Teacher @relation(fields: [teacherId], references: [id])
+  student Student @relation(fields: [studentId], references: [id])
 
   @@map("student_developments")
 }

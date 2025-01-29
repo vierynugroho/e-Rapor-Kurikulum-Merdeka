@@ -6,7 +6,7 @@ import { IndicatorService } from './service';
 import {
     createSchema,
     updateSchema,
-} from '@/app/(dashboard)/indicators/form/validation';
+} from '@/app/(dashboard)/(admin)/indicators/form/validation';
 
 export class IndicatorController {
     static async GET(request: NextRequest) {

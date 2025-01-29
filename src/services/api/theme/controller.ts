@@ -6,7 +6,7 @@ import { ThemeService } from './service';
 import {
     createSchema,
     updateSchema,
-} from '@/app/(dashboard)/themes/form/validation';
+} from '@/app/(dashboard)/(admin)/themes/form/validation';
 
 export class ThemeController {
     static async GET(request: NextRequest) {

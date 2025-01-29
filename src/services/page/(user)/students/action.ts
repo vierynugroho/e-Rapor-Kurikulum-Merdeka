@@ -5,6 +5,10 @@ export const getStudents = async () => {
     return apiClient.get<StudentType[]>('/students');
 };
 
+export const getStudentsByTeacher = async (teacherID: number) => {
+    return apiClient.get<StudentType[]>(`/students/${teacherID}`);
+};
+
 export const getStudent = async (studentID: number) => {
     return apiClient.get<StudentType[]>(`/students/${studentID}`);
 };
