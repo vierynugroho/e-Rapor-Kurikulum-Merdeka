@@ -147,8 +147,8 @@ model Student {
 model Student_Score {
   id          Int              @id @default(autoincrement())
   studentId   Int
-  periodId    Int
-  teacherId   Int
+  periodId    Int?
+  teacherId   Int?
   indicatorId Int?
   description String?
   value       DevelopmentLevel
@@ -157,9 +157,9 @@ model Student_Score {
   updatedAt DateTime @updatedAt @map("update_at")
 
   studentID Student    @relation(fields: [studentId], references: [id])
-  periodID  Period     @relation(fields: [periodId], references: [id])
+  periodID  Period?    @relation(fields: [periodId], references: [id])
   Indicator Indicator? @relation(fields: [indicatorId], references: [id])
-  teacherID Teacher    @relation(fields: [teacherId], references: [id])
+  teacherID Teacher?   @relation(fields: [teacherId], references: [id])
 
   @@index([studentId], name: "idx_studentId")
   @@index([indicatorId], name: "idx_indicatorId")

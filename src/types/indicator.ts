@@ -6,6 +6,7 @@ export type IndicatorType = {
     description?: string;
     assesment_type?: AssessmentAspects;
     themeID?: number | null;
+    themeId?: number | null;
 
     createdAt?: Date;
     updatedAt?: Date;

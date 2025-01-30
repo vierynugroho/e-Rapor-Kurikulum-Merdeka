@@ -70,6 +70,9 @@ export class StudentRepository {
             orderBy: {
                 fullname: 'asc', // Optional: sort by name
             },
+            include: {
+                class: true,
+            },
         });
 
         return students;

@@ -7,6 +7,7 @@ import {
     createSchema,
     updateSchema,
 } from '@/app/(pages)/(admin)/indicators/form/validation';
+import { AssessmentAspects } from '@prisma/client';
 
 export class IndicatorController {
     static async GET(request: NextRequest) {
@@ -35,6 +36,25 @@ export class IndicatorController {
             }
 
             const indicatorData = await IndicatorService.GET_ID(indicatorID);
+
+            return APIResponse.success(indicatorData, {
+                message: 'indicator data retrieved successfully',
+            });
+        } catch (error) {
+            return errorHandler(error);
+        }
+    }
+
+    static async GET_BY_TYPE(
+        request: NextRequest,
+        { params }: { params: { type: string } },
+    ) {
+        try {
+            const { type } = params;
+
+            const indicatorData = await IndicatorService.GET_BY_TYPE(
+                type as AssessmentAspects,
+            );
 
             return APIResponse.success(indicatorData, {
                 message: 'indicator data retrieved successfully',

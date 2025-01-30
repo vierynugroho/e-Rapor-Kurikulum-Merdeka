@@ -1,5 +1,6 @@
 import { prisma } from '@/lib/prisma';
 import { CreateIndicatorType, UpdateIndicatorType } from '@/types/indicator';
+import { AssessmentAspects } from '@prisma/client';
 
 export class IndicatorRepository {
     static async CREATE(indicatorData: CreateIndicatorType) {
@@ -8,7 +9,7 @@ export class IndicatorRepository {
                 title: indicatorData.title,
                 description: indicatorData.description,
                 assesment_type: indicatorData.assesment_type,
-                themeId: indicatorData.themeID,
+                themeId: indicatorData.themeID || 1,
             },
         });
         return newIndicator;
@@ -28,6 +29,19 @@ export class IndicatorRepository {
         const indicatorData = await prisma.indicator.findUnique({
             where: {
                 id: indicatorID,
+            },
+            include: {
+                theme: true,
+            },
+        });
+
+        return indicatorData;
+    }
+
+    static async GET_BY_TYPE(indicatorType: AssessmentAspects) {
+        const indicatorData = await prisma.indicator.findMany({
+            where: {
+                assesment_type: indicatorType,
             },
             include: {
                 theme: true,
@@ -66,7 +80,7 @@ export class IndicatorRepository {
                 title: indicatorData.title,
                 description: indicatorData.description,
                 assesment_type: indicatorData.assesment_type,
-                themeId: indicatorData.themeID,
+                themeId: indicatorData.themeID || 1,
             },
         });
 
