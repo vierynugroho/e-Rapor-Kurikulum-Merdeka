@@ -41,6 +41,16 @@ export class PeriodRepository {
         return periodData;
     }
 
+    static async GET_ACTIVE_PERIOD() {
+        const periodData = await prisma.period.findFirst({
+            where: {
+                isActive: true,
+            },
+        });
+
+        return periodData;
+    }
+
     static async GET_IDENTITY(year: string, semester: Semester) {
         const periodData = await prisma.period.findFirst({
             where: {

@@ -17,6 +17,7 @@ import { getIndicators } from '@/services/pages/indicator';
 import { UpdateIndicatorType } from '@/types/indicator';
 import { StudentType } from '@/types/student';
 import { getAssessment, upsertAssessment } from '@/services/pages/assessment';
+import { getActivePeriod } from '@/services/pages/period';
 
 interface IndicatorWithTheme extends UpdateIndicatorType {
     Theme?: Theme | null;
@@ -83,6 +84,14 @@ export const AssessmentForm: React.FC<FormAssessmentProps> = ({
             staleTime: 5 * 60 * 1000,
             retry: 2,
         });
+
+    const { data: activePeriod } = useQuery({
+        queryKey: ['activePeriod'],
+        queryFn: getActivePeriod,
+    });
+
+    console.log('active period');
+    console.log(activePeriod);
 
     const allIndicators: Record<IndicatorWithTheme[]> = useMemo(() => {
         const grouped: Record<IndicatorWithTheme[]> = {
@@ -179,7 +188,7 @@ export const AssessmentForm: React.FC<FormAssessmentProps> = ({
                         studentId: student.id,
                         teacherId: 1, // from teacher loggedIn
                         indicatorId: Number(indicatorId),
-                        periodId: 1, // active period
+                        periodId: activePeriod?.id ?? null,
                         value: (value as { value: DevelopmentLevel }).value,
                     }));
 
