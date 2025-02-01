@@ -18,7 +18,7 @@ export class IndicatorRepository {
     static async GET() {
         const indicators = await prisma.indicator.findMany({
             include: {
-                theme: true,
+                Theme: true,
             },
         });
 
@@ -31,7 +31,7 @@ export class IndicatorRepository {
                 id: indicatorID,
             },
             include: {
-                theme: true,
+                Theme: true,
             },
         });
 
@@ -44,7 +44,7 @@ export class IndicatorRepository {
                 assesment_type: indicatorType,
             },
             include: {
-                theme: true,
+                Theme: true,
             },
         });
 

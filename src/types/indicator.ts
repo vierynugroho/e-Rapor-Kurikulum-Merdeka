@@ -11,8 +11,8 @@ export type IndicatorType = {
     createdAt?: Date;
     updatedAt?: Date;
 
-    theme?: Theme | null;
-    studentScores?: Student_Score[];
+    Theme?: Theme | null;
+    Score?: Student_Score[];
 };
 
 export type UpdateIndicatorType = {
@@ -25,8 +25,8 @@ export type UpdateIndicatorType = {
     createdAt?: Date;
     updatedAt?: Date;
 
-    theme?: Theme | null;
-    studentScores?: Student_Score[];
+    Theme?: Theme | null;
+    Score?: Student_Score[];
 };
 
 export type CreateIndicatorType = {
@@ -39,6 +39,6 @@ export type CreateIndicatorType = {
     createdAt?: Date;
     updatedAt?: Date;
 
-    theme?: Theme | null;
-    studentScores?: Student_Score[];
+    Theme?: Theme | null;
+    Score?: Student_Score[];
 };

@@ -9,21 +9,22 @@ import {
 } from '@prisma/client';
 import { Class } from './teacher';
 
+//TODO: Student Score
 export type StudentScore = {
     id?: number;
-    studentId: number;
-    periodId: number;
-    teacherId: number;
-    indicatorId: number;
-    description: string;
-    value: DevelopmentLevel;
+    studentId?: number;
+    periodId?: number;
+    teacherId?: number;
+    indicatorId?: number;
+    description?: string;
+    value?: DevelopmentLevel;
     createdAt?: string | Date;
     updatedAt?: string | Date;
 
-    student?: Student | null;
-    teacher?: Teacher | null;
-    indicator?: Indicator | null;
-    period?: Period | null;
+    Student?: Student | null;
+    Teacher?: Teacher | null;
+    Indicator?: Indicator | null;
+    Period?: Period | null;
 };
 
 //TODO: Student Development
@@ -38,8 +39,8 @@ export type StudentDevelopment = {
     createdAt?: string | Date;
     updatedAt?: string | Date;
 
-    student?: Student | null;
-    teacher?: Teacher | null;
+    Student?: Student | null;
+    Teacher?: Teacher | null;
 };
 export type CreateStudentDevelopment = {
     id?: number;
@@ -52,8 +53,8 @@ export type CreateStudentDevelopment = {
     createdAt?: string | Date;
     updatedAt?: string | Date;
 
-    student?: Student | null;
-    teacher?: Teacher | null;
+    Student?: Student | null;
+    Teacher?: Teacher | null;
 };
 export type UpdateStudentDevelopment = {
     id?: number;
@@ -66,8 +67,8 @@ export type UpdateStudentDevelopment = {
     createdAt?: string | Date;
     updatedAt?: string | Date;
 
-    student?: Student | null;
-    teacher?: Teacher | null;
+    Student?: Student | null;
+    Teacher?: Teacher | null;
 };
 
 //TODO: Student Data
@@ -80,7 +81,7 @@ export type CreateStudentType = {
     birthDate: string | Date;
     classID?: number | null;
     address: string;
-    class?: Class | null;
+    Class?: Class | null;
     id?: number;
 };
 
@@ -94,7 +95,7 @@ export type UpdateStudentType = {
     birthDate?: string | Date;
     classID?: number | null;
     address?: string;
-    class?: Class | null;
+    Class?: Class | null;
 };
 
 export type StudentType = {
@@ -110,7 +111,7 @@ export type StudentType = {
     createdAt?: string | Date;
     updatedAt?: string | Date;
 
-    class?: Class | null;
-    StudentScore?: StudentScore[];
-    StudentDevelopment?: StudentDevelopment[];
+    Class?: Class | null;
+    Score?: StudentScore[];
+    Development?: StudentDevelopment[];
 };

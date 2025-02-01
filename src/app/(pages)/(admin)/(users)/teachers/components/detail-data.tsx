@@ -29,6 +29,8 @@ export const DetailData: React.FC<DetailDataProps> = ({ data }) => {
             });
     };
 
+    console.log(data);
+
     return (
         <>
             <div className="mx-auto max-w-4xl rounded-lg bg-background p-6 text-foreground shadow-lg">
@@ -74,7 +76,7 @@ export const DetailData: React.FC<DetailDataProps> = ({ data }) => {
                         <div className="flex">
                             <span className="w-40 font-medium">Kelas:</span>
                             <div className="flex-1">
-                                {data.class?.name || '-'}
+                                {data.Class?.name || '-'}
                             </div>
                         </div>
                     </div>

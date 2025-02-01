@@ -24,8 +24,8 @@ export class StudentRepository {
     static async GET() {
         const students = await prisma.student.findMany({
             include: {
-                class: true,
-                Student_Score: true,
+                Class: true,
+                Score: true,
                 Development: true,
             },
         });
@@ -71,7 +71,7 @@ export class StudentRepository {
                 fullname: 'asc', // Optional: sort by name
             },
             include: {
-                class: true,
+                Class: true,
             },
         });
 

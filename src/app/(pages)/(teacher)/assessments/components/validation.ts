@@ -1,43 +1,47 @@
 import * as z from 'zod';
 
-export const createSchema = z.object({
-    kognitif: z.object({
-        pengetahuan: z.string().min(1, 'Pengetahuan harus diisi'),
-        pemahaman: z.string().min(1, 'Pemahaman harus diisi'),
-        aplikasi: z.string().min(1, 'Aplikasi harus diisi'),
-        nilai: z.string().min(1, 'Nilai harus dipilih'),
-    }),
-    afektif: z.object({
-        sikap: z.string().min(1, 'Sikap harus diisi'),
-        minat: z.string().min(1, 'Minat harus diisi'),
-        perilaku: z.string().min(1, 'Perilaku harus diisi'),
-        nilai: z.string().min(1, 'Nilai harus dipilih'),
-    }),
-    psikomotorik: z.object({
-        keterampilan: z.string().min(1, 'Keterampilan harus diisi'),
-        praktik: z.string().min(1, 'Praktik harus diisi'),
-        proyek: z.string().min(1, 'Proyek harus diisi'),
-        nilai: z.string().min(1, 'Nilai harus dipilih'),
-    }),
+// Enum untuk aspek
+export const AspectEnum = z
+    .enum([
+        'JATI_DIRI',
+        'DASAR_LITERASI_MATEMATIKA_SAINS_TEKNOLOGI_REKAYASA_DAN_SENI',
+        'NILAI_AGAMA_DAN_BUDI_PEKERTI',
+    ])
+    .optional();
+
+// Enum untuk nilai
+export const DevelopmentLevelEnum = z.enum(['BB', 'MB', 'BSH', 'BSB']);
+
+// Schema untuk validasi assessment
+export const assessmentSchema = z.object({
+    studentId: z
+        .number()
+        .int()
+        .positive({ message: 'ID siswa harus berupa angka positif' }),
+    teacherId: z
+        .number()
+        .int()
+        .positive({ message: 'ID guru harus berupa angka positif' }),
+    indicatorId: z
+        .number()
+        .int()
+        .positive({ message: 'ID indikator harus berupa angka positif' }),
+    periodId: z
+        .number()
+        .int()
+        .positive({ message: 'ID periode harus berupa angka positif' }),
+    nilai: DevelopmentLevelEnum,
 });
 
-export const updateSchema = z.object({
-    kognitif: z.object({
-        pengetahuan: z.string().min(1, 'Pengetahuan harus diisi'),
-        pemahaman: z.string().min(1, 'Pemahaman harus diisi'),
-        aplikasi: z.string().min(1, 'Aplikasi harus diisi'),
-        nilai: z.string().min(1, 'Nilai harus dipilih'),
-    }),
-    afektif: z.object({
-        sikap: z.string().min(1, 'Sikap harus diisi'),
-        minat: z.string().min(1, 'Minat harus diisi'),
-        perilaku: z.string().min(1, 'Perilaku harus diisi'),
-        nilai: z.string().min(1, 'Nilai harus dipilih'),
-    }),
-    psikomotorik: z.object({
-        keterampilan: z.string().min(1, 'Keterampilan harus diisi'),
-        praktik: z.string().min(1, 'Praktik harus diisi'),
-        proyek: z.string().min(1, 'Proyek harus diisi'),
-        nilai: z.string().min(1, 'Nilai harus dipilih'),
-    }),
+// Schema untuk validasi data utama
+export const dataSchema = z.object({
+    aspect: AspectEnum,
+    description: z.string().min(1, 'Deskripsi harus diisi').optional(),
+    assessments: z
+        .array(assessmentSchema)
+        .min(1, 'Harus ada minimal satu penilaian')
+        .optional(),
 });
+
+// Schema untuk array data
+export const upsertSchema = z.array(dataSchema);

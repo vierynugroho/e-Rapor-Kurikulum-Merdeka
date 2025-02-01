@@ -19,7 +19,7 @@ import { UpdateIndicatorType } from '@/types/indicator';
 import { StudentType } from '@/types/student';
 
 interface IndicatorWithTheme extends UpdateIndicatorType {
-    theme?: Theme | null;
+    Theme?: Theme | null;
 }
 
 interface Record<T> {
@@ -30,19 +30,20 @@ const createAssessmentSchema = (indicators: Record<IndicatorWithTheme[]>) => {
     const schemaFields: Record<any> = {};
 
     Object.entries(indicators).forEach(([aspect, aspectIndicators]) => {
-        const indicatorFields: Record<any> = {};
+        const aspectSchema: Record<any> = {
+            description: z.string().min(1, 'Deskripsi harus diisi'),
+            indicators: z.object({}),
+        };
 
+        const indicatorFields: Record<any> = {};
         aspectIndicators.forEach((indicator: IndicatorWithTheme) => {
-            indicatorFields[`indicator_${indicator.id}`] = z.object({
-                nilai: z.string().min(1, 'Nilai harus diisi').optional(),
-                description: z
-                    .string()
-                    .min(1, 'Deskripsi harus diisi')
-                    .optional(),
+            indicatorFields[`${indicator.id}`] = z.object({
+                nilai: z.string().min(1, 'Nilai harus diisi'),
             });
         });
 
-        schemaFields[aspect] = z.object(indicatorFields);
+        aspectSchema.indicators = z.object(indicatorFields);
+        schemaFields[aspect] = z.object(aspectSchema);
     });
 
     return z.object(schemaFields);
@@ -75,7 +76,6 @@ export const AssessmentForm: React.FC<FormAssessmentProps> = ({
         queryFn: getIndicators,
     });
 
-    // Group indicators by assessment type using useMemo
     const allIndicators: Record<IndicatorWithTheme[]> = useMemo(() => {
         const grouped: Record<IndicatorWithTheme[]> = {
             [AssessmentAspects.JATI_DIRI]: [],
@@ -96,46 +96,21 @@ export const AssessmentForm: React.FC<FormAssessmentProps> = ({
     }, [indicators]);
 
     const assessmentSchema = createAssessmentSchema(allIndicators);
-
-    // Infer the type from the schema
     type AssessmentFormData = z.infer<typeof assessmentSchema>;
 
-    type AssessmentValues = {
-        [K in AssessmentAspects]: {
-            [key: `indicator_${number}`]: {
-                nilai: string;
-                description: string;
-                studentId: number;
-                teacherId: number;
-                indicatorId: number;
-                periodId: number;
+    const getDefaultValues = () => {
+        const defaultValues: any = {};
+
+        Object.entries(allIndicators).forEach(([aspect, aspectIndicators]) => {
+            defaultValues[aspect] = {
+                description: '',
+                indicators: {},
             };
-        };
-    };
 
-    const getDefaultValues = (): AssessmentValues => {
-        const defaultValues: AssessmentValues = {
-            [AssessmentAspects.JATI_DIRI]: {},
-            [AssessmentAspects.DASAR_LITERASI_MATEMATIKA_SAINS_TEKNOLOGI_REKAYASA_DAN_SENI]:
-                {},
-            [AssessmentAspects.NILAI_AGAMA_DAN_BUDI_PEKERTI]: {},
-        };
-
-        // Populate default values for each indicator
-        Object.entries(allIndicators).forEach(([aspect, indicators]) => {
-            indicators.forEach(indicator => {
-                if (defaultValues[aspect as AssessmentAspects]) {
-                    defaultValues[aspect as AssessmentAspects][
-                        `indicator_${indicator.id}`
-                    ] = {
-                        nilai: '',
-                        description: '',
-                        studentId: student.id,
-                        teacherId: 1, // from teacher loggedIn
-                        indicatorId: indicator.id,
-                        periodId: 1, // active period
-                    };
-                }
+            aspectIndicators.forEach(indicator => {
+                defaultValues[aspect].indicators[indicator.id!] = {
+                    nilai: '',
+                };
             });
         });
 
@@ -168,7 +143,66 @@ export const AssessmentForm: React.FC<FormAssessmentProps> = ({
     });
 
     const handleSubmit = (data: AssessmentFormData) => {
-        mutation.mutate(data);
+        const formattedData = Object.entries(data).map(
+            ([aspect, aspectData]) => ({
+                aspect,
+                description: aspectData.description,
+                assessments: Object.entries(aspectData.indicators).map(
+                    ([indicatorId, value]) => ({
+                        studentId: student.id,
+                        teacherId: 1, // from teacher loggedIn
+                        indicatorId: Number(indicatorId),
+                        periodId: 1, // active period
+                        nilai: (value as { nilai: DevelopmentLevel }).nilai,
+                    }),
+                ),
+            }),
+        );
+
+        console.log(formattedData);
+
+        // [
+        //     {
+        //         aspect: 'JATI_DIRI',
+        //         description: '<p>asdsad</p>',
+        //         assessments: [
+        //             {
+        //                 studentId: 1,
+        //                 teacherId: 1,
+        //                 indicatorId: 1,
+        //                 periodId: 1,
+        //                 nilai: 'BSB',
+        //             },
+        //         ],
+        //     },
+        //     {
+        //         aspect: 'DASAR_LITERASI_MATEMATIKA_SAINS_TEKNOLOGI_REKAYASA_DAN_SENI',
+        //         description: '<p>sdasd</p>',
+        //         assessments: [
+        //             {
+        //                 studentId: 1,
+        //                 teacherId: 1,
+        //                 indicatorId: 2,
+        //                 periodId: 1,
+        //                 nilai: 'BSH',
+        //             },
+        //         ],
+        //     },
+        //     {
+        //         aspect: 'NILAI_AGAMA_DAN_BUDI_PEKERTI',
+        //         description: '<p>asd</p>',
+        //         assessments: [
+        //             {
+        //                 studentId: 1,
+        //                 teacherId: 1,
+        //                 indicatorId: 3,
+        //                 periodId: 1,
+        //                 nilai: 'BSH',
+        //             },
+        //         ],
+        //     },
+        // ];
+        mutation.mutate(formattedData);
     };
 
     const renderIndicatorFields = (
@@ -187,13 +221,13 @@ export const AssessmentForm: React.FC<FormAssessmentProps> = ({
                             {indicator.description}
                         </p>
                         <p className="text-sm text-muted-foreground">
-                            Tema: {indicator?.theme?.title || ''}
+                            Tema: {indicator?.Theme?.title || ''}
                         </p>
                     </div>
                     <div className="mt-4 min-w-[200px] md:mt-0">
                         <SelectInput
                             control={form.control}
-                            name={`${aspect}.indicator_${indicator.id}.nilai`}
+                            name={`${aspect}.indicators.${indicator.id}.nilai`}
                             label="Nilai"
                             placeholder="Pilih nilai"
                             options={DEVELOPMENT_LEVELS}

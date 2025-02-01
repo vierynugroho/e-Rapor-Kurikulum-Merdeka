@@ -19,9 +19,9 @@ export type CreateTeacherType = {
     updatedAt?: Date;
 
     role: UserRole;
-    class?: Class | null;
-    StudentScore?: StudentScore[];
-    StudentDevelopment?: StudentDevelopment[];
+    Class?: Class | null;
+    Score?: StudentScore[];
+    Development?: StudentDevelopment[];
 };
 
 export type UpdateTeacherType = {
@@ -36,9 +36,9 @@ export type UpdateTeacherType = {
     updatedAt?: Date;
 
     role?: UserRole;
-    class?: Class | null;
-    StudentScore?: StudentScore[];
-    StudentDevelopment?: StudentDevelopment[];
+    Class?: Class | null;
+    Score?: StudentScore[];
+    Development?: StudentDevelopment[];
 };
 
 export type TeacherType = {
@@ -53,7 +53,7 @@ export type TeacherType = {
     updatedAt?: Date;
 
     role?: UserRole;
-    class?: Class | null;
-    StudentScore?: StudentScore[];
-    StudentDevelopment?: StudentDevelopment[];
+    Class?: Class | null;
+    Score?: StudentScore[];
+    Development?: StudentDevelopment[];
 };
