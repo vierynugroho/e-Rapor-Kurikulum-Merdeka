@@ -32,7 +32,7 @@ export const columns: ColumnDef<StudentType>[] = [
         header: 'Agama',
     },
     {
-        accessorFn: row => row.class?.name || '-',
+        accessorFn: row => row.Class?.name || '-',
         header: 'Kelas',
     },
     {

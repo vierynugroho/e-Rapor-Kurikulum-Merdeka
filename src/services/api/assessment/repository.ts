@@ -1,10 +1,11 @@
 import { prisma } from '@/lib/prisma';
+import { DevelopmentLevel } from '@prisma/client';
 
 export class AssessmentRepository {
-    static async GET_ID(assessmentID: number) {
-        const assessmentData = await prisma.student_Score.findUnique({
+    static async GET_BY_STUDENT(studentID: number) {
+        const assessmentData = await prisma.student_Score.findMany({
             where: {
-                id: assessmentID,
+                studentId: studentID,
             },
         });
 
@@ -12,35 +13,58 @@ export class AssessmentRepository {
     }
 
     static async UPSERT(assessmentData) {
+        console.log('============= REPO ================');
+        console.log(assessmentData);
+        // {
+        //   aspect: 'JATI_DIRI',
+        //   description: '<p>sds</p>',
+        //   assessments: [
+        //     {
+        //       studentId: 1,
+        //       teacherId: 1,
+        //       indicatorId: 1,
+        //       periodId: 1,
+        //       nilai: 'MB'
+        //     }
+        //   ]
+        // }
         const assessment = await prisma.$transaction(async tx => {
             const existing = await tx.student_Score.findFirst({
                 where: {
-                    studentId: assessmentData.studentId,
-                    indicatorId: assessmentData.indicatorId,
-                    periodId: assessmentData.periodId,
-                    teacherId: assessmentData.teacherId,
+                    studentId: assessmentData.assessments.studentId,
+                    indicatorId: assessmentData.assessments.indicatorId,
+                    periodId: assessmentData.assessments.periodId,
+                    teacherId: assessmentData.assessments.teacherId,
                 },
             });
 
             if (existing) {
-                return tx.student_Score.update({
-                    where: { id: existing.id }, // assuming you have an id field
-                    data: {
-                        value: assessmentData.value,
-                        description: assessmentData.description,
-                    },
-                });
+                return Promise.all(
+                    assessmentData.assessments.map(async assessment => {
+                        return tx.student_Score.update({
+                            where: { id: existing.id },
+                            data: {
+                                value: assessment.nilai as DevelopmentLevel,
+                                description: assessmentData.description,
+                            },
+                        });
+                    }),
+                );
             } else {
-                return tx.student_Score.create({
-                    data: {
-                        studentId: assessmentData.studentId,
-                        indicatorId: assessmentData.indicatorId,
-                        periodId: assessmentData.periodId,
-                        teacherId: assessmentData.teacherId,
-                        value: assessmentData.value,
-                        description: assessmentData.description,
-                    },
-                });
+                return Promise.all(
+                    assessmentData.assessments.map(async assessment => {
+                        return tx.student_Score.create({
+                            data: {
+                                studentId: assessment.studentId,
+                                indicatorId: assessment.indicatorId,
+                                periodId: assessment.periodId,
+                                teacherId: assessment.teacherId,
+                                value: assessment.nilai as DevelopmentLevel,
+                                description: assessmentData.description,
+                            },
+                        });
+                    }),
+                );
             }
         });
         return assessment;

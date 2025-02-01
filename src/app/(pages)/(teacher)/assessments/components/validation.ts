@@ -1,47 +1,39 @@
+import { AssessmentAspects, DevelopmentLevel } from '@prisma/client';
 import * as z from 'zod';
-
-// Enum untuk aspek
-export const AspectEnum = z
-    .enum([
-        'JATI_DIRI',
-        'DASAR_LITERASI_MATEMATIKA_SAINS_TEKNOLOGI_REKAYASA_DAN_SENI',
-        'NILAI_AGAMA_DAN_BUDI_PEKERTI',
-    ])
-    .optional();
-
-// Enum untuk nilai
-export const DevelopmentLevelEnum = z.enum(['BB', 'MB', 'BSH', 'BSB']);
-
-// Schema untuk validasi assessment
-export const assessmentSchema = z.object({
-    studentId: z
-        .number()
-        .int()
-        .positive({ message: 'ID siswa harus berupa angka positif' }),
-    teacherId: z
-        .number()
-        .int()
-        .positive({ message: 'ID guru harus berupa angka positif' }),
-    indicatorId: z
-        .number()
-        .int()
-        .positive({ message: 'ID indikator harus berupa angka positif' }),
-    periodId: z
-        .number()
-        .int()
-        .positive({ message: 'ID periode harus berupa angka positif' }),
-    nilai: DevelopmentLevelEnum,
-});
-
-// Schema untuk validasi data utama
-export const dataSchema = z.object({
-    aspect: AspectEnum,
+export const upsertSchema = z.object({
+    nilai: z.string().min(1, 'Nilai harus diisi').optional(),
     description: z.string().min(1, 'Deskripsi harus diisi').optional(),
-    assessments: z
-        .array(assessmentSchema)
-        .min(1, 'Harus ada minimal satu penilaian')
-        .optional(),
 });
 
-// Schema untuk array data
-export const upsertSchema = z.array(dataSchema);
+const indicatorSchema = z.object({
+    nilai: z.enum(
+        [
+            DevelopmentLevel.BSB,
+            DevelopmentLevel.BSH,
+            DevelopmentLevel.MB,
+            DevelopmentLevel.BB,
+        ],
+        {
+            required_error: 'Nilai harus diisi',
+            invalid_type_error: 'Nilai tidak valid',
+        },
+    ),
+});
+
+// Create a schema for each assessment aspect
+const aspectSchema = z.object({
+    description: z
+        .string({
+            required_error: 'Deskripsi harus diisi',
+        })
+        .min(1, 'Deskripsi tidak boleh kosong'),
+    indicators: z.record(z.string(), indicatorSchema),
+});
+
+// Main form schema
+export const assessmentFormSchema = z.object({
+    [AssessmentAspects.JATI_DIRI]: aspectSchema,
+    [AssessmentAspects.DASAR_LITERASI_MATEMATIKA_SAINS_TEKNOLOGI_REKAYASA_DAN_SENI]:
+        aspectSchema,
+    [AssessmentAspects.NILAI_AGAMA_DAN_BUDI_PEKERTI]: aspectSchema,
+});

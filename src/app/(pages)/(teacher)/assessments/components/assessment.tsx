@@ -12,11 +12,11 @@ import { Form } from '@/components/ui/form';
 import { DialogFooter } from '@/components/ui/dialog';
 import { useToast } from '@/hooks/use-toast';
 import { AssessmentAspects, DevelopmentLevel, Theme } from '@prisma/client';
-import { createTheme } from '@/services/pages/theme';
 import * as z from 'zod';
 import { getIndicators } from '@/services/pages/indicator';
 import { UpdateIndicatorType } from '@/types/indicator';
 import { StudentType } from '@/types/student';
+import { upsertAssessment } from '@/services/pages/assessment';
 
 interface IndicatorWithTheme extends UpdateIndicatorType {
     Theme?: Theme | null;
@@ -38,7 +38,7 @@ const createAssessmentSchema = (indicators: Record<IndicatorWithTheme[]>) => {
         const indicatorFields: Record<any> = {};
         aspectIndicators.forEach((indicator: IndicatorWithTheme) => {
             indicatorFields[`${indicator.id}`] = z.object({
-                nilai: z.string().min(1, 'Nilai harus diisi'),
+                value: z.string().min(1, 'Nilai harus diisi'),
             });
         });
 
@@ -109,7 +109,7 @@ export const AssessmentForm: React.FC<FormAssessmentProps> = ({
 
             aspectIndicators.forEach(indicator => {
                 defaultValues[aspect].indicators[indicator.id!] = {
-                    nilai: '',
+                    value: '',
                 };
             });
         });
@@ -123,7 +123,7 @@ export const AssessmentForm: React.FC<FormAssessmentProps> = ({
     });
 
     const mutation = useMutation({
-        mutationFn: createTheme,
+        mutationFn: upsertAssessment,
         onSuccess: () => {
             toast({
                 title: 'Berhasil',
@@ -153,55 +153,13 @@ export const AssessmentForm: React.FC<FormAssessmentProps> = ({
                         teacherId: 1, // from teacher loggedIn
                         indicatorId: Number(indicatorId),
                         periodId: 1, // active period
-                        nilai: (value as { nilai: DevelopmentLevel }).nilai,
+                        value: (value as { value: DevelopmentLevel }).value,
                     }),
                 ),
             }),
         );
 
         console.log(formattedData);
-
-        // [
-        //     {
-        //         aspect: 'JATI_DIRI',
-        //         description: '<p>asdsad</p>',
-        //         assessments: [
-        //             {
-        //                 studentId: 1,
-        //                 teacherId: 1,
-        //                 indicatorId: 1,
-        //                 periodId: 1,
-        //                 nilai: 'BSB',
-        //             },
-        //         ],
-        //     },
-        //     {
-        //         aspect: 'DASAR_LITERASI_MATEMATIKA_SAINS_TEKNOLOGI_REKAYASA_DAN_SENI',
-        //         description: '<p>sdasd</p>',
-        //         assessments: [
-        //             {
-        //                 studentId: 1,
-        //                 teacherId: 1,
-        //                 indicatorId: 2,
-        //                 periodId: 1,
-        //                 nilai: 'BSH',
-        //             },
-        //         ],
-        //     },
-        //     {
-        //         aspect: 'NILAI_AGAMA_DAN_BUDI_PEKERTI',
-        //         description: '<p>asd</p>',
-        //         assessments: [
-        //             {
-        //                 studentId: 1,
-        //                 teacherId: 1,
-        //                 indicatorId: 3,
-        //                 periodId: 1,
-        //                 nilai: 'BSH',
-        //             },
-        //         ],
-        //     },
-        // ];
         mutation.mutate(formattedData);
     };
 
@@ -227,7 +185,7 @@ export const AssessmentForm: React.FC<FormAssessmentProps> = ({
                     <div className="mt-4 min-w-[200px] md:mt-0">
                         <SelectInput
                             control={form.control}
-                            name={`${aspect}.indicators.${indicator.id}.nilai`}
+                            name={`${aspect}.indicators.${indicator.id}.value`}
                             label="Nilai"
                             placeholder="Pilih nilai"
                             options={DEVELOPMENT_LEVELS}

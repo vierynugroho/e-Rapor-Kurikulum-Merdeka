@@ -17,7 +17,7 @@ export type StudentScore = {
     teacherId?: number;
     indicatorId?: number;
     description?: string;
-    value?: DevelopmentLevel;
+    value?: DevelopmentLevel | null | undefined;
     createdAt?: string | Date;
     updatedAt?: string | Date;
 
