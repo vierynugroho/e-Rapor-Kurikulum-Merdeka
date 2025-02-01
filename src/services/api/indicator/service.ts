@@ -1,5 +1,5 @@
 import { CustomError } from '@/utils/error';
-import { Indicator } from '@prisma/client';
+import { AssessmentAspects, Indicator } from '@prisma/client';
 import { IndicatorRepository } from './repository';
 import { CreateIndicatorType, UpdateIndicatorType } from '@/types/indicator';
 
@@ -13,6 +13,15 @@ export class IndicatorService {
         indicatorID: number,
     ): Promise<Partial<Indicator | null>> {
         const indicatorData = await IndicatorRepository.GET_ID(indicatorID);
+
+        return indicatorData;
+    }
+
+    static async GET_BY_TYPE(
+        indicatorType: AssessmentAspects,
+    ): Promise<Partial<Indicator>[]> {
+        const indicatorData =
+            await IndicatorRepository.GET_BY_TYPE(indicatorType);
 
         return indicatorData;
     }

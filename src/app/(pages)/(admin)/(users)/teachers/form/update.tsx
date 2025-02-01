@@ -31,7 +31,7 @@ export default function UpdateFormTeacher({
             fullname: teacher?.fullname || '',
             email: teacher?.email || '',
             identity_number: teacher?.identity_number || '',
-            classID: teacher?.class?.id || undefined,
+            classID: teacher?.Class?.id || undefined,
             role: teacher?.role || 'TEACHER',
             password: teacher?.password,
         },

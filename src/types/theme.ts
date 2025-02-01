@@ -5,7 +5,7 @@ export type ThemeType = {
     createdAt?: Date;
     updatedAt?: Date;
 
-    indicator?: [];
+    Indicator?: [];
 };
 
 export type UpdateThemeType = {

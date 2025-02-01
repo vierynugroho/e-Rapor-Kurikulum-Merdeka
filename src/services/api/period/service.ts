@@ -15,6 +15,12 @@ export class PeriodService {
         return periodData;
     }
 
+    static async GET_ACTIVE_PERIOD(): Promise<Partial<Period | null>> {
+        const periodData = await PeriodRepository.GET_ACTIVE_PERIOD();
+
+        return periodData;
+    }
+
     static async CREATE<T extends CreatePeriodType>(request: T) {
         const dataExist = await PeriodRepository.GET_IDENTITY(
             request.year,

@@ -61,10 +61,10 @@ model Teacher {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("update_at")
 
-  role                UserRole
-  class               Class?                @relation(fields: [classID], references: [id])
-  Student_Score       Student_Score[]
-  Student_Development Student_Development[]
+  role        UserRole
+  Class       Class?                @relation(fields: [classID], references: [id])
+  Score       Student_Score[]
+  Development Student_Development[]
 
   @@map("teachers")
 }
@@ -91,7 +91,7 @@ model Period {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("update_at")
 
-  Student_Score Student_Score[]
+  Score Student_Score[]
 
   @@map("periods")
 }
@@ -117,8 +117,8 @@ model Indicator {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("update_at")
 
-  theme         Theme           @relation(fields: [themeId], references: [id])
-  Student_Score Student_Score[]
+  Theme Theme           @relation(fields: [themeId], references: [id])
+  Score Student_Score[]
 
   @@map("indicators")
 }
@@ -137,9 +137,9 @@ model Student {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("update_at")
 
-  class         Class?                @relation(fields: [classID], references: [id])
-  Student_Score Student_Score[]
-  Development   Student_Development[]
+  Class       Class?                @relation(fields: [classID], references: [id])
+  Score       Student_Score[]
+  Development Student_Development[]
 
   @@map("students")
 }
@@ -147,8 +147,8 @@ model Student {
 model Student_Score {
   id          Int              @id @default(autoincrement())
   studentId   Int
-  periodId    Int
-  teacherId   Int
+  periodId    Int?
+  teacherId   Int?
   indicatorId Int?
   description String?
   value       DevelopmentLevel
@@ -156,11 +156,12 @@ model Student_Score {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("update_at")
 
-  studentID Student    @relation(fields: [studentId], references: [id])
-  periodID  Period     @relation(fields: [periodId], references: [id])
+  Student   Student    @relation(fields: [studentId], references: [id])
+  Period    Period?    @relation(fields: [periodId], references: [id])
   Indicator Indicator? @relation(fields: [indicatorId], references: [id])
-  teacherID Teacher    @relation(fields: [teacherId], references: [id])
+  Teacher   Teacher?   @relation(fields: [teacherId], references: [id])
 
+  @@unique([studentId, teacherId, periodId, indicatorId])
   @@index([studentId], name: "idx_studentId")
   @@index([indicatorId], name: "idx_indicatorId")
   @@index([periodId], name: "idx_periodId")
@@ -180,8 +181,8 @@ model Student_Development {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  teacher Teacher @relation(fields: [teacherId], references: [id])
-  student Student @relation(fields: [studentId], references: [id])
+  Teacher Teacher @relation(fields: [teacherId], references: [id])
+  Student Student @relation(fields: [studentId], references: [id])
 
   @@map("student_developments")
 }

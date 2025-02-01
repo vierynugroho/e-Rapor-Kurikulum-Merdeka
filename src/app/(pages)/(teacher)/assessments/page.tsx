@@ -5,12 +5,12 @@ import { DataTable } from './data-table';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Loader2 } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
-import { getThemes } from '@/services/pages/theme';
+import { getStudentsByTeacher } from '@/services/pages/(user)/students';
 
 export default function ThemePage() {
     const { data, isLoading, error } = useQuery({
-        queryFn: getThemes,
-        queryKey: ['themes'],
+        queryFn: () => getStudentsByTeacher(1),
+        queryKey: ['studentsClass'],
     });
 
     if (isLoading) {
@@ -25,7 +25,7 @@ export default function ThemePage() {
         return (
             <Alert variant="destructive" className="m-4">
                 <AlertDescription>
-                    Failed to load themes: {error.message}
+                    Failed to load students data on your class: {error.message}
                 </AlertDescription>
             </Alert>
         );

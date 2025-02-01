@@ -69,7 +69,7 @@ export const DetailData: React.FC<DetailDataProps> = ({ data }) => {
                         <div className="flex">
                             <span className="w-40 font-medium">Kelas:</span>
                             <div className="flex-1">
-                                {data.class?.name || '-'}
+                                {data.Class?.name || '-'}
                             </div>
                         </div>
                     </div>

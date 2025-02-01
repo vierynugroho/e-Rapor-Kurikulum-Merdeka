@@ -16,7 +16,7 @@ export const DetailData: React.FC<DetailDataProps> = ({ data }) => {
                                 Nama Siswa:
                             </span>
                             <div className="flex-1">
-                                {data.student?.fullname}
+                                {data.Student?.fullname}
                             </div>
                         </div>
                     </div>

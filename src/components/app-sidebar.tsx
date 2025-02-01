@@ -116,7 +116,7 @@ const data = {
                 },
                 {
                     title: 'Penilaian',
-                    url: '/assesments',
+                    url: '/assessments',
                 },
                 {
                     title: 'Perkembangan',

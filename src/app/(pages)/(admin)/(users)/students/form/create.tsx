@@ -33,7 +33,7 @@ export default function CreateFormStudent({
             fullname: student?.fullname || '',
             address: student?.address || '',
             parentName: student?.parentName || '',
-            classID: student?.class?.id || undefined,
+            classID: student?.Class?.id || undefined,
             religion: student?.religion || undefined,
             gender: student?.gender || undefined,
             birthDate: student?.birthDate

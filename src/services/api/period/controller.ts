@@ -23,19 +23,10 @@ export class PeriodController {
         }
     }
 
-    static async GET_ID(
-        request: NextRequest,
-        { params }: { params: { id: string } },
-    ) {
+    static async GET_ACTIVE_PERIOD(request: NextRequest) {
         try {
-            const { id } = params;
-            const periodID = parseInt(id);
-
-            if (isNaN(periodID)) {
-                throw new CustomError(400, 'invalid period ID');
-            }
-
-            const periodData = await PeriodService.GET_ID(periodID);
+            console.log(request.json);
+            const periodData = await PeriodService.GET_ACTIVE_PERIOD();
 
             return APIResponse.success(periodData, {
                 message: 'period data retrieved successfully',

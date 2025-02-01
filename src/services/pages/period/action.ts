@@ -9,6 +9,10 @@ export const getPeriod = async (periodID: number) => {
     return apiClient.get<PeriodType[]>(`/periods/${periodID}`);
 };
 
+export const getActivePeriod = async () => {
+    return apiClient.get<PeriodType>(`/periods/active/info`);
+};
+
 export const createPeriod = async (data: CreatePeriodType) => {
     return apiClient.post<PeriodType>('/periods', data);
 };

@@ -5,7 +5,7 @@ export type PeriodType = {
     semester?: Semester;
     year?: string;
     isActive?: boolean;
-    Student_Score?: [];
+    Score?: [];
     createdAt?: Date;
     updatedAt?: Date;
 };
@@ -15,7 +15,7 @@ export type UpdatePeriodType = {
     semester?: Semester;
     year?: string;
     isActive?: boolean;
-    Student_Score?: [];
+    Score?: [];
     createdAt?: Date;
     updatedAt?: Date;
 };
@@ -25,7 +25,7 @@ export type CreatePeriodType = {
     semester: Semester;
     year: string;
     isActive: boolean;
-    Student_Score?: [];
+    Score?: [];
     createdAt?: Date;
     updatedAt?: Date;
 };
