@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -16,7 +16,7 @@ import * as z from 'zod';
 import { getIndicators } from '@/services/pages/indicator';
 import { UpdateIndicatorType } from '@/types/indicator';
 import { StudentType } from '@/types/student';
-import { upsertAssessment } from '@/services/pages/assessment';
+import { getAssessment, upsertAssessment } from '@/services/pages/assessment';
 
 interface IndicatorWithTheme extends UpdateIndicatorType {
     Theme?: Theme | null;
@@ -31,14 +31,14 @@ const createAssessmentSchema = (indicators: Record<IndicatorWithTheme[]>) => {
 
     Object.entries(indicators).forEach(([aspect, aspectIndicators]) => {
         const aspectSchema: Record<any> = {
-            description: z.string().min(1, 'Deskripsi harus diisi'),
-            indicators: z.object({}),
+            description: z.string().optional(),
+            indicators: z.object({}).optional(),
         };
 
         const indicatorFields: Record<any> = {};
         aspectIndicators.forEach((indicator: IndicatorWithTheme) => {
             indicatorFields[`${indicator.id}`] = z.object({
-                value: z.string().min(1, 'Nilai harus diisi'),
+                value: z.string().optional(),
             });
         });
 
@@ -71,6 +71,14 @@ export const AssessmentForm: React.FC<FormAssessmentProps> = ({
         AssessmentAspects.JATI_DIRI as AssessmentAspects,
     );
 
+    const { data: studentAssessment, isLoading: isLoadingStudentAssessment } =
+        useQuery({
+            queryFn: () => getAssessment(student.id!),
+            queryKey: ['studentsAssessments', student.id],
+            staleTime: 5 * 60 * 1000,
+            retry: 2,
+        });
+
     const { data: indicators = [] } = useQuery({
         queryKey: ['indicators'],
         queryFn: getIndicators,
@@ -101,16 +109,34 @@ export const AssessmentForm: React.FC<FormAssessmentProps> = ({
     const getDefaultValues = () => {
         const defaultValues: any = {};
 
-        Object.entries(allIndicators).forEach(([aspect, aspectIndicators]) => {
+        Object.keys(AssessmentAspects).forEach(aspect => {
             defaultValues[aspect] = {
                 description: '',
                 indicators: {},
             };
+        });
 
+        Object.entries(allIndicators).forEach(([aspect, aspectIndicators]) => {
             aspectIndicators.forEach(indicator => {
+                if (!defaultValues[aspect].indicators) {
+                    defaultValues[aspect].indicators = {};
+                }
+
+                // Find existing assessment for this indicator
+                const existingAssessment = studentAssessment?.find(
+                    (assessment: any) =>
+                        assessment.indicatorId === indicator.id,
+                );
+
                 defaultValues[aspect].indicators[indicator.id!] = {
-                    value: '',
+                    value: existingAssessment?.value || '',
                 };
+
+                // If this indicator has a description, set it for the aspect
+                if (existingAssessment?.description) {
+                    defaultValues[aspect].description =
+                        existingAssessment.description;
+                }
             });
         });
 
@@ -122,6 +148,38 @@ export const AssessmentForm: React.FC<FormAssessmentProps> = ({
         defaultValues: getDefaultValues(),
     });
 
+    // Load existing assessment data
+    useEffect(() => {
+        if (studentAssessment && !isLoadingStudentAssessment) {
+            const formattedData = getDefaultValues();
+
+            // Process each assessment aspect
+            studentAssessment.forEach((assessment: any) => {
+                const { aspect, description, assessments } = assessment;
+
+                // Ensure the aspect exists in our formatted data
+                if (formattedData[aspect]) {
+                    // Set description
+                    formattedData[aspect].description = description || '';
+
+                    // Process assessments
+                    assessments?.forEach((item: any) => {
+                        if (
+                            formattedData[aspect].indicators &&
+                            formattedData[aspect].indicators[item.indicatorId]
+                        ) {
+                            formattedData[aspect].indicators[
+                                item.indicatorId
+                            ].value = item.value;
+                        }
+                    });
+                }
+            });
+
+            form.reset(formattedData);
+        }
+    }, [studentAssessment, isLoadingStudentAssessment, form]);
+
     const mutation = useMutation({
         mutationFn: upsertAssessment,
         onSuccess: () => {
@@ -130,7 +188,9 @@ export const AssessmentForm: React.FC<FormAssessmentProps> = ({
                 description: 'Data penilaian berhasil disimpan.',
             });
             queryClient.invalidateQueries({ queryKey: ['assessments'] });
-            form.reset();
+            queryClient.invalidateQueries({
+                queryKey: ['studentsAssessments'],
+            });
             onSuccess?.();
         },
         onError: (error: Error) => {
@@ -143,23 +203,27 @@ export const AssessmentForm: React.FC<FormAssessmentProps> = ({
     });
 
     const handleSubmit = (data: AssessmentFormData) => {
-        const formattedData = Object.entries(data).map(
-            ([aspect, aspectData]) => ({
-                aspect,
-                description: aspectData.description,
-                assessments: Object.entries(aspectData.indicators).map(
-                    ([indicatorId, value]) => ({
+        const formattedData = Object.entries(data)
+            .map(([aspect, aspectData]) => {
+                // Filter out empty values
+                const validAssessments = Object.entries(aspectData.indicators)
+                    .filter(([_, value]) => (value as { value: string }).value)
+                    .map(([indicatorId, value]) => ({
                         studentId: student.id,
                         teacherId: 1, // from teacher loggedIn
                         indicatorId: Number(indicatorId),
                         periodId: 1, // active period
                         value: (value as { value: DevelopmentLevel }).value,
-                    }),
-                ),
-            }),
-        );
+                    }));
 
-        console.log(formattedData);
+                return {
+                    aspect,
+                    description: aspectData.description || '',
+                    assessments: validAssessments,
+                };
+            })
+            .filter(item => item.assessments.length > 0 || item.description);
+
         mutation.mutate(formattedData);
     };
 
@@ -195,6 +259,10 @@ export const AssessmentForm: React.FC<FormAssessmentProps> = ({
             </div>
         ));
     };
+
+    if (isLoadingStudentAssessment) {
+        return <div>Loading...</div>;
+    }
 
     return (
         <Card className="max-h-[80vh] w-full max-w-3xl overflow-hidden">

@@ -6,18 +6,20 @@ export const upsertSchema = z.object({
 });
 
 const indicatorSchema = z.object({
-    nilai: z.enum(
-        [
-            DevelopmentLevel.BSB,
-            DevelopmentLevel.BSH,
-            DevelopmentLevel.MB,
-            DevelopmentLevel.BB,
-        ],
-        {
-            required_error: 'Nilai harus diisi',
-            invalid_type_error: 'Nilai tidak valid',
-        },
-    ),
+    nilai: z
+        .enum(
+            [
+                DevelopmentLevel.BSB,
+                DevelopmentLevel.BSH,
+                DevelopmentLevel.MB,
+                DevelopmentLevel.BB,
+            ],
+            {
+                required_error: 'Nilai harus diisi',
+                invalid_type_error: 'Nilai tidak valid',
+            },
+        )
+        .optional(),
 });
 
 // Create a schema for each assessment aspect
@@ -26,14 +28,17 @@ const aspectSchema = z.object({
         .string({
             required_error: 'Deskripsi harus diisi',
         })
-        .min(1, 'Deskripsi tidak boleh kosong'),
+        .min(1, 'Deskripsi tidak boleh kosong')
+        .optional(),
     indicators: z.record(z.string(), indicatorSchema),
 });
 
 // Main form schema
-export const assessmentFormSchema = z.object({
-    [AssessmentAspects.JATI_DIRI]: aspectSchema,
-    [AssessmentAspects.DASAR_LITERASI_MATEMATIKA_SAINS_TEKNOLOGI_REKAYASA_DAN_SENI]:
-        aspectSchema,
-    [AssessmentAspects.NILAI_AGAMA_DAN_BUDI_PEKERTI]: aspectSchema,
-});
+export const assessmentFormSchema = z
+    .object({
+        [AssessmentAspects.JATI_DIRI]: aspectSchema,
+        [AssessmentAspects.DASAR_LITERASI_MATEMATIKA_SAINS_TEKNOLOGI_REKAYASA_DAN_SENI]:
+            aspectSchema,
+        [AssessmentAspects.NILAI_AGAMA_DAN_BUDI_PEKERTI]: aspectSchema,
+    })
+    .optional();

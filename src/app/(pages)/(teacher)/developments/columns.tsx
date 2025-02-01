@@ -12,7 +12,7 @@ export const columns: ColumnDef<StudentDevelopment>[] = [
     {
         id: 'fullname',
         header: 'Nama Siswa',
-        accessorFn: row => row.student?.fullname || '-',
+        accessorFn: row => row.Student?.fullname || '-',
         enableColumnFilter: true,
         filterFn: 'includesString',
     },
