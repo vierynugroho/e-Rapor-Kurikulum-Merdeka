@@ -27,6 +27,18 @@ export type StudentScore = {
     Period?: Period | null;
 };
 
+export type UpsertStudentScore = {
+    aspect: string;
+    description?: string;
+    assessments?: {
+        studentId?: number | undefined;
+        teacherId?: number | null;
+        indicatorId?: number | null;
+        periodId?: number | null;
+        value?: DevelopmentLevel | null;
+    }[];
+}[];
+
 //TODO: Student Development
 export type StudentDevelopment = {
     id?: number;
