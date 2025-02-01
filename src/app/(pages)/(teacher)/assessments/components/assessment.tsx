@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -71,6 +71,11 @@ export const AssessmentForm: React.FC<FormAssessmentProps> = ({
         AssessmentAspects.JATI_DIRI as AssessmentAspects,
     );
 
+    const { data: indicators = [] } = useQuery({
+        queryKey: ['indicators'],
+        queryFn: getIndicators,
+    });
+
     const { data: studentAssessment, isLoading: isLoadingStudentAssessment } =
         useQuery({
             queryFn: () => getAssessment(student.id!),
@@ -78,11 +83,6 @@ export const AssessmentForm: React.FC<FormAssessmentProps> = ({
             staleTime: 5 * 60 * 1000,
             retry: 2,
         });
-
-    const { data: indicators = [] } = useQuery({
-        queryKey: ['indicators'],
-        queryFn: getIndicators,
-    });
 
     const allIndicators: Record<IndicatorWithTheme[]> = useMemo(() => {
         const grouped: Record<IndicatorWithTheme[]> = {
@@ -106,11 +106,12 @@ export const AssessmentForm: React.FC<FormAssessmentProps> = ({
     const assessmentSchema = createAssessmentSchema(allIndicators);
     type AssessmentFormData = z.infer<typeof assessmentSchema>;
 
-    const getDefaultValues = () => {
-        const defaultValues: any = {};
+    const defaultValues = useMemo(() => {
+        const values: any = {};
 
+        // Initialize base structure
         Object.keys(AssessmentAspects).forEach(aspect => {
-            defaultValues[aspect] = {
+            values[aspect] = {
                 description: '',
                 indicators: {},
             };
@@ -118,67 +119,33 @@ export const AssessmentForm: React.FC<FormAssessmentProps> = ({
 
         Object.entries(allIndicators).forEach(([aspect, aspectIndicators]) => {
             aspectIndicators.forEach(indicator => {
-                if (!defaultValues[aspect].indicators) {
-                    defaultValues[aspect].indicators = {};
+                if (!values[aspect].indicators) {
+                    values[aspect].indicators = {};
                 }
 
-                // Find existing assessment for this indicator
                 const existingAssessment = studentAssessment?.find(
                     (assessment: any) =>
                         assessment.indicatorId === indicator.id,
                 );
 
-                defaultValues[aspect].indicators[indicator.id!] = {
+                values[aspect].indicators[indicator.id!] = {
                     value: existingAssessment?.value || '',
                 };
 
-                // If this indicator has a description, set it for the aspect
                 if (existingAssessment?.description) {
-                    defaultValues[aspect].description =
-                        existingAssessment.description;
+                    values[aspect].description = existingAssessment.description;
                 }
             });
         });
 
-        return defaultValues;
-    };
+        return values;
+    }, [allIndicators, studentAssessment]);
 
     const form = useForm<AssessmentFormData>({
         resolver: zodResolver(assessmentSchema),
-        defaultValues: getDefaultValues(),
+        defaultValues,
+        values: defaultValues,
     });
-
-    // Load existing assessment data
-    useEffect(() => {
-        if (studentAssessment && !isLoadingStudentAssessment) {
-            const formattedData = getDefaultValues();
-
-            // Process each assessment aspect
-            studentAssessment.forEach((assessment: any) => {
-                const { aspect, description, assessments } = assessment;
-
-                // Ensure the aspect exists in our formatted data
-                if (formattedData[aspect]) {
-                    // Set description
-                    formattedData[aspect].description = description || '';
-
-                    // Process assessments
-                    assessments?.forEach((item: any) => {
-                        if (
-                            formattedData[aspect].indicators &&
-                            formattedData[aspect].indicators[item.indicatorId]
-                        ) {
-                            formattedData[aspect].indicators[
-                                item.indicatorId
-                            ].value = item.value;
-                        }
-                    });
-                }
-            });
-
-            form.reset(formattedData);
-        }
-    }, [studentAssessment, isLoadingStudentAssessment, form]);
 
     const mutation = useMutation({
         mutationFn: upsertAssessment,
