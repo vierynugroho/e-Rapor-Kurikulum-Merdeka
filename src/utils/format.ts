@@ -1,3 +1,11 @@
+export const formatDate = (datetime: Date | string) => {
+    return new Intl.DateTimeFormat('id-ID', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+    }).format(new Date(datetime));
+};
+
 export const formatDateTime = (datetime: Date | string) => {
     return new Intl.DateTimeFormat('id-ID', {
         year: 'numeric',

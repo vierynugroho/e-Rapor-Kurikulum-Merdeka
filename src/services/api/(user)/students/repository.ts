@@ -57,25 +57,59 @@ export class StudentRepository {
             throw new CustomError(404, 'Teacher not found');
         }
 
-        // Get students in teacher's class who don't have development records
         const students = await prisma.student.findMany({
             where: {
                 classID: teacherClass.classID,
-                NOT: {
-                    Development: {
-                        some: {}, // Excludes students who have any development records
-                    },
-                },
             },
             orderBy: {
-                fullname: 'asc', // Optional: sort by name
+                fullname: 'asc',
             },
             include: {
                 Class: true,
+                Development: true,
+                Score: true,
             },
         });
 
-        return students;
+        if (!teacherClass || !teacherClass.classID) {
+            throw new CustomError(404, 'Teacher or class not found');
+        }
+
+        const teacherClassCategory = await prisma.class.findFirst({
+            where: {
+                id: teacherClass.classID, // Now we know classID is not null
+            },
+            select: {
+                category: true,
+            },
+        });
+        const totalClassIndicator = await prisma.indicator.count({
+            where: {
+                classCategory: teacherClassCategory?.category,
+            },
+        });
+
+        // Map through students to check their completion status
+        const enrichedStudents = await Promise.all(
+            students.map(async student => {
+                const studentScoreCount = await prisma.student_Score.count({
+                    where: {
+                        studentId: student.id,
+                    },
+                });
+
+                const hasDevelopment =
+                    student.Development && student.Development.length > 0;
+                const hasAllScores = studentScoreCount === totalClassIndicator;
+
+                return {
+                    ...student,
+                    readyToPrint: hasDevelopment && hasAllScores,
+                };
+            }),
+        );
+
+        return enrichedStudents;
     }
 
     static async GET_IDENTITY(fullname: string) {

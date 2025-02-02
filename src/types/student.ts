@@ -59,8 +59,8 @@ export type CreateStudentDevelopment = {
     height: number;
     weight: number;
     notes: string;
-    studentID?: number;
-    teacherID?: number;
+    studentID: number;
+    teacherID: number;
     recordDate?: string | Date;
     createdAt?: string | Date;
     updatedAt?: string | Date;
@@ -122,7 +122,7 @@ export type StudentType = {
     address?: string;
     createdAt?: string | Date;
     updatedAt?: string | Date;
-
+    readyToPrint?: boolean;
     Class?: Class | null;
     Score?: StudentScore[];
     Development?: StudentDevelopment[];

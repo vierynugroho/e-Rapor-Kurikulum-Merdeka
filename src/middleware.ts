@@ -21,7 +21,7 @@ export async function middleware(request: NextRequest) {
     // const token = await getToken({ req: request });
     const token = {
         user: {
-            role: 'ADMIN',
+            role: 'TEACHER',
             id: 1,
             token: 'token',
         },
