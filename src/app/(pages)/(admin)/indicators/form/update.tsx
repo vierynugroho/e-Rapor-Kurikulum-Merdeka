@@ -14,6 +14,7 @@ import { updateIndicator } from '@/services/pages/indicator';
 import LongTextInput from '@/components/form/long-text-input';
 import { SelectInput } from '@/components/form/select-input';
 import { getThemes } from '@/services/pages/theme';
+import { ClassCategory } from '@prisma/client';
 
 type FormIndicatorProps = {
     indicator?: UpdateIndicatorType;
@@ -38,6 +39,7 @@ export default function UpdateFormIndicator({
             description: indicator?.description || '',
             themeID: indicator?.themeID || undefined,
             assesment_type: indicator?.assesment_type || undefined,
+            classCategory: indicator?.classCategory || undefined,
         },
     });
 
@@ -143,6 +145,17 @@ export default function UpdateFormIndicator({
                                 noOptionsMessage={() =>
                                     'Tidak ada kategori tersedia'
                                 }
+                            />
+
+                            <SelectInput
+                                control={form.control}
+                                name="classCategory"
+                                label="Kategori Kelas"
+                                placeholder="Pilih Kategori"
+                                options={[
+                                    { value: ClassCategory.A, label: 'A' },
+                                    { value: ClassCategory.B, label: 'B' },
+                                ]}
                             />
                         </div>
                     </CardContent>

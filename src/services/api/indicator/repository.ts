@@ -1,6 +1,6 @@
 import { prisma } from '@/lib/prisma';
 import { CreateIndicatorType, UpdateIndicatorType } from '@/types/indicator';
-import { AssessmentAspects } from '@prisma/client';
+import { AssessmentAspects, ClassCategory } from '@prisma/client';
 
 export class IndicatorRepository {
     static async CREATE(indicatorData: CreateIndicatorType) {
@@ -10,6 +10,7 @@ export class IndicatorRepository {
                 description: indicatorData.description,
                 assesment_type: indicatorData.assesment_type,
                 themeId: indicatorData.themeID || 1,
+                classCategory: indicatorData.classCategory || ClassCategory.A,
             },
         });
         return newIndicator;
@@ -29,6 +30,19 @@ export class IndicatorRepository {
         const indicatorData = await prisma.indicator.findUnique({
             where: {
                 id: indicatorID,
+            },
+            include: {
+                Theme: true,
+            },
+        });
+
+        return indicatorData;
+    }
+
+    static async GET_BY_CLASS_CATEGORY(classCategory: ClassCategory) {
+        const indicatorData = await prisma.indicator.findMany({
+            where: {
+                classCategory: classCategory,
             },
             include: {
                 Theme: true,
@@ -81,6 +95,7 @@ export class IndicatorRepository {
                 description: indicatorData.description,
                 assesment_type: indicatorData.assesment_type,
                 themeId: indicatorData.themeID || 1,
+                classCategory: indicatorData.classCategory || ClassCategory.A,
             },
         });
 

@@ -11,6 +11,8 @@ import { updateSchema } from './validation';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useToast } from '@/hooks/use-toast';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { ClassCategory } from '@prisma/client';
+import { SelectInput } from '@/components/form/select-input';
 
 type FormClassProps = {
     classes?: ClassType;
@@ -27,6 +29,7 @@ export default function UpdateFormClass({
         resolver: zodResolver(updateSchema),
         defaultValues: {
             name: classes?.name || '',
+            category: classes?.category || ClassCategory.A,
         },
     });
 
@@ -80,6 +83,17 @@ export default function UpdateFormClass({
                             name="name"
                             label="Nama Kelas"
                             placeholder="Masukkan nama kelas"
+                        />
+
+                        <SelectInput
+                            control={form.control}
+                            name="category"
+                            label="Kategori Kelas"
+                            placeholder="Pilih Kategori"
+                            options={[
+                                { value: ClassCategory.A, label: 'A' },
+                                { value: ClassCategory.B, label: 'B' },
+                            ]}
                         />
 
                         <div className="flex justify-end">

@@ -1,4 +1,9 @@
-import { AssessmentAspects, Student_Score, Theme } from '@prisma/client';
+import {
+    AssessmentAspects,
+    ClassCategory,
+    Student_Score,
+    Theme,
+} from '@prisma/client';
 
 export type IndicatorType = {
     id?: number;
@@ -7,6 +12,7 @@ export type IndicatorType = {
     assesment_type?: AssessmentAspects;
     themeID?: number | null;
     themeId?: number | null;
+    classCategory?: ClassCategory;
 
     createdAt?: Date;
     updatedAt?: Date;
@@ -21,6 +27,7 @@ export type UpdateIndicatorType = {
     description?: string;
     assesment_type?: AssessmentAspects;
     themeID?: number | null;
+    classCategory?: ClassCategory;
 
     createdAt?: Date;
     updatedAt?: Date;
@@ -35,6 +42,7 @@ export type CreateIndicatorType = {
     description: string;
     assesment_type: AssessmentAspects;
     themeID?: number | null;
+    classCategory?: ClassCategory;
 
     createdAt?: Date;
     updatedAt?: Date;

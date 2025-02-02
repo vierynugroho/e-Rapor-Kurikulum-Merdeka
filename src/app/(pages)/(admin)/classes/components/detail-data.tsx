@@ -16,6 +16,12 @@ export const DetailData: React.FC<DetailDataProps> = ({ data }) => {
                             <div className="flex-1">{data.name}</div>
                         </div>
                     </div>
+                    <div className="grid">
+                        <div className="flex">
+                            <span className="w-40 font-medium">Kategori:</span>
+                            <div className="flex-1">{data.category}</div>
+                        </div>
+                    </div>
 
                     <div className="grid">
                         <div className="flex">

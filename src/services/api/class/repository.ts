@@ -1,11 +1,13 @@
 import { prisma } from '@/lib/prisma';
 import { CreateClassType, UpdateClassType } from '@/types/class';
+import { ClassCategory } from '@prisma/client';
 
 export class ClassRepository {
     static async CREATE(classData: CreateClassType) {
         const newClass = await prisma.class.create({
             data: {
                 name: classData.name,
+                category: classData.category,
             },
         });
         return newClass;
@@ -27,13 +29,16 @@ export class ClassRepository {
         return classData;
     }
 
-    static async GET_IDENTITY(class_name: string) {
+    static async GET_IDENTITY(
+        class_name: string,
+        classCategory: ClassCategory,
+    ) {
         const classData = await prisma.class.findFirst({
             where: {
-                name: {
-                    mode: 'insensitive',
-                    equals: class_name,
-                },
+                AND: [
+                    { name: { mode: 'insensitive', equals: class_name } },
+                    { category: classCategory },
+                ],
             },
         });
 
@@ -47,6 +52,7 @@ export class ClassRepository {
             },
             data: {
                 name: classData.name,
+                category: classData.category,
             },
         });
 

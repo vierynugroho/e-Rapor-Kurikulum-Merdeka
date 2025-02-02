@@ -1,3 +1,4 @@
+import { ClassCategory } from '@prisma/client';
 import * as z from 'zod';
 
 export const createSchema = z.object({
@@ -22,6 +23,7 @@ export const createSchema = z.object({
     themeID: z.any({
         required_error: 'Silakan pilih tema',
     }),
+    classCategory: z.enum([ClassCategory.A, ClassCategory.B]),
 });
 
 export const updateSchema = z.object({
@@ -51,4 +53,5 @@ export const updateSchema = z.object({
             required_error: 'Silakan pilih tema',
         })
         .optional(),
+    classCategory: z.enum([ClassCategory.A, ClassCategory.B]).optional(),
 });

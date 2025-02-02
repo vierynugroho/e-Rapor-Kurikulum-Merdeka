@@ -1,6 +1,9 @@
+import { ClassCategory } from '@prisma/client';
+
 export type ClassType = {
     id?: number;
     name?: string;
+    category?: ClassCategory;
 
     createdAt?: Date;
     updatedAt?: Date;
@@ -9,6 +12,7 @@ export type ClassType = {
 export type UpdateClassType = {
     id?: number;
     name?: string;
+    category?: ClassCategory;
 
     createdAt?: Date;
     updatedAt?: Date;
@@ -17,6 +21,7 @@ export type UpdateClassType = {
 export type CreateClassType = {
     id?: number;
     name: string;
+    category: ClassCategory;
 
     createdAt?: Date;
     updatedAt?: Date;

@@ -11,9 +11,14 @@ import LongTextInput from '@/components/form/long-text-input';
 import { Form } from '@/components/ui/form';
 import { DialogFooter } from '@/components/ui/dialog';
 import { useToast } from '@/hooks/use-toast';
-import { AssessmentAspects, DevelopmentLevel, Theme } from '@prisma/client';
+import {
+    AssessmentAspects,
+    ClassCategory,
+    DevelopmentLevel,
+    Theme,
+} from '@prisma/client';
 import * as z from 'zod';
-import { getIndicators } from '@/services/pages/indicator';
+import { getIndicatorsByClassCategory } from '@/services/pages/indicator';
 import { UpdateIndicatorType } from '@/types/indicator';
 import { StudentType } from '@/types/student';
 import { getAssessment, upsertAssessment } from '@/services/pages/assessment';
@@ -74,7 +79,10 @@ export const AssessmentForm: React.FC<FormAssessmentProps> = ({
 
     const { data: indicators = [] } = useQuery({
         queryKey: ['indicators'],
-        queryFn: getIndicators,
+        queryFn: () =>
+            getIndicatorsByClassCategory(
+                student?.Class?.category || ClassCategory.A,
+            ),
     });
 
     const { data: studentAssessment, isLoading: isLoadingStudentAssessment } =

@@ -1,3 +1,4 @@
+import { ClassCategory } from '@prisma/client';
 import { StudentDevelopment, StudentScore } from './student';
 
 export type UserRole = 'ADMIN' | 'TEACHER';
@@ -5,6 +6,7 @@ export type UserRole = 'ADMIN' | 'TEACHER';
 export type Class = {
     id: number;
     name: string;
+    category: ClassCategory;
 };
 
 export type CreateTeacherType = {
