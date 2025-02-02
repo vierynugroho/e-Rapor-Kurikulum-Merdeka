@@ -50,7 +50,6 @@ export default function MainLayout({
         setBreadcrumbs(generateBreadcrumbs());
     }, [pathname]);
 
-    // Prevent hydration errors by not rendering until client-side
     if (!mounted) {
         return (
             <SidebarProvider>

@@ -1,6 +1,6 @@
 import { useToast } from '@/hooks/use-toast';
 import { StudentType } from '@/types/student';
-import { formatDateTime } from '@/utils/format';
+import { formatDate, formatDateTime } from '@/utils/format';
 import { CopyIcon } from 'lucide-react';
 import React from 'react';
 
@@ -99,7 +99,7 @@ export const DetailData: React.FC<DetailDataProps> = ({ data }) => {
                                 Tanggal Lahir
                             </span>
                             <div className="flex-1">
-                                {formatDateTime(data.birthDate!)}
+                                {formatDate(data.birthDate!)}
                             </div>
                         </div>
                     </div>
