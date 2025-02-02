@@ -6,7 +6,7 @@ import { IndicatorService } from './service';
 import {
     createSchema,
     updateSchema,
-} from '@/app/(pages)/(admin)/indicators/form/validation';
+} from '@/app/(pages)/admin/indicators/form/validation';
 import { AssessmentAspects, ClassCategory } from '@prisma/client';
 
 export class IndicatorController {

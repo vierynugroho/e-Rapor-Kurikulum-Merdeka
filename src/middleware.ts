@@ -32,11 +32,11 @@ export async function middleware(request: NextRequest) {
     const Redirect = () => {
         if (user.role == 'ADMIN') {
             return NextResponse.redirect(
-                new URL('/admin/Dashboard', request.url),
+                new URL('/admin/dashboard', request.url),
             );
         } else if (user.role == 'TEACHER') {
             return NextResponse.redirect(
-                new URL('/teacher/Dashboard', request.url),
+                new URL('/teacher/dashboard', request.url),
             );
         } else {
             return NextResponse.redirect(

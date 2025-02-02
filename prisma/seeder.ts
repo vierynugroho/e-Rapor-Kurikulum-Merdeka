@@ -116,6 +116,15 @@ async function main() {
             {
                 title: 'Olahraga',
             },
+            {
+                title: 'Teknologi',
+            },
+            {
+                title: 'Profesi',
+            },
+            {
+                title: 'Kegiatan',
+            },
         ],
     });
 
