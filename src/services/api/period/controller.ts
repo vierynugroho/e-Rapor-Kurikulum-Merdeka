@@ -5,7 +5,7 @@ import { NextRequest } from 'next/server';
 import {
     createSchema,
     updateSchema,
-} from '@/app/(pages)/(admin)/periods/form/validation';
+} from '@/app/(pages)/admin/periods/form/validation';
 import { PeriodService } from './service';
 import { CreatePeriodType, UpdatePeriodType } from '@/types/period';
 

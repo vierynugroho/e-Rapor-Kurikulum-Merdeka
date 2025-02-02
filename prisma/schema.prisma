@@ -39,6 +39,11 @@ enum Semester {
   GENAP
 }
 
+enum ClassCategory {
+  A
+  B
+}
+
 enum Gender {
   LAKI_LAKI
   PEREMPUAN
@@ -70,8 +75,9 @@ model Teacher {
 }
 
 model Class {
-  id   Int    @id @default(autoincrement())
-  name String @unique
+  id       Int           @id @default(autoincrement())
+  name     String        @unique
+  category ClassCategory
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("update_at")
@@ -113,6 +119,7 @@ model Indicator {
   description    String
   assesment_type AssessmentAspects
   themeId        Int
+  classCategory  ClassCategory
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("update_at")

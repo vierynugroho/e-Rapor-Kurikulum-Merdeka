@@ -4,10 +4,16 @@ import {
     IndicatorType,
     UpdateIndicatorType,
 } from '@/types/indicator';
-import { AssessmentAspects } from '@prisma/client';
+import { AssessmentAspects, ClassCategory } from '@prisma/client';
 
 export const getIndicators = async () => {
     return apiClient.get<IndicatorType[]>('/indicators');
+};
+
+export const getIndicatorsByClassCategory = async (
+    classCategory: ClassCategory,
+) => {
+    return apiClient.get<IndicatorType[]>(`/indicators/class/${classCategory}`);
 };
 
 export const getIndicator = async (indicatorID: number) => {

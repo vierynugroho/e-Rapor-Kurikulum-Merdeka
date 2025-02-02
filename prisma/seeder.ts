@@ -6,6 +6,7 @@ import {
     UserRole,
     Semester,
     AssessmentAspects,
+    ClassCategory,
 } from '@prisma/client';
 
 const prisma = new PrismaClient();
@@ -20,9 +21,11 @@ async function main() {
         data: [
             {
                 name: 'Kelas A1',
+                category: 'A',
             },
             {
                 name: 'Kelas A2',
+                category: 'A',
             },
         ],
     });
@@ -31,9 +34,11 @@ async function main() {
         data: [
             {
                 name: 'Kelas B1',
+                category: 'B',
             },
             {
                 name: 'Kelas B2',
+                category: 'B',
             },
         ],
     });
@@ -111,6 +116,15 @@ async function main() {
             {
                 title: 'Olahraga',
             },
+            {
+                title: 'Teknologi',
+            },
+            {
+                title: 'Profesi',
+            },
+            {
+                title: 'Kegiatan',
+            },
         ],
     });
 
@@ -140,22 +154,47 @@ async function main() {
         data: [
             {
                 title: 'Pendidikan Karakter',
-                description: 'Jati Diri: Pendidikan Karakter',
+                description: 'Superhero: Pendidikan Karakter seperti Naruto',
                 assesment_type: AssessmentAspects.JATI_DIRI,
                 themeId: 1,
+                classCategory: ClassCategory.A,
+            },
+            {
+                title: 'Pendidikan Karakter',
+                description: 'Superhero: Pendidikan Karakter seperti Saitama',
+                assesment_type: AssessmentAspects.JATI_DIRI,
+                themeId: 1,
+                classCategory: ClassCategory.B,
             },
             {
                 title: 'Pendidikan SAINTEK',
-                description: 'Jati Diri: Pendidikan SAINS dan Teknologi',
+                description: 'SAINTEK: Pemanfaatan AI',
                 assesment_type:
                     AssessmentAspects.DASAR_LITERASI_MATEMATIKA_SAINS_TEKNOLOGI_REKAYASA_DAN_SENI,
                 themeId: 1,
+                classCategory: ClassCategory.A,
             },
             {
-                title: 'Pendidikan Agama',
-                description: 'Agama: Pendidikan Agama dan Budi Pekerti',
+                title: 'Pendidikan SAINTEK',
+                description: 'SAINTEK: Coding for kids',
+                assesment_type:
+                    AssessmentAspects.DASAR_LITERASI_MATEMATIKA_SAINS_TEKNOLOGI_REKAYASA_DAN_SENI,
+                themeId: 1,
+                classCategory: ClassCategory.B,
+            },
+            {
+                title: 'Pendidikan Agama Islam',
+                description: 'Agama: Pendidikan Agama Islam dan Budi Pekerti',
                 assesment_type: AssessmentAspects.NILAI_AGAMA_DAN_BUDI_PEKERTI,
                 themeId: 1,
+                classCategory: ClassCategory.A,
+            },
+            {
+                title: 'Pendidikan Agama Kristen',
+                description: 'Agama: Pendidikan Agama Kristen dan Budi Pekerti',
+                assesment_type: AssessmentAspects.NILAI_AGAMA_DAN_BUDI_PEKERTI,
+                themeId: 1,
+                classCategory: ClassCategory.B,
             },
         ],
     });

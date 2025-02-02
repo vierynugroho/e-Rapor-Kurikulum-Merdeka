@@ -6,8 +6,8 @@ import {
     Religion,
     Student,
     Teacher,
+    Class,
 } from '@prisma/client';
-import { Class } from './teacher';
 
 //TODO: Student Score
 export type StudentScore = {

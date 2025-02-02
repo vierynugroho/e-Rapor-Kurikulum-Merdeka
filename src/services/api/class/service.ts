@@ -16,7 +16,10 @@ export class ClassService {
     }
 
     static async CREATE<T extends CreateClassType>(request: T) {
-        const identityExist = await ClassRepository.GET_IDENTITY(request.name);
+        const identityExist = await ClassRepository.GET_IDENTITY(
+            request.name,
+            request.category,
+        );
 
         if (identityExist) {
             throw new CustomError(400, 'class is already registered');
@@ -37,7 +40,10 @@ export class ClassService {
             throw new CustomError(404, 'class data is not found');
         }
 
-        const identityExist = await ClassRepository.GET_IDENTITY(request.name!);
+        const identityExist = await ClassRepository.GET_IDENTITY(
+            request.name!,
+            request.category!,
+        );
 
         if (identityExist) {
             throw new CustomError(400, 'class is already registered');

@@ -44,7 +44,7 @@ const data = {
             items: [
                 {
                     title: 'Manajemen Data',
-                    url: '/students',
+                    url: '/admin/students',
                 },
             ],
         },
@@ -55,7 +55,7 @@ const data = {
             items: [
                 {
                     title: 'Manajemen Data',
-                    url: '/teachers',
+                    url: '/admin/teachers',
                 },
             ],
         },
@@ -66,7 +66,7 @@ const data = {
             items: [
                 {
                     title: 'Manajemen Data',
-                    url: '/periods',
+                    url: '/admin/periods',
                 },
             ],
         },
@@ -77,7 +77,7 @@ const data = {
             items: [
                 {
                     title: 'Manajemen Data',
-                    url: '/themes',
+                    url: '/admin/themes',
                 },
             ],
         },
@@ -88,7 +88,7 @@ const data = {
             items: [
                 {
                     title: 'Manajemen Data',
-                    url: '/indicators',
+                    url: '/admin/indicators',
                 },
             ],
         },
@@ -99,7 +99,7 @@ const data = {
             items: [
                 {
                     title: 'Manajemen Data',
-                    url: '/classes',
+                    url: '/admin/classes',
                 },
             ],
         },
@@ -112,15 +112,15 @@ const data = {
             items: [
                 {
                     title: 'Siswa Kelas',
-                    url: '/students',
+                    url: '/teacher/students',
                 },
                 {
                     title: 'Penilaian',
-                    url: '/assessments',
+                    url: '/teacher/assessments',
                 },
                 {
                     title: 'Perkembangan',
-                    url: '/developments',
+                    url: '/teacher/developments',
                 },
             ],
         },

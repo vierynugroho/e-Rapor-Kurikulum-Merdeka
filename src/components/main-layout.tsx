@@ -17,6 +17,13 @@ import {
     SidebarTrigger,
 } from '@/components/ui/sidebar';
 import { usePathname } from 'next/navigation';
+import { useEffect, useState } from 'react';
+
+interface BreadcrumbItem {
+    href: string;
+    label: string;
+    isLast: boolean;
+}
 
 export default function MainLayout({
     children,
@@ -24,79 +31,116 @@ export default function MainLayout({
     children: React.ReactNode;
 }>) {
     const pathname = usePathname();
+    const [breadcrumbs, setBreadcrumbs] = useState<BreadcrumbItem[]>([]);
+    const [mounted, setMounted] = useState(false);
 
-    const generateBreadcrumbs = () => {
-        const paths = pathname.split('/').filter(path => path);
+    useEffect(() => {
+        setMounted(true);
 
-        return paths.map((path, index) => {
-            const href = `/${paths.slice(0, index + 1).join('/')}`;
-            const label = path.charAt(0).toUpperCase() + path.slice(1);
-            const isLast = index === paths.length - 1;
+        const generateBreadcrumbs = (): BreadcrumbItem[] => {
+            const paths = pathname.split('/').filter(path => path);
 
-            return {
-                href,
-                label,
-                isLast,
-            };
-        });
-    };
+            return paths.map((path, index) => ({
+                href: `/${paths.slice(0, index + 1).join('/')}`,
+                label: path.charAt(0).toUpperCase() + path.slice(1),
+                isLast: index === paths.length - 1,
+            }));
+        };
 
-    const breadcrumbs = generateBreadcrumbs();
+        setBreadcrumbs(generateBreadcrumbs());
+    }, [pathname]);
+
+    // Prevent hydration errors by not rendering until client-side
+    if (!mounted) {
+        return (
+            <SidebarProvider>
+                <AppSidebar />
+                <SidebarInset>
+                    <header className="sticky top-0 z-10 flex h-16 shrink-0 items-center gap-2 bg-background/95 backdrop-blur transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
+                        <div className="flex w-full items-center gap-2 px-4">
+                            <SidebarTrigger className="-ml-1" />
+                            <Separator
+                                orientation="vertical"
+                                className="mr-2 h-4"
+                            />
+                            {/* Minimal header content during initial render */}
+                            <div className="flex-1" />
+                            <div className="ml-auto">
+                                <ModeToggle />
+                            </div>
+                        </div>
+                    </header>
+                    <main className="flex-1 p-4">
+                        <div className="grid auto-rows-min gap-4">
+                            {children}
+                        </div>
+                    </main>
+                </SidebarInset>
+            </SidebarProvider>
+        );
+    }
 
     return (
         <SidebarProvider>
             <AppSidebar />
             <SidebarInset>
-                <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
-                    <div className="flex items-center gap-2 px-4">
+                <header className="sticky top-0 z-10 flex h-16 shrink-0 items-center gap-2 bg-background/95 backdrop-blur transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
+                    <div className="flex w-full items-center gap-2 px-4">
                         <SidebarTrigger className="-ml-1" />
                         <Separator
                             orientation="vertical"
                             className="mr-2 h-4"
                         />
-                        {!breadcrumbs ||
-                            (breadcrumbs.length == 0 && (
-                                <Breadcrumb>
-                                    <BreadcrumbList>
-                                        <BreadcrumbItem className="hidden md:block">
-                                            <BreadcrumbLink href="#">
-                                                e-Rapor TK Negeri 2 Sananwetan
-                                                Kota Blitar
-                                            </BreadcrumbLink>
-                                        </BreadcrumbItem>
-                                        <BreadcrumbSeparator className="hidden md:block" />
-                                        <BreadcrumbItem>
-                                            <BreadcrumbPage>
-                                                Dashboard
-                                            </BreadcrumbPage>
-                                        </BreadcrumbItem>
-                                    </BreadcrumbList>
-                                </Breadcrumb>
-                            ))}
-                        {breadcrumbs.map(({ href, label }) => (
-                            <Breadcrumb key={href}>
-                                <BreadcrumbList>
-                                    <BreadcrumbItem className="hidden md:block">
-                                        <BreadcrumbLink>
-                                            e-Rapor TK Negeri 2 Sananwetan Kota
-                                            Blitar
-                                        </BreadcrumbLink>
-                                    </BreadcrumbItem>
+
+                        <Breadcrumb>
+                            <BreadcrumbList>
+                                <BreadcrumbItem className="hidden md:block">
+                                    <BreadcrumbLink href="/">
+                                        e-Rapor TK Negeri 2 Sananwetan Kota
+                                        Blitar
+                                    </BreadcrumbLink>
+                                </BreadcrumbItem>
+
+                                {breadcrumbs.length > 0 && (
                                     <BreadcrumbSeparator className="hidden md:block" />
+                                )}
+
+                                {breadcrumbs.length === 0 ? (
                                     <BreadcrumbItem>
-                                        <BreadcrumbPage>{label}</BreadcrumbPage>
+                                        <BreadcrumbPage>
+                                            Dashboard
+                                        </BreadcrumbPage>
                                     </BreadcrumbItem>
-                                </BreadcrumbList>
-                            </Breadcrumb>
-                        ))}
-                        <div className="fixed right-0 mr-6">
+                                ) : (
+                                    breadcrumbs.map(
+                                        ({ href, label, isLast }) => (
+                                            <BreadcrumbItem key={href}>
+                                                {isLast ? (
+                                                    <BreadcrumbPage>
+                                                        {label}
+                                                    </BreadcrumbPage>
+                                                ) : (
+                                                    <BreadcrumbLink href={href}>
+                                                        {label}
+                                                    </BreadcrumbLink>
+                                                )}
+                                                {!isLast && (
+                                                    <BreadcrumbSeparator className="hidden md:block" />
+                                                )}
+                                            </BreadcrumbItem>
+                                        ),
+                                    )
+                                )}
+                            </BreadcrumbList>
+                        </Breadcrumb>
+                        <div className="ml-auto">
                             <ModeToggle />
                         </div>
                     </div>
                 </header>
-                <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
-                    <div className="grid auto-rows-min">{children}</div>
-                </div>
+                <main className="flex-1 p-4">
+                    <div className="grid auto-rows-min gap-4">{children}</div>
+                </main>
             </SidebarInset>
         </SidebarProvider>
     );
