@@ -1,20 +1,7 @@
-import { CustomError } from '@/utils/error';
-import { type UserRole } from '@prisma/client';
-import { type NextFetchEvent, type NextRequest } from 'next/server';
+import { UserRole } from '@prisma/client';
 
-export type MiddlewareFactory<T> = (
-    middleware: (
-        request: NextRequest,
-        next: NextFetchEvent,
-    ) => Promise<Response | CustomError>,
-    options?: T,
-) => (
-    request: NextRequest,
-    next: NextFetchEvent,
-) => Promise<Response | CustomError>;
-
-export interface RoleMiddlewareConfig {
+export type RoleMiddlewareConfig = {
     path: string;
     roles: UserRole[];
     redirect: string;
-}
+};

@@ -1,34 +1,19 @@
 import { type NextRequest, NextResponse } from 'next/server';
 import { UserRole } from '@prisma/client';
-import type { RoleMiddlewareConfig } from './types/middleware';
+import { RoleMiddlewareConfig } from './types/middleware';
 import { withAuthToken } from './middlewares/withAuthToken';
 import { withRole } from './middlewares/withRole';
 import { withAuth } from './middlewares/withAuth';
+import { logging } from './middlewares/logging';
 
 const middleware = async (request: NextRequest) => {
-    if (request.nextUrl.pathname === '/dashboard/store') {
-        return NextResponse.redirect(
-            new URL('/dashboard/store/product', request.url),
-        );
-    }
     return NextResponse.next({ request });
 };
 
-const protectedPaths = ['/dashboard', '/teacher', '/admin'];
+// Daftar route yang dilindungi (memerlukan autentikasi)
+const protectedPaths = ['/teacher', '/admin'];
 
-const roleConfig: RoleMiddlewareConfig[] = [
-    {
-        path: '/admin',
-        roles: [UserRole.ADMIN],
-        redirect: '/admin/dashboard',
-    },
-    {
-        path: '/teacher',
-        roles: [UserRole.TEACHER],
-        redirect: '/teacher/dashboard',
-    },
-];
-
+// Daftar route API yang dilindungi (memerlukan token)
 const protectedApiPaths = [
     '/api/v1/assessments',
     '/api/v1/students',
@@ -40,9 +25,29 @@ const protectedApiPaths = [
     '/api/v1/teachers',
 ];
 
-const middlewareHandler = withAuthToken(
-    withRole(withAuth(middleware, protectedPaths), roleConfig),
-    protectedApiPaths,
+// Daftar route yang dapat diakses tanpa autentikasi
+const publicPaths = ['/login'];
+
+// Konfigurasi role untuk proteksi route
+const roleConfig: RoleMiddlewareConfig[] = [
+    {
+        path: '/admin',
+        roles: [UserRole.ADMIN],
+        redirect: '/', // Redirect ke login jika role tidak sesuai
+    },
+    {
+        path: '/teacher',
+        roles: [UserRole.TEACHER],
+        redirect: '/', // Redirect ke login jika role tidak sesuai
+    },
+];
+
+// Middleware handler dengan logging, auth, role, dan token protection
+const middlewareHandler = logging(
+    withAuthToken(
+        withRole(withAuth(middleware, protectedPaths, publicPaths), roleConfig),
+        protectedApiPaths,
+    ),
 );
 
 export default middlewareHandler;

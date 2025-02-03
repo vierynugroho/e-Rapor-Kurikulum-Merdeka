@@ -1,58 +1,41 @@
-import { type MiddlewareFactory } from '@/types/middleware';
-import { type NextFetchEvent, NextRequest } from 'next/server';
-import * as jose from 'jose';
-import { CustomError } from '@/utils/error';
-import { jwtService } from '@/services/api/jwt/jwt-service';
+import { UserRole } from '@prisma/client';
+import { getToken } from 'next-auth/jwt';
+import { type NextRequest, NextResponse } from 'next/server';
 
-export const withAuthToken: MiddlewareFactory<string[]> = (
-    middleware,
-    protectedApiPaths = [],
+export const withAuthToken = (
+    middleware: (request: NextRequest) => Promise<NextResponse>,
+    protectedApiPaths: string[],
 ) => {
-    return async (request: NextRequest, next: NextFetchEvent) => {
+    return async (request: NextRequest) => {
         const pathname = request.nextUrl.pathname;
+        const token = await getToken({
+            req: request,
+            secret: process.env.AUTH_SECRET,
+        });
 
-        if (!protectedApiPaths.some(path => pathname.startsWith(path))) {
-            return middleware(request, next);
-        }
-
-        try {
-            const authHeader = request.headers.get('authorization');
-
-            if (!authHeader || !authHeader.startsWith('Bearer ')) {
-                return new CustomError(
-                    401,
-                    'Token is not found or improperly formatted',
+        if (protectedApiPaths.some(path => pathname.startsWith(path))) {
+            if (!token) {
+                return NextResponse.json(
+                    { error: 'Unauthorized' },
+                    { status: 401 },
                 );
             }
-
-            const token = authHeader.replace('Bearer ', '').trim();
-
-            const user = await jwtService.verifyToken(token);
-
-            const requestHeaders = new Headers(request.headers);
-            requestHeaders.set('x-user-id', String(user.id));
-
-            const authorizedRequest = new NextRequest(request.url, {
-                headers: requestHeaders,
-                method: request.method,
-                body: request.body,
-                cache: request.cache,
-                credentials: request.credentials,
-                integrity: request.integrity,
-                keepalive: request.keepalive,
-                mode: request.mode,
-                redirect: request.redirect,
-            });
-
-            return middleware(authorizedRequest, next);
-        } catch (error) {
-            if (error instanceof jose.errors.JWTExpired) {
-                return new CustomError(401, 'Token is expired');
-            }
-            if (error instanceof jose.errors.JWSSignatureVerificationFailed) {
-                return new CustomError(401, 'Invalid token signature');
-            }
-            return new CustomError(401, 'Unauthorized');
         }
+
+        const userRole = token?.role;
+
+        if (request.nextUrl.pathname === '/' && token) {
+            if (userRole === UserRole.ADMIN) {
+                return NextResponse.redirect(
+                    new URL('/admin/dashboard', request.url),
+                );
+            } else if (userRole === UserRole.TEACHER) {
+                return NextResponse.redirect(
+                    new URL('/teacher/dashboard', request.url),
+                );
+            }
+        }
+
+        return middleware(request);
     };
 };

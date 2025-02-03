@@ -1,43 +1,31 @@
-import { type MiddlewareFactory } from '@/types/middleware';
 import { getToken } from 'next-auth/jwt';
-import {
-    type NextFetchEvent,
-    type NextRequest,
-    NextResponse,
-} from 'next/server';
+import { type NextRequest, NextResponse } from 'next/server';
 
-const PATHS = {
-    DEFAULT_REDIRECT: '/',
-    PUBLIC_ONLY: ['/login'],
-    LOGIN_REDIRECT: '/login',
-};
-
-export const withAuth: MiddlewareFactory<string[]> = (
-    middleware,
-    protectedPaths = [],
+export const withAuth = (
+    middleware: (request: NextRequest) => Promise<NextResponse>,
+    protectedPaths: string[],
+    publicPaths: string[],
 ) => {
-    return async (request: NextRequest, next: NextFetchEvent) => {
+    return async (request: NextRequest) => {
         const pathname = request.nextUrl.pathname;
-        const token = await getToken({
-            req: request,
-            secret: process.env.AUTH_SECRET,
-        });
 
-        if (PATHS.PUBLIC_ONLY.some(path => pathname.startsWith(path))) {
-            if (token) {
-                const url = new URL(PATHS.DEFAULT_REDIRECT, request.url);
-                return NextResponse.redirect(url);
-            }
+        // Jika route adalah public, lanjutkan tanpa pengecekan
+        if (publicPaths.includes(pathname)) {
+            return middleware(request);
         }
 
+        // Jika route dilindungi, cek token
         if (protectedPaths.some(path => pathname.startsWith(path))) {
+            const token = await getToken({
+                req: request,
+                secret: process.env.AUTH_SECRET,
+            });
+
             if (!token) {
-                const url = new URL(PATHS.LOGIN_REDIRECT, request.url);
-                url.searchParams.set('callbackUrl', encodeURI(request.url));
-                return NextResponse.redirect(url);
+                return NextResponse.redirect(new URL('/login', request.url));
             }
         }
 
-        return middleware(request, next);
+        return middleware(request);
     };
 };
