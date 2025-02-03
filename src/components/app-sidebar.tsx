@@ -22,7 +22,7 @@ import {
     SidebarRail,
 } from '@/components/ui/sidebar';
 import { NavGeneral } from './nav-general';
-import { useSession } from 'next-auth/react';
+import { UserRole } from '@prisma/client';
 
 const data = {
     user: {
@@ -134,35 +134,37 @@ const data = {
         },
     ],
 };
+
+interface UserSession {
+    id: number;
+    email: string | null;
+    role: UserRole;
+    fullname: string;
+    identity_number: string;
+}
+
 const MemoizedSchoolSwitcher = React.memo(SchoolSwitcher);
 const MemoizedNavUser = React.memo(NavUser);
 
-export const AppSidebar = React.memo(
-    ({ ...props }: React.ComponentProps<typeof Sidebar>) => {
-        const { data: session } = useSession();
-        const userRole = session?.user?.role;
-
-        return (
-            <Sidebar collapsible="icon" {...props}>
-                <SidebarHeader>
-                    <MemoizedSchoolSwitcher schools={data.schools} />
-                </SidebarHeader>
-                <SidebarContent>
-                    <NavGeneral generals={data.generals} />
-                    {userRole === 'ADMIN' && (
-                        <NavMain items={data.adminNavMain} />
-                    )}
-                    {userRole === 'TEACHER' && (
-                        <NavMain items={data.teacherNavMain} role="Teacher" />
-                    )}
-                </SidebarContent>
-                <SidebarFooter>
-                    <MemoizedNavUser user={data.user} />
-                </SidebarFooter>
-                <SidebarRail />
-            </Sidebar>
-        );
-    },
-);
+export const AppSidebar = React.memo(({ user }: { user: UserSession }) => {
+    return (
+        <Sidebar key={user.id} collapsible="icon">
+            <SidebarHeader>
+                <MemoizedSchoolSwitcher schools={data.schools} />
+            </SidebarHeader>
+            <SidebarContent>
+                <NavGeneral generals={data.generals} />
+                {user.role === 'ADMIN' && <NavMain items={data.adminNavMain} />}
+                {user.role === 'TEACHER' && (
+                    <NavMain items={data.teacherNavMain} role="Teacher" />
+                )}
+            </SidebarContent>
+            <SidebarFooter>
+                <MemoizedNavUser user={user} />
+            </SidebarFooter>
+            <SidebarRail />
+        </Sidebar>
+    );
+});
 
 AppSidebar.displayName = 'AppSidebar';
