@@ -1,97 +1,58 @@
-// middleware.ts
 import { NextResponse } from 'next/server';
-import type { NextRequest } from 'next/server';
-import { UserLoggedInType } from './types/user';
+import { getToken } from 'next-auth/jwt';
+import { NextRequestWithAuth, withAuth } from 'next-auth/middleware';
 
-export async function middleware(request: NextRequest) {
-    const response = NextResponse.next();
+export default withAuth(
+    async function middleware(req: NextRequestWithAuth) {
+        const token = await getToken({ req });
+        const isAuth = !!token;
+        const isAuthPage = req.nextUrl.pathname.startsWith('/login');
 
-    // CORS headers
-    response.headers.set('Access-Control-Allow-Origin', '*');
-    response.headers.set(
-        'Access-Control-Allow-Methods',
-        'GET, POST, PUT, DELETE, OPTIONS',
-    );
-    response.headers.set(
-        'Access-Control-Allow-Headers',
-        'Content-Type, Authorization',
-    );
+        // Get user role from token
+        const userRole = token?.role as string;
+        console.log(token);
+        if (isAuthPage) {
+            if (isAuth) {
+                switch (userRole) {
+                    case 'TEACHER':
+                        return NextResponse.redirect(
+                            new URL('/teacher/dashboard', req.url),
+                        );
+                    case 'ADMIN':
+                        return NextResponse.redirect(
+                            new URL('/admin/dashboard', req.url),
+                        );
+                }
+            }
+            return null;
+        }
 
-    const { pathname }: { pathname: string } = request.nextUrl;
-    // const token = await getToken({ req: request });
-    const token = {
-        user: {
-            role: 'TEACHER',
-            id: 1,
-            token: 'token',
+        if (!isAuth) {
+            let from = req.nextUrl.pathname;
+            if (req.nextUrl.search) {
+                from += req.nextUrl.search;
+            }
+
+            return NextResponse.redirect(
+                new URL(`/login?from=${encodeURIComponent(from)}`, req.url),
+            );
+        }
+    },
+    {
+        callbacks: {
+            authorized: ({ req, token }) => {
+                if (
+                    req.nextUrl.pathname.startsWith('/login') ||
+                    req.nextUrl.pathname.startsWith('/api/auth')
+                ) {
+                    return true;
+                }
+                return !!token;
+            },
         },
-    };
-    // const token = null;
-    const user: UserLoggedInType | null = token?.user as UserLoggedInType;
-
-    const Redirect = () => {
-        if (user.role == 'ADMIN') {
-            return NextResponse.redirect(
-                new URL('/admin/dashboard', request.url),
-            );
-        } else if (user.role == 'TEACHER') {
-            return NextResponse.redirect(
-                new URL('/teacher/dashboard', request.url),
-            );
-        } else {
-            return NextResponse.redirect(
-                new URL(
-                    '/login?error=Please login first to access this route',
-                    request.url,
-                ),
-            );
-        }
-    };
-    const authRoutes = ['/login'];
-
-    if (!!token && authRoutes.includes(pathname)) {
-        return Redirect();
-    }
-    if (
-        (!!token && pathname.startsWith('/admin') && user.role !== 'ADMIN') ||
-        (!!token && pathname.startsWith('/teacher') && user.role !== 'TEACHER')
-    ) {
-        return Redirect();
-    }
-
-    if (!token) {
-        console.log('token tidak ada');
-        if (
-            pathname.includes('/api') ||
-            pathname.includes('/api/admin') ||
-            pathname.includes('/api/teacher')
-        ) {
-            return Response.json(
-                { success: false, message: 'authentication failed' },
-                { status: 401 },
-            );
-        }
-    } else {
-        // if (
-        //     (pathname.startsWith('/api/admin') && user.role !== 'ADMIN') ||
-        //     (pathname.startsWith('/api/teacher') && user.role !== 'TEACHER')
-        // ) {
-        //     console.log(pathname, user.role);
-        //     return Response.json(
-        //         { success: false, message: 'authentication failed' },
-        //         { status: 401 },
-        //     );
-        console.log(pathname, user.role);
-    }
-}
+    },
+);
 
 export const config = {
-    matcher: [
-        '/login',
-        '/admin/:path*',
-        '/teacher/:path*',
-        '/api/:path*',
-        '/api/admin/:function*',
-        '/api/teacher/:function*',
-    ],
+    matcher: ['/((?!api/auth|_next/static|_next/image|favicon.ico).*)'],
 };

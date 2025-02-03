@@ -1,7 +1,7 @@
 import * as z from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-
+import { signIn } from 'next-auth/react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import {
@@ -16,10 +16,16 @@ import { Input } from '@/components/ui/input';
 
 import Image from 'next/image';
 import { formSchema } from '@/app/(pages)/login/form/validation';
+import { PasswordInput } from '@/components/form/password-input';
 
-function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
-    // Handle form submission
+async function onSubmit(values: z.infer<typeof formSchema>) {
+    const response = await signIn('credentials', {
+        redirect: false,
+        identity_number: values.identity_number,
+        password: values.password,
+    });
+
+    console.log(response);
 }
 
 export function LoginForm() {
@@ -71,30 +77,11 @@ export function LoginForm() {
                                     )}
                                 />
 
-                                <FormField
+                                <PasswordInput
                                     control={form.control}
                                     name="password"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <div className="flex items-center">
-                                                <FormLabel>Password</FormLabel>
-                                                <a
-                                                    href="#"
-                                                    className="ml-auto text-sm underline-offset-2 hover:underline"
-                                                >
-                                                    Forgot your password?
-                                                </a>
-                                            </div>
-                                            <FormControl>
-                                                <Input
-                                                    type="password"
-                                                    placeholder="Password"
-                                                    {...field}
-                                                />
-                                            </FormControl>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
+                                    label="Password"
+                                    placeholder="*******"
                                 />
 
                                 <Button type="submit" className="w-full">

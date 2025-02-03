@@ -1,7 +1,7 @@
 'use client';
 
 import { BadgeCheck, ChevronsUpDown, LogOut } from 'lucide-react';
-
+import { signOut } from 'next-auth/react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
     DropdownMenu,
@@ -41,6 +41,16 @@ export function NavUser({
 }) {
     const { isMobile } = useSidebar();
 
+    const handleLogout = async () => {
+        try {
+            await signOut({
+                callbackUrl: '/login',
+                redirect: true,
+            });
+        } catch (error) {
+            console.error('Logout error:', error);
+        }
+    };
     return (
         <SidebarMenu>
             <SidebarMenuItem>
@@ -130,9 +140,7 @@ export function NavUser({
                                         Cancel
                                     </AlertDialogCancel>
                                     <AlertDialogAction
-                                        onClick={() =>
-                                            (window.location.href = '/login')
-                                        }
+                                        onClick={handleLogout}
                                         className="bg-red-800 text-white hover:bg-red-600 dark:bg-red-600 dark:hover:bg-red-500"
                                     >
                                         Logout

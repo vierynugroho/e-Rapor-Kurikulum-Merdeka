@@ -8,9 +8,9 @@ import {
 
 const PATHS = {
     DEFAULT_REDIRECT: '/',
-    PUBLIC_ONLY: ['/auth/login', '/auth/register'],
-    LOGIN_REDIRECT: '/auth/login',
-} as const;
+    PUBLIC_ONLY: ['/login'],
+    LOGIN_REDIRECT: '/login',
+};
 
 export const withAuth: MiddlewareFactory<string[]> = (
     middleware,
