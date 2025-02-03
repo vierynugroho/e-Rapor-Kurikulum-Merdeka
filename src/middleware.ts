@@ -1,97 +1,57 @@
-// middleware.ts
-import { NextResponse } from 'next/server';
-import type { NextRequest } from 'next/server';
-import { UserLoggedInType } from './types/user';
+import { type NextRequest, NextResponse } from 'next/server';
+import { UserRole } from '@prisma/client';
+import { RoleMiddlewareConfig } from './types/middleware';
+import { withAuthToken } from './middlewares/withAuthToken';
+import { withRole } from './middlewares/withRole';
+import { withAuth } from './middlewares/withAuth';
+import { logging } from './middlewares/logging';
 
-export async function middleware(request: NextRequest) {
-    const response = NextResponse.next();
+const middleware = async (request: NextRequest) => {
+    return NextResponse.next({ request });
+};
 
-    // CORS headers
-    response.headers.set('Access-Control-Allow-Origin', '*');
-    response.headers.set(
-        'Access-Control-Allow-Methods',
-        'GET, POST, PUT, DELETE, OPTIONS',
-    );
-    response.headers.set(
-        'Access-Control-Allow-Headers',
-        'Content-Type, Authorization',
-    );
+// Daftar route yang dilindungi (memerlukan autentikasi)
+const protectedPaths = ['/teacher', '/admin'];
 
-    const { pathname }: { pathname: string } = request.nextUrl;
-    // const token = await getToken({ req: request });
-    const token = {
-        user: {
-            role: 'TEACHER',
-            id: 1,
-            token: 'token',
-        },
-    };
-    // const token = null;
-    const user: UserLoggedInType | null = token?.user as UserLoggedInType;
+// Daftar route API yang dilindungi (memerlukan token)
+const protectedApiPaths = [
+    '/api/v1/assessments',
+    '/api/v1/students',
+    '/api/v1/indicators',
+    '/api/v1/developments',
+    '/api/v1/themes',
+    '/api/v1/classes',
+    '/api/v1/periods',
+    '/api/v1/teachers',
+];
 
-    const Redirect = () => {
-        if (user.role == 'ADMIN') {
-            return NextResponse.redirect(
-                new URL('/admin/dashboard', request.url),
-            );
-        } else if (user.role == 'TEACHER') {
-            return NextResponse.redirect(
-                new URL('/teacher/dashboard', request.url),
-            );
-        } else {
-            return NextResponse.redirect(
-                new URL(
-                    '/login?error=Please login first to access this route',
-                    request.url,
-                ),
-            );
-        }
-    };
-    const authRoutes = ['/login'];
+// Daftar route yang dapat diakses tanpa autentikasi
+const publicPaths = ['/login'];
 
-    if (!!token && authRoutes.includes(pathname)) {
-        return Redirect();
-    }
-    if (
-        (!!token && pathname.startsWith('/admin') && user.role !== 'ADMIN') ||
-        (!!token && pathname.startsWith('/teacher') && user.role !== 'TEACHER')
-    ) {
-        return Redirect();
-    }
+// Konfigurasi role untuk proteksi route
+const roleConfig: RoleMiddlewareConfig[] = [
+    {
+        path: '/admin',
+        roles: [UserRole.ADMIN],
+        redirect: '/', // Redirect ke login jika role tidak sesuai
+    },
+    {
+        path: '/teacher',
+        roles: [UserRole.TEACHER],
+        redirect: '/', // Redirect ke login jika role tidak sesuai
+    },
+];
 
-    if (!token) {
-        console.log('token tidak ada');
-        if (
-            pathname.includes('/api') ||
-            pathname.includes('/api/admin') ||
-            pathname.includes('/api/teacher')
-        ) {
-            return Response.json(
-                { success: false, message: 'authentication failed' },
-                { status: 401 },
-            );
-        }
-    } else {
-        // if (
-        //     (pathname.startsWith('/api/admin') && user.role !== 'ADMIN') ||
-        //     (pathname.startsWith('/api/teacher') && user.role !== 'TEACHER')
-        // ) {
-        //     console.log(pathname, user.role);
-        //     return Response.json(
-        //         { success: false, message: 'authentication failed' },
-        //         { status: 401 },
-        //     );
-        console.log(pathname, user.role);
-    }
-}
+// Middleware handler dengan logging, auth, role, dan token protection
+const middlewareHandler = logging(
+    withAuthToken(
+        withRole(withAuth(middleware, protectedPaths, publicPaths), roleConfig),
+        protectedApiPaths,
+    ),
+);
+
+export default middlewareHandler;
 
 export const config = {
-    matcher: [
-        '/login',
-        '/admin/:path*',
-        '/teacher/:path*',
-        '/api/:path*',
-        '/api/admin/:function*',
-        '/api/teacher/:function*',
-    ],
+    matcher: ['/:path*', '/api/:path*'],
 };

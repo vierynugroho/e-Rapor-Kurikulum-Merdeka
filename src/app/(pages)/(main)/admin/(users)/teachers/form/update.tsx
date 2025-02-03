@@ -6,7 +6,7 @@ import { Form } from '@/components/ui/form';
 import { PasswordInput } from '@/components/form/password-input';
 import { SelectInput } from '@/components/form/select-input';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import { TeacherType } from '../../../../../../types/teacher';
+import { TeacherType } from '../../../../../../../types/teacher';
 import { TextInput } from '@/components/form/text-input';
 import { updateSchema } from './validation';
 import { updateTeacher } from '@/services/pages/(user)/teachers';

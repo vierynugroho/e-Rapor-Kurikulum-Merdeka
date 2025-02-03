@@ -19,7 +19,7 @@ export class TeacherRepository {
     static async GET() {
         const teachers = await prisma.teacher.findMany({
             include: {
-                class: true,
+                Class: true,
             },
         });
 

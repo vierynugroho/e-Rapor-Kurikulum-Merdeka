@@ -6,7 +6,7 @@ import { StudentDevelopmentService } from './service';
 import {
     createSchema,
     updateSchema,
-} from '@/app/(pages)/teacher/developments/form/validation';
+} from '@/app/(pages)/(main)/teacher/developments/form/validation';
 import { CreateStudentDevelopment } from '@/types/student';
 
 export class StudentDevelopmentController {

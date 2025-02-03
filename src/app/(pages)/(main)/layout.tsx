@@ -1,6 +1,6 @@
 import MainLayout from '@/components/main-layout';
 
-export default function LoginLayout({
+export default function SubMainLayout({
     children,
 }: {
     children: React.ReactNode;
