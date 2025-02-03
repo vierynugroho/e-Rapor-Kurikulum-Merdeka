@@ -22,6 +22,7 @@ import {
     SidebarRail,
 } from '@/components/ui/sidebar';
 import { NavGeneral } from './nav-general';
+import { useSession } from 'next-auth/react';
 
 const data = {
     user: {
@@ -134,21 +135,46 @@ const data = {
     ],
 };
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-    return (
-        <Sidebar collapsible="icon" {...props}>
-            <SidebarHeader>
-                <SchoolSwitcher schools={data.schools} />
-            </SidebarHeader>
-            <SidebarContent>
-                <NavGeneral generals={data.generals} />
-                <NavMain items={data.adminNavMain} />
-                <NavMain items={data.teacherNavMain} role="Teacher" />
-            </SidebarContent>
-            <SidebarFooter>
-                <NavUser user={data.user} />
-            </SidebarFooter>
-            <SidebarRail />
-        </Sidebar>
-    );
-}
+const MemoizedNavMain = React.memo(NavMain);
+const MemoizedNavGeneral = React.memo(NavGeneral);
+const MemoizedSchoolSwitcher = React.memo(SchoolSwitcher);
+const MemoizedNavUser = React.memo(NavUser);
+
+export const AppSidebar = React.memo(
+    ({ ...props }: React.ComponentProps<typeof Sidebar>) => {
+        const { data: session } = useSession();
+        const userRole = session?.user?.role;
+
+        // Memoisasi navigasi berdasarkan role
+        const adminNav = React.useMemo(
+            () => <MemoizedNavMain items={data.adminNavMain} />,
+            [],
+        );
+
+        const teacherNav = React.useMemo(
+            () => (
+                <MemoizedNavMain items={data.teacherNavMain} role="Teacher" />
+            ),
+            [],
+        );
+
+        return (
+            <Sidebar collapsible="icon" {...props}>
+                <SidebarHeader>
+                    <MemoizedSchoolSwitcher schools={data.schools} />
+                </SidebarHeader>
+                <SidebarContent>
+                    <MemoizedNavGeneral generals={data.generals} />
+                    {userRole === 'ADMIN' && adminNav}
+                    {userRole === 'TEACHER' && teacherNav}
+                </SidebarContent>
+                <SidebarFooter>
+                    <MemoizedNavUser user={data.user} />
+                </SidebarFooter>
+                <SidebarRail />
+            </Sidebar>
+        );
+    },
+);
+
+AppSidebar.displayName = 'AppSidebar';

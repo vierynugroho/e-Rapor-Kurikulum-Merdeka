@@ -4,6 +4,7 @@ import './globals.css';
 import { ThemeProvider } from '@/components/providers/theme-provider';
 import TanstackProvider from '@/components/providers/tanstack-provider';
 import { ToastProvider } from '@/components/providers/toaster-provider';
+import { AuthSessionProvider } from '@/components/providers/session-provider';
 
 const geistSans = localFont({
     src: './fonts/GeistVF.woff',
@@ -44,9 +45,11 @@ export default function RootLayout({
                     enableSystem
                     disableTransitionOnChange
                 >
-                    <TanstackProvider>
-                        <ToastProvider>{children}</ToastProvider>
-                    </TanstackProvider>
+                    <AuthSessionProvider>
+                        <TanstackProvider>
+                            <ToastProvider>{children}</ToastProvider>
+                        </TanstackProvider>
+                    </AuthSessionProvider>
                 </ThemeProvider>
             </body>
         </html>
