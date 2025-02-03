@@ -22,6 +22,7 @@ import {
     SidebarRail,
 } from '@/components/ui/sidebar';
 import { NavGeneral } from './nav-general';
+import { UserRole } from '@prisma/client';
 
 const data = {
     user: {
@@ -134,21 +135,36 @@ const data = {
     ],
 };
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+interface UserSession {
+    id: number;
+    email: string | null;
+    role: UserRole;
+    fullname: string;
+    identity_number: string;
+}
+
+const MemoizedSchoolSwitcher = React.memo(SchoolSwitcher);
+const MemoizedNavUser = React.memo(NavUser);
+
+export const AppSidebar = React.memo(({ user }: { user: UserSession }) => {
     return (
-        <Sidebar collapsible="icon" {...props}>
+        <Sidebar key={user.id} collapsible="icon">
             <SidebarHeader>
-                <SchoolSwitcher schools={data.schools} />
+                <MemoizedSchoolSwitcher schools={data.schools} />
             </SidebarHeader>
             <SidebarContent>
                 <NavGeneral generals={data.generals} />
-                <NavMain items={data.adminNavMain} />
-                <NavMain items={data.teacherNavMain} role="Teacher" />
+                {user.role === 'ADMIN' && <NavMain items={data.adminNavMain} />}
+                {user.role === 'TEACHER' && (
+                    <NavMain items={data.teacherNavMain} role="Teacher" />
+                )}
             </SidebarContent>
             <SidebarFooter>
-                <NavUser user={data.user} />
+                <MemoizedNavUser user={user} />
             </SidebarFooter>
             <SidebarRail />
         </Sidebar>
     );
-}
+});
+
+AppSidebar.displayName = 'AppSidebar';
