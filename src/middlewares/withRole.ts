@@ -21,6 +21,8 @@ export const withRole: MiddlewareFactory<RoleMiddlewareConfig[]> = (
             secret: process.env.AUTH_SECRET,
         });
 
+        console.log(token);
+
         if (!token || !roleConfig.length) {
             return middleware(request, next);
         }

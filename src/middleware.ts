@@ -1,58 +1,52 @@
-import { NextResponse } from 'next/server';
-import { getToken } from 'next-auth/jwt';
-import { NextRequestWithAuth, withAuth } from 'next-auth/middleware';
+import { type NextRequest, NextResponse } from 'next/server';
+import { UserRole } from '@prisma/client';
+import type { RoleMiddlewareConfig } from './types/middleware';
+import { withAuthToken } from './middlewares/withAuthToken';
+import { withRole } from './middlewares/withRole';
+import { withAuth } from './middlewares/withAuth';
 
-export default withAuth(
-    async function middleware(req: NextRequestWithAuth) {
-        const token = await getToken({ req });
-        const isAuth = !!token;
-        const isAuthPage = req.nextUrl.pathname.startsWith('/login');
+const middleware = async (request: NextRequest) => {
+    if (request.nextUrl.pathname === '/dashboard/store') {
+        return NextResponse.redirect(
+            new URL('/dashboard/store/product', request.url),
+        );
+    }
+    return NextResponse.next({ request });
+};
 
-        // Get user role from token
-        const userRole = token?.role as string;
-        console.log(token);
-        if (isAuthPage) {
-            if (isAuth) {
-                switch (userRole) {
-                    case 'TEACHER':
-                        return NextResponse.redirect(
-                            new URL('/teacher/dashboard', req.url),
-                        );
-                    case 'ADMIN':
-                        return NextResponse.redirect(
-                            new URL('/admin/dashboard', req.url),
-                        );
-                }
-            }
-            return null;
-        }
+const protectedPaths = ['/dashboard', '/teacher', '/admin'];
 
-        if (!isAuth) {
-            let from = req.nextUrl.pathname;
-            if (req.nextUrl.search) {
-                from += req.nextUrl.search;
-            }
-
-            return NextResponse.redirect(
-                new URL(`/login?from=${encodeURIComponent(from)}`, req.url),
-            );
-        }
+const roleConfig: RoleMiddlewareConfig[] = [
+    {
+        path: '/admin',
+        roles: [UserRole.ADMIN],
+        redirect: '/admin/dashboard',
     },
     {
-        callbacks: {
-            authorized: ({ req, token }) => {
-                if (
-                    req.nextUrl.pathname.startsWith('/login') ||
-                    req.nextUrl.pathname.startsWith('/api/auth')
-                ) {
-                    return true;
-                }
-                return !!token;
-            },
-        },
+        path: '/teacher',
+        roles: [UserRole.TEACHER],
+        redirect: '/teacher/dashboard',
     },
+];
+
+const protectedApiPaths = [
+    '/api/v1/assessments',
+    '/api/v1/students',
+    '/api/v1/indicators',
+    '/api/v1/developments',
+    '/api/v1/themes',
+    '/api/v1/classes',
+    '/api/v1/periods',
+    '/api/v1/teachers',
+];
+
+const middlewareHandler = withAuthToken(
+    withRole(withAuth(middleware, protectedPaths), roleConfig),
+    protectedApiPaths,
 );
 
+export default middlewareHandler;
+
 export const config = {
-    matcher: ['/((?!api/auth|_next/static|_next/image|favicon.ico).*)'],
+    matcher: ['/:path*', '/api/:path*'],
 };

@@ -15,7 +15,7 @@ import {
 import { Input } from '@/components/ui/input';
 
 import Image from 'next/image';
-import { formSchema } from '@/app/(pages)/login/form/validation';
+import { formSchema } from '@/app/(pages)/(auth)/login/form/validation';
 import { PasswordInput } from '@/components/form/password-input';
 
 async function onSubmit(values: z.infer<typeof formSchema>) {
