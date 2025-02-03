@@ -13,28 +13,59 @@ import {
     FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-
+import { useToast } from '@/hooks/use-toast';
 import Image from 'next/image';
 import { formSchema } from '@/app/(pages)/(auth)/login/form/validation';
 import { PasswordInput } from '@/components/form/password-input';
-
-async function onSubmit(values: z.infer<typeof formSchema>) {
-    const response = await signIn('credentials', {
-        redirect: false,
-        identity_number: values.identity_number,
-        password: values.password,
-    });
-
-    console.log(response);
-}
+import { useMutation } from '@tanstack/react-query';
+import { useRouter } from 'next/navigation';
 
 export function LoginForm() {
+    const { toast } = useToast();
+    const router = useRouter();
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
+            identity_number: '',
             password: '',
         },
     });
+
+    const mutation = useMutation({
+        mutationFn: async (values: z.infer<typeof formSchema>) => {
+            const response = await signIn('credentials', {
+                redirect: false,
+                identity_number: values.identity_number,
+                password: values.password,
+            });
+
+            if (!response || response.error) {
+                throw new Error(response?.error || 'Terjadi kesalahan.');
+            }
+            return response;
+        },
+        onSuccess: () => {
+            toast({
+                title: 'Berhasil',
+                description: 'Login berhasil.',
+                variant: 'default',
+            });
+            router.push('/');
+            form.reset();
+        },
+        onError: error => {
+            toast({
+                title: 'Gagal',
+                description: error.message || 'Terjadi kesalahan.',
+                variant: 'destructive',
+            });
+            console.error('Error:', error);
+        },
+    });
+
+    async function onSubmit(values: z.infer<typeof formSchema>) {
+        mutation.mutate(values);
+    }
 
     return (
         <div className="flex flex-col gap-6">
@@ -67,7 +98,7 @@ export function LoginForm() {
                                             <FormControl>
                                                 <Input
                                                     id="identity_number"
-                                                    type="number"
+                                                    type="text"
                                                     placeholder="NIK atau NIP"
                                                     {...field}
                                                 />
@@ -84,8 +115,14 @@ export function LoginForm() {
                                     placeholder="*******"
                                 />
 
-                                <Button type="submit" className="w-full">
-                                    Login
+                                <Button
+                                    type="submit"
+                                    className="w-full"
+                                    disabled={mutation.isPending}
+                                >
+                                    {mutation.isPending
+                                        ? 'Memproses...'
+                                        : 'Login'}
                                 </Button>
 
                                 <div className="text-center text-sm">

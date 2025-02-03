@@ -36,7 +36,7 @@ export const authOptions: NextAuthOptions = {
                     });
 
                     if (!user) {
-                        return null;
+                        throw new CustomError(401, 'Wrong Credential');
                     }
 
                     const isPasswordValid = await Argon.verify(
@@ -45,7 +45,7 @@ export const authOptions: NextAuthOptions = {
                     );
 
                     if (!isPasswordValid) {
-                        return null;
+                        throw new CustomError(401, 'Wrong Credential');
                     }
 
                     return {
@@ -57,7 +57,7 @@ export const authOptions: NextAuthOptions = {
                     };
                 } catch (error) {
                     console.error('Auth error:', error);
-                    return null;
+                    throw new CustomError(401, 'Wrong Credential');
                 }
             },
         }),
