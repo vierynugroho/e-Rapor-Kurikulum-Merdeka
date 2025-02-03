@@ -134,9 +134,6 @@ const data = {
         },
     ],
 };
-
-const MemoizedNavMain = React.memo(NavMain);
-const MemoizedNavGeneral = React.memo(NavGeneral);
 const MemoizedSchoolSwitcher = React.memo(SchoolSwitcher);
 const MemoizedNavUser = React.memo(NavUser);
 
@@ -145,28 +142,19 @@ export const AppSidebar = React.memo(
         const { data: session } = useSession();
         const userRole = session?.user?.role;
 
-        // Memoisasi navigasi berdasarkan role
-        const adminNav = React.useMemo(
-            () => <MemoizedNavMain items={data.adminNavMain} />,
-            [],
-        );
-
-        const teacherNav = React.useMemo(
-            () => (
-                <MemoizedNavMain items={data.teacherNavMain} role="Teacher" />
-            ),
-            [],
-        );
-
         return (
             <Sidebar collapsible="icon" {...props}>
                 <SidebarHeader>
                     <MemoizedSchoolSwitcher schools={data.schools} />
                 </SidebarHeader>
                 <SidebarContent>
-                    <MemoizedNavGeneral generals={data.generals} />
-                    {userRole === 'ADMIN' && adminNav}
-                    {userRole === 'TEACHER' && teacherNav}
+                    <NavGeneral generals={data.generals} />
+                    {userRole === 'ADMIN' && (
+                        <NavMain items={data.adminNavMain} />
+                    )}
+                    {userRole === 'TEACHER' && (
+                        <NavMain items={data.teacherNavMain} role="Teacher" />
+                    )}
                 </SidebarContent>
                 <SidebarFooter>
                     <MemoizedNavUser user={data.user} />

@@ -123,9 +123,6 @@ export default function MainLayout({
                                                         {label}
                                                     </BreadcrumbLink>
                                                 )}
-                                                {!isLast && (
-                                                    <BreadcrumbSeparator className="hidden md:block" />
-                                                )}
                                             </BreadcrumbItem>
                                         ),
                                     )
