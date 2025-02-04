@@ -175,6 +175,9 @@ export const AssessmentForm: React.FC<FormAssessmentProps> = ({
             queryClient.invalidateQueries({
                 queryKey: ['studentsAssessments'],
             });
+            queryClient.invalidateQueries({
+                queryKey: ['studentsClass'],
+            });
             onSuccess?.();
         },
         onError: (error: Error) => {

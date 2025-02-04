@@ -44,6 +44,12 @@ export class StudentRepository {
     }
 
     static async GET_BY_CLASS(teacherID: number) {
+        const activePeriod = await prisma.period.findFirst({
+            where: {
+                isActive: true,
+            },
+        });
+
         const teacherClass = await prisma.teacher.findUnique({
             where: {
                 id: teacherID,
@@ -66,7 +72,11 @@ export class StudentRepository {
             },
             include: {
                 Class: true,
-                Development: true,
+                Development: {
+                    where: {
+                        periodId: activePeriod?.id,
+                    },
+                },
                 Score: true,
             },
         });
@@ -95,15 +105,18 @@ export class StudentRepository {
                 const studentScoreCount = await prisma.student_Score.count({
                     where: {
                         studentId: student.id,
+                        periodId: activePeriod?.id,
                     },
                 });
 
                 const hasDevelopment =
                     student.Development && student.Development.length > 0;
                 const hasAllScores = studentScoreCount === totalClassIndicator;
+                console.log(`has all scores: ${hasAllScores}`);
 
                 return {
                     ...student,
+                    filledAssessment: hasAllScores,
                     readyToPrint: hasDevelopment && hasAllScores,
                 };
             }),

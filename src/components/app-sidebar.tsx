@@ -112,7 +112,7 @@ const data = {
             icon: Users,
             items: [
                 {
-                    title: 'Siswa Kelas',
+                    title: 'Rapor Kelas',
                     url: '/teacher/students',
                 },
                 {
