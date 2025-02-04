@@ -77,7 +77,13 @@ export class StudentRepository {
                         periodId: activePeriod?.id,
                     },
                 },
-                Score: true,
+                Score: {
+                    include: {
+                        Indicator: true,
+                        Teacher: true,
+                        Period: true,
+                    },
+                },
             },
         });
 
