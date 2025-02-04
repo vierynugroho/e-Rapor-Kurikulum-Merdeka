@@ -6,6 +6,12 @@ import {
 
 export class StudentDevelopmentRepository {
     static async CREATE(studentDevelopmentData: CreateStudentDevelopment) {
+        const activePeriod = await prisma.period.findFirst({
+            where: {
+                isActive: true,
+            },
+        });
+
         const newStudentData = await prisma.student_Development.create({
             data: {
                 notes: studentDevelopmentData.notes,
@@ -14,6 +20,7 @@ export class StudentDevelopmentRepository {
                 studentId: studentDevelopmentData.studentID,
                 teacherId: studentDevelopmentData.teacherID,
                 recordDate: new Date(),
+                periodId: activePeriod?.id,
             },
         });
         return newStudentData;
@@ -56,6 +63,12 @@ export class StudentDevelopmentRepository {
         studentDevelopmentID: number,
         studentDevelopmentData: UpdateStudentDevelopment,
     ) {
+        const activePeriod = await prisma.period.findFirst({
+            where: {
+                isActive: true,
+            },
+        });
+
         const updatedPeriod = await prisma.student_Development.update({
             where: {
                 id: studentDevelopmentID,
@@ -64,6 +77,7 @@ export class StudentDevelopmentRepository {
                 notes: studentDevelopmentData.notes,
                 height: studentDevelopmentData.height,
                 weight: studentDevelopmentData.weight,
+                periodId: activePeriod?.id,
                 studentId: studentDevelopmentData.studentID,
                 teacherId: studentDevelopmentData.teacherID,
                 recordDate: new Date(),

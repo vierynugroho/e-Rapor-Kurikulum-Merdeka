@@ -1,6 +1,5 @@
 'use client';
 import * as React from 'react';
-
 import {
     ColumnDef,
     flexRender,
@@ -70,8 +69,8 @@ export function DataTable<TData, TValue>({
     });
 
     return (
-        <div>
-            <div className="flex items-center justify-between py-4">
+        <div className="w-full">
+            <div className="flex flex-col gap-4 py-4 sm:flex-row sm:items-center sm:justify-between">
                 <Input
                     placeholder="Filter berdasarkan nama siswa..."
                     value={
@@ -84,19 +83,20 @@ export function DataTable<TData, TValue>({
                             .getColumn('fullname')
                             ?.setFilterValue(event.target.value)
                     }
-                    className="max-w-sm"
+                    className="w-full sm:max-w-sm"
                 />
-                <div className="user-action flex gap-2">
+                <div className="user-action flex flex-col gap-2 sm:flex-row">
                     <Dialog
                         open={isCreateDialogOpen}
                         onOpenChange={setIsCreateDialogOpen}
                     >
                         <DialogTrigger asChild>
-                            <Button className="bg-blend-hard-light">
-                                <Plus /> Tambah Data
+                            <Button className="w-full bg-blend-hard-light sm:w-auto">
+                                <Plus className="mr-2 h-4 w-4" />
+                                <span>Tambah Data</span>
                             </Button>
                         </DialogTrigger>
-                        <DialogContent className="sm:max-w-[425px] md:max-w-[768px]">
+                        <DialogContent className="mx-auto w-[95vw] max-w-3xl">
                             <DialogHeader>
                                 <DialogTitle>
                                     Tambah Data Perkembangan
@@ -115,20 +115,25 @@ export function DataTable<TData, TValue>({
                     </Dialog>
                     <Button
                         onClick={() => window.print()}
-                        className="bg-green-800 text-white hover:bg-green-600 dark:bg-green-600 dark:hover:bg-green-500"
+                        className="w-full bg-green-800 text-white hover:bg-green-600 dark:bg-green-600 dark:hover:bg-green-500 sm:w-auto"
                     >
-                        <Download /> Unduh Data
+                        <Download className="mr-2 h-4 w-4" />
+                        <span>Unduh Data</span>
                     </Button>
                 </div>
             </div>
-            <div className="rounded-md border">
+
+            <div className="overflow-x-auto rounded-md border">
                 <Table>
                     <TableHeader>
                         {table.getHeaderGroups().map(headerGroup => (
                             <TableRow key={headerGroup.id}>
                                 {headerGroup.headers.map(header => {
                                     return (
-                                        <TableHead key={header.id}>
+                                        <TableHead
+                                            key={header.id}
+                                            className="whitespace-nowrap"
+                                        >
                                             {header.isPlaceholder
                                                 ? null
                                                 : flexRender(
@@ -152,7 +157,10 @@ export function DataTable<TData, TValue>({
                                     }
                                 >
                                     {row.getVisibleCells().map(cell => (
-                                        <TableCell key={cell.id}>
+                                        <TableCell
+                                            key={cell.id}
+                                            className="whitespace-nowrap"
+                                        >
                                             {flexRender(
                                                 cell.column.columnDef.cell,
                                                 cell.getContext(),
@@ -174,7 +182,8 @@ export function DataTable<TData, TValue>({
                     </TableBody>
                 </Table>
             </div>
-            <div className="flex items-center justify-end space-x-2 py-4">
+
+            <div className="flex items-center justify-end space-x-2 overflow-x-auto py-4">
                 <DataTablePagination table={table} />
             </div>
         </div>
