@@ -28,10 +28,11 @@ const styles = StyleSheet.create({
     headerText: {
         flex: 1,
         textAlign: 'center',
+        fontWeight: 'extrabold',
     },
     headerTitle: {
         fontSize: 14,
-        fontWeight: 'bold',
+        fontWeight: 'extrabold',
         marginBottom: 4,
     },
     headerAddress: {
@@ -84,8 +85,6 @@ const styles = StyleSheet.create({
         textAlign: 'center',
     },
     signatureLine: {
-        borderBottomWidth: 1,
-        borderStyle: 'dotted',
         marginVertical: 40,
     },
 });
@@ -95,6 +94,7 @@ interface RaporPDFDocumentProps {
 }
 
 const RaporPDFDocument: React.FC<RaporPDFDocumentProps> = ({ student }) => {
+    console.log(student);
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { fullname, Class, Development, Score } = student;
     const teacherName = Score?.[0]?.Teacher?.fullname || 'Nasriyah, S.Pd.AUD';
@@ -120,8 +120,8 @@ const RaporPDFDocument: React.FC<RaporPDFDocumentProps> = ({ student }) => {
             <Page size="A4" style={styles.page}>
                 <View style={styles.header}>
                     <Image
-                        src="/assets/Viery_Nugroho.png"
-                        style={{ width: 60, height: 60 }}
+                        src="/assets/logo.png"
+                        style={{ width: 70, height: 90 }}
                     />
                     <View style={styles.headerText}>
                         <Text style={styles.headerTitle}>
@@ -201,8 +201,9 @@ const RaporPDFDocument: React.FC<RaporPDFDocumentProps> = ({ student }) => {
                             {s?.Indicator?.assesment_type.replace(/_/g, ' ')}
                         </Text>
                         <Text key={s.id}>
-                            - {s?.Indicator?.title}: Ananda {student.fullname}{' '}
-                            {getAssessmentDescription(s?.value ?? '')}. Catatan:{' '}
+                            - Ananda {student.fullname}{' '}
+                            {getAssessmentDescription(s?.value ?? '')} dalam hal{' '}
+                            {s?.Indicator?.title}. Catatan:{' '}
                             {s?.description?.replace(/<[^>]*>/g, '') || ''}
                         </Text>
                     </View>
@@ -221,8 +222,10 @@ const RaporPDFDocument: React.FC<RaporPDFDocumentProps> = ({ student }) => {
                             <Text>Blitar, 21 Desember 2023</Text>
                             <Text>Guru Kelas</Text>
                             <View style={styles.signatureLine} />
-                            <Text>NASRIYAH, S.Pd.AUD</Text>
-                            <Text>NIP. 197111082005012011</Text>
+                            <Text>{student?.teacherClass?.fullname}</Text>
+                            <Text>
+                                NIP. {student?.teacherClass?.identity_number}
+                            </Text>
                         </View>
                     </View>
                 </View>

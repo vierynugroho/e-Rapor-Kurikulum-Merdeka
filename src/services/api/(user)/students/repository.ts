@@ -55,6 +55,8 @@ export class StudentRepository {
                 id: teacherID,
             },
             select: {
+                fullname: true,
+                identity_number: true,
                 classID: true,
             },
         });
@@ -71,17 +73,42 @@ export class StudentRepository {
                 fullname: 'asc',
             },
             include: {
-                Class: true,
+                Class: {
+                    select: {
+                        name: true,
+                        category: true,
+                    },
+                },
                 Development: {
                     where: {
                         periodId: activePeriod?.id,
                     },
+                    select: {
+                        height: true,
+                        weight: true,
+                        notes: true,
+                    },
                 },
                 Score: {
                     include: {
-                        Indicator: true,
-                        Teacher: true,
-                        Period: true,
+                        Indicator: {
+                            select: {
+                                title: true,
+                                assesment_type: true,
+                            },
+                        },
+                        Teacher: {
+                            select: {
+                                fullname: true,
+                                identity_number: true,
+                            },
+                        },
+                        Period: {
+                            select: {
+                                year: true,
+                                semester: true,
+                            },
+                        },
                     },
                 },
             },
@@ -123,6 +150,7 @@ export class StudentRepository {
                 return {
                     ...student,
                     filledAssessment: hasAllScores,
+                    teacherClass: teacherClass,
                     readyToPrint: hasDevelopment && hasAllScores,
                 };
             }),

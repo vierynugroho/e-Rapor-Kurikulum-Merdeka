@@ -131,4 +131,5 @@ export type StudentType = {
     Class?: Class | null;
     Score?: StudentScore[];
     Development?: StudentDevelopment[];
+    teacherClass?: Teacher;
 };
