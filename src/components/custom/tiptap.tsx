@@ -135,6 +135,7 @@ const TipTapEditorComponent: React.FC<TipTapEditorProps> = ({
     const editor = useEditor({
         extensions: [StarterKit],
         content: value,
+        immediatelyRender: false,
         editorProps: {
             attributes: {
                 class: 'prose prose-sm sm:prose-base focus:outline-none p-4 min-h-[200px] text-foreground',

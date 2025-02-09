@@ -2,17 +2,16 @@ import { apiClient } from '@/lib/axios';
 import {
     CreateStudentDevelopment,
     StudentDevelopment,
+    StudentType,
     UpdateStudentDevelopment,
 } from '@/types/student';
 
 export const getStudentDevelopments = async () => {
-    return apiClient.get<StudentDevelopment[]>('/developments');
+    return apiClient.get<StudentType[]>('/developments');
 };
 
-export const getStudentDevelopment = async (studentDevelopmentID: number) => {
-    return apiClient.get<StudentDevelopment[]>(
-        `/developments/${studentDevelopmentID}`,
-    );
+export const getStudentDevelopmentByClass = async (teacherID: number) => {
+    return apiClient.get<StudentType[]>(`/developments/${teacherID}`);
 };
 
 export const createStudentDevelopment = async (

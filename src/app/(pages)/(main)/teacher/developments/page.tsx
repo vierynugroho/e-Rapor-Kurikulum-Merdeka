@@ -6,14 +6,16 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Loader2 } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { getStudentDevelopments } from '@/services/pages/development';
+import { useSession } from 'next-auth/react';
 
-export default function ThemePage() {
+export default function DevelopmentPage() {
+    const { data: session, status } = useSession();
     const { data, isLoading, error } = useQuery({
         queryFn: getStudentDevelopments,
-        queryKey: ['studentDevelopments'],
+        queryKey: ['studentDevelopments', session?.user.id],
     });
 
-    if (isLoading) {
+    if (isLoading || status === 'loading') {
         return (
             <div className="flex min-h-screen items-center justify-center">
                 <Loader2 className="h-8 w-8 animate-spin" />
