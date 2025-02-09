@@ -12,9 +12,6 @@ export class AssessmentRepository {
     }
 
     static async UPSERT(assessmentData) {
-        console.log('============= REPO BARU ================');
-        console.log(assessmentData);
-
         const { assessments, description } = assessmentData;
 
         // Validate input data

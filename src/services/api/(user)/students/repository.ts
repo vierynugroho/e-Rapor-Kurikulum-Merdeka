@@ -73,6 +73,11 @@ export class StudentRepository {
                 fullname: 'asc',
             },
             include: {
+                Reflection: {
+                    where: {
+                        periodId: activePeriod?.id,
+                    },
+                },
                 Class: {
                     select: {
                         name: true,
@@ -120,7 +125,7 @@ export class StudentRepository {
 
         const teacherClassCategory = await prisma.class.findFirst({
             where: {
-                id: teacherClass.classID, // Now we know classID is not null
+                id: teacherClass.classID,
             },
             select: {
                 category: true,
@@ -132,7 +137,6 @@ export class StudentRepository {
             },
         });
 
-        // Map through students to check their completion status
         const enrichedStudents = await Promise.all(
             students.map(async student => {
                 const studentScoreCount = await prisma.student_Score.count({
@@ -142,16 +146,27 @@ export class StudentRepository {
                     },
                 });
 
+                const studentReflection = await prisma.reflection.findFirst({
+                    where: {
+                        studentId: student.id,
+                        periodId: activePeriod?.id,
+                    },
+                });
+
+                const hasReflection = studentReflection !== null;
                 const hasDevelopment =
                     student.Development && student.Development.length > 0;
                 const hasAllScores = studentScoreCount === totalClassIndicator;
-                console.log(`has all scores: ${hasAllScores}`);
+                console.log('STUDENT REFLECTION');
+                console.log(studentReflection);
+                console.log(`has reflection: ${hasReflection}`);
 
                 return {
                     ...student,
                     filledAssessment: hasAllScores,
                     teacherClass: teacherClass,
-                    readyToPrint: hasDevelopment && hasAllScores,
+                    readyToPrint:
+                        hasDevelopment && hasAllScores && hasReflection,
                 };
             }),
         );
