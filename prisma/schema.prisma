@@ -70,6 +70,7 @@ model Teacher {
   Class       Class?                @relation(fields: [classID], references: [id])
   Score       Student_Score[]
   Development Student_Development[]
+  Reflection  Reflection[]
 
   @@map("teachers")
 }
@@ -82,8 +83,9 @@ model Class {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("update_at")
 
-  Student Student[]
-  Teacher Teacher[]
+  Student    Student[]
+  Teacher    Teacher[]
+  Reflection Reflection[]
 
   @@map("class")
 }
@@ -99,6 +101,7 @@ model Period {
 
   Score               Student_Score[]
   Student_Development Student_Development[]
+  Reflection          Reflection[]
 
   @@map("periods")
 }
@@ -148,6 +151,7 @@ model Student {
   Class       Class?                @relation(fields: [classID], references: [id])
   Score       Student_Score[]
   Development Student_Development[]
+  Reflection  Reflection[]
 
   @@map("students")
 }
@@ -175,6 +179,29 @@ model Student_Score {
   @@index([periodId], name: "idx_periodId")
   @@index([studentId, indicatorId, periodId], name: "idx_composite")
   @@map("student_scores")
+}
+
+model Reflection {
+  id          Int     @id @default(autoincrement())
+  studentId   Int
+  periodId    Int?
+  teacherId   Int?
+  classId     Int?
+  description String?
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("update_at")
+
+  Student Student  @relation(fields: [studentId], references: [id])
+  Period  Period?  @relation(fields: [periodId], references: [id])
+  Teacher Teacher? @relation(fields: [teacherId], references: [id])
+  Class   Class?   @relation(fields: [classId], references: [id])
+
+  @@unique([studentId, teacherId, periodId, classId])
+  @@index([studentId], name: "idx_reflection_studentId")
+  @@index([periodId], name: "idx_reflection_periodId")
+  @@index([studentId, periodId], name: "idx_reflection_composite")
+  @@map("reflections")
 }
 
 model Student_Development {

@@ -22,10 +22,10 @@ export const metadata: Metadata = {
     title: 'e-Rapor TK Negeri 2 Sananwetan',
     description: 'e-Rapor Kurikulum Merdeka TK Negeri 2 Sananwetan Kota Blitar',
     icons: {
-        icon: '/assets/Viery_Nugroho.png',
+        icon: '/assets/logo.png',
         // Opsional
-        apple: '/assets/Viery_Nugroho.png',
-        shortcut: '/assets/Viery_Nugroho.png',
+        apple: '/assets/logo.png',
+        shortcut: '/assets/logo.png',
     },
 };
 

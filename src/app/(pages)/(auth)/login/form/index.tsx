@@ -140,7 +140,7 @@ export function LoginForm() {
 
                     <div className="relative hidden bg-muted md:block">
                         <Image
-                            src="/assets/Viery_Nugroho.png"
+                            src="/assets/logo.png"
                             alt="Description"
                             width={500}
                             height={300}

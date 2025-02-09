@@ -5,6 +5,7 @@ import {
     BookOpenCheck,
     CalendarCheck,
     LayoutDashboard,
+    PenLine,
     School,
     School2,
     SwatchBook,
@@ -113,8 +114,15 @@ const data = {
             items: [
                 {
                     title: 'Rapor Kelas',
-                    url: '/teacher/students',
+                    url: '/teacher/reports',
                 },
+            ],
+        },
+        {
+            title: 'Data Nilai',
+            url: '#',
+            icon: PenLine,
+            items: [
                 {
                     title: 'Penilaian',
                     url: '/teacher/assessments',
@@ -122,6 +130,10 @@ const data = {
                 {
                     title: 'Perkembangan',
                     url: '/teacher/developments',
+                },
+                {
+                    title: 'Refleksi Guru',
+                    url: '/teacher/reflections',
                 },
             ],
         },

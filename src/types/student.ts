@@ -7,6 +7,7 @@ import {
     Student,
     Teacher,
     Class,
+    Reflection,
 } from '@prisma/client';
 
 //TODO: Student Score
@@ -128,7 +129,32 @@ export type StudentType = {
     updatedAt?: string | Date;
     readyToPrint?: boolean;
     filledAssessment?: boolean;
+    filledReflection?: boolean;
     Class?: Class | null;
     Score?: StudentScore[];
     Development?: StudentDevelopment[];
+    teacherClass?: Teacher;
+    Reflection?: Reflection;
+};
+
+//TODO: reflection data
+export type ReflectionType = {
+    id?: number;
+    description?: string | null;
+    studentId?: number | undefined;
+    teacherId?: number | null;
+    periodId?: number | null;
+    classId?: number | null;
+    classID?: number | null;
+    filledReflection?: boolean;
+
+    createdAt?: string | Date;
+    updatedAt?: string | Date;
+
+    Student?: Student | null;
+    Period?: Period | null;
+    Class?: Class | null;
+    Teacher?: Teacher | null;
+    Reflection?: Reflection;
+    reflection?: Reflection;
 };

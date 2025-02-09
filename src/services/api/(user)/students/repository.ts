@@ -55,6 +55,8 @@ export class StudentRepository {
                 id: teacherID,
             },
             select: {
+                fullname: true,
+                identity_number: true,
                 classID: true,
             },
         });
@@ -71,17 +73,47 @@ export class StudentRepository {
                 fullname: 'asc',
             },
             include: {
-                Class: true,
-                Development: {
+                Reflection: {
                     where: {
                         periodId: activePeriod?.id,
                     },
                 },
+                Class: {
+                    select: {
+                        name: true,
+                        category: true,
+                    },
+                },
+                Development: {
+                    where: {
+                        periodId: activePeriod?.id,
+                    },
+                    select: {
+                        height: true,
+                        weight: true,
+                        notes: true,
+                    },
+                },
                 Score: {
                     include: {
-                        Indicator: true,
-                        Teacher: true,
-                        Period: true,
+                        Indicator: {
+                            select: {
+                                title: true,
+                                assesment_type: true,
+                            },
+                        },
+                        Teacher: {
+                            select: {
+                                fullname: true,
+                                identity_number: true,
+                            },
+                        },
+                        Period: {
+                            select: {
+                                year: true,
+                                semester: true,
+                            },
+                        },
                     },
                 },
             },
@@ -93,7 +125,7 @@ export class StudentRepository {
 
         const teacherClassCategory = await prisma.class.findFirst({
             where: {
-                id: teacherClass.classID, // Now we know classID is not null
+                id: teacherClass.classID,
             },
             select: {
                 category: true,
@@ -105,7 +137,6 @@ export class StudentRepository {
             },
         });
 
-        // Map through students to check their completion status
         const enrichedStudents = await Promise.all(
             students.map(async student => {
                 const studentScoreCount = await prisma.student_Score.count({
@@ -115,15 +146,27 @@ export class StudentRepository {
                     },
                 });
 
+                const studentReflection = await prisma.reflection.findFirst({
+                    where: {
+                        studentId: student.id,
+                        periodId: activePeriod?.id,
+                    },
+                });
+
+                const hasReflection = studentReflection !== null;
                 const hasDevelopment =
                     student.Development && student.Development.length > 0;
                 const hasAllScores = studentScoreCount === totalClassIndicator;
-                console.log(`has all scores: ${hasAllScores}`);
+                console.log('STUDENT REFLECTION');
+                console.log(studentReflection);
+                console.log(`has reflection: ${hasReflection}`);
 
                 return {
                     ...student,
                     filledAssessment: hasAllScores,
-                    readyToPrint: hasDevelopment && hasAllScores,
+                    teacherClass: teacherClass,
+                    readyToPrint:
+                        hasDevelopment && hasAllScores && hasReflection,
                 };
             }),
         );

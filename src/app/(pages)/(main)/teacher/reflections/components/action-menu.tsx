@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { MoreHorizontal, PencilLine } from 'lucide-react';
+import { MoreHorizontal, Edit } from 'lucide-react';
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -16,11 +16,11 @@ import {
     DialogTrigger,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { AssessmentForm } from './assessment';
-import { StudentType } from '@/types/student';
+import UpdateFormIndicator from '../form/reflection';
+import { ReflectionType } from '@/types/student';
 
 type ActionMenuProps = {
-    data: StudentType;
+    data: ReflectionType;
 };
 
 const ActionMenu: React.FC<ActionMenuProps> = ({ data }) => {
@@ -42,27 +42,30 @@ const ActionMenu: React.FC<ActionMenuProps> = ({ data }) => {
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
                 <DropdownMenuLabel>Aksi</DropdownMenuLabel>
+                {/* Edit Action */}
                 <Dialog
                     open={isEditDialogOpen}
                     onOpenChange={setIsEditDialogOpen}
                 >
                     <DialogTrigger asChild>
                         <DropdownMenuItem onSelect={e => e.preventDefault()}>
-                            <PencilLine className="mr-2 h-4 w-4" />
-                            Nilai Siswa
+                            <Edit className="mr-2 h-4 w-4" /> Edit Data
                         </DropdownMenuItem>
                     </DialogTrigger>
-                    <DialogContent className="sm:max-w-[768px]">
+                    <DialogContent className="sm:max-w-[425px] md:max-w-[768px]">
                         <DialogHeader>
-                            <DialogTitle>Penilaian Siswa</DialogTitle>
+                            <DialogTitle>Isi Data Refleksi Guru</DialogTitle>
                             <DialogDescription>
-                                Penilaian untuk {data.fullname}
+                                Lakukan pengisian data refleksi guru kelas anda
+                                di sini
                             </DialogDescription>
                         </DialogHeader>
-                        <AssessmentForm
-                            student={data}
-                            onSuccess={handleCloseEditDialog}
-                        />
+                        <div className="grid gap-4 py-4">
+                            <UpdateFormIndicator
+                                reflection={data}
+                                onSuccess={handleCloseEditDialog}
+                            />
+                        </div>
                     </DialogContent>
                 </Dialog>
             </DropdownMenuContent>
