@@ -5,18 +5,17 @@ import { DialogFooter } from '@/components/ui/dialog';
 import { Form } from '@/components/ui/form';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { updateSchema } from './validation';
-import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useToast } from '@/hooks/use-toast';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { UpdateStudentDevelopment } from '@/types/student';
+import { StudentType } from '@/types/student';
 import LabellingInput from '@/components/form/labelling-input';
 import LongTextInput from '@/components/form/long-text-input';
 import { updateStudentDevelopment } from '@/services/pages/development';
-import { SelectInput } from '@/components/form/select-input';
-import { getStudentsByTeacher } from '@/services/pages/(user)/students';
+import { useSession } from 'next-auth/react';
 
 type FormStudentDevelopmentProps = {
-    studentDevelopment?: UpdateStudentDevelopment;
+    studentDevelopment?: StudentType;
     onSuccess?: () => void;
 };
 
@@ -25,26 +24,18 @@ export default function UpdateFormStudentDevelopment({
     onSuccess,
 }: FormStudentDevelopmentProps) {
     const { toast } = useToast();
-    const { data: studentsData, isLoading: isLoadingStudents } = useQuery({
-        queryFn: () => getStudentsByTeacher(1),
-        queryKey: ['students', 1],
-        staleTime: 5 * 60 * 1000,
-        retry: 2,
-    });
-    const studentOptions =
-        studentsData?.map(student => ({
-            value: student.id?.toString() || '',
-            label: student.fullname || 'Untitled Student',
-        })) || [];
+    const { data: session, status } = useSession();
+    console.log(studentDevelopment);
 
     const form = useForm<z.infer<typeof updateSchema>>({
         resolver: zodResolver(updateSchema),
         defaultValues: {
-            height: studentDevelopment?.height || 0,
-            weight: studentDevelopment?.weight || 0,
-            notes: studentDevelopment?.notes || '',
-            studentID: studentDevelopment?.studentID || undefined,
-            teacherID: studentDevelopment?.teacherID || undefined,
+            height: studentDevelopment?.development?.height || 0,
+            weight: studentDevelopment?.development?.weight || 0,
+            notes: studentDevelopment?.development?.notes || '',
+            studentID: studentDevelopment?.id || undefined,
+            teacherID:
+                studentDevelopment?.development?.teacherID || session?.user.id,
         },
     });
 
@@ -53,7 +44,6 @@ export default function UpdateFormStudentDevelopment({
 
     const mutation = useMutation({
         mutationFn: (data: z.infer<typeof updateSchema>) => {
-            console.log(data);
             if (!studentDevelopment?.id) {
                 throw new Error(
                     'Student Development ID is required for updating data.',
@@ -112,22 +102,6 @@ export default function UpdateFormStudentDevelopment({
                                 type="number"
                                 unit="kg"
                             />
-
-                            <SelectInput
-                                control={form.control}
-                                name="studentID"
-                                label="Siswa"
-                                placeholder={
-                                    isLoadingStudents
-                                        ? 'Memuat data siswa...'
-                                        : 'Pilih Siswa'
-                                }
-                                options={studentOptions}
-                                disabled={isLoadingStudents}
-                                noOptionsMessage={() =>
-                                    'Tidak ada siswa tersedia'
-                                }
-                            />
                         </div>
                         <LongTextInput
                             control={form.control}
@@ -139,7 +113,9 @@ export default function UpdateFormStudentDevelopment({
                     <div className="sticky bottom-0 border-t bg-card p-4">
                         <DialogFooter>
                             <Button type="submit">
-                                {isLoading || mutation.isPending
+                                {isLoading ||
+                                mutation.isPending ||
+                                status === 'loading'
                                     ? 'Memproses...'
                                     : 'Simpan'}
                             </Button>

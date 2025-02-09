@@ -9,6 +9,7 @@ import {
     Image,
 } from '@react-pdf/renderer';
 import { StudentType } from '@/types/student';
+import { Semester } from '@prisma/client';
 
 // Create styles
 const styles = StyleSheet.create({
@@ -98,7 +99,10 @@ const RaporPDFDocument: React.FC<RaporPDFDocumentProps> = ({ student }) => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { fullname, Class, Development, Score } = student;
     const teacherName = Score?.[0]?.Teacher?.fullname || 'Nasriyah, S.Pd.AUD';
-    const period = Score?.[0]?.Period || { semester: '1', year: '2023/2024' };
+    const period = Score?.[0]?.Period || {
+        semester: Semester.GANJIL,
+        year: '2025',
+    };
 
     const getAssessmentDescription = (value?: string) => {
         switch (value) {

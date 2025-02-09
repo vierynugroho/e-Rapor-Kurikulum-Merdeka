@@ -8,12 +8,16 @@ import {
     updateSchema,
 } from '@/app/(pages)/(main)/teacher/developments/form/validation';
 import { CreateStudentDevelopment } from '@/types/student';
+import { fetchServerSession } from '@/hooks/use-user';
 
 export class StudentDevelopmentController {
     static async GET(request: NextRequest) {
         try {
             console.log(request.json);
-            const data = await StudentDevelopmentService.GET();
+            const userLoggedIn = await fetchServerSession();
+            const data = await StudentDevelopmentService.GET_BY_CLASS(
+                userLoggedIn.id,
+            );
 
             return APIResponse.success(data, {
                 message: 'student developments data retrieved successfully',
@@ -29,17 +33,17 @@ export class StudentDevelopmentController {
     ) {
         try {
             const { id } = params;
-            const studentDevelopmentID = parseInt(id);
+            const teacherID = parseInt(id);
 
-            if (isNaN(studentDevelopmentID)) {
-                throw new CustomError(400, 'invalid student development ID');
+            if (isNaN(teacherID)) {
+                throw new CustomError(400, 'invalid teacher ID');
             }
 
             const studentDevelopmentData =
-                await StudentDevelopmentService.GET_ID(studentDevelopmentID);
+                await StudentDevelopmentService.GET_BY_CLASS(teacherID);
 
             return APIResponse.success(studentDevelopmentData, {
-                message: 'student development data retrieved successfully',
+                message: 'student class data retrieved successfully',
             });
         } catch (error) {
             return errorHandler(error);
@@ -52,12 +56,14 @@ export class StudentDevelopmentController {
             const data = validateSchema(createSchema, requestBody);
             console.log(data);
 
+            const userLoggedIn = await fetchServerSession();
+
             const studentDevelopmentData: CreateStudentDevelopment = {
                 notes: data.notes,
                 height: data.height,
                 weight: data.weight,
                 studentID: parseInt(data.studentID),
-                teacherID: parseInt('1'), // get from teacher logged in
+                teacherID: userLoggedIn.id,
             };
 
             const createdStudentDevelopment =

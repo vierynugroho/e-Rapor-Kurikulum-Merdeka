@@ -1,12 +1,13 @@
-import { StudentDevelopment } from '@/types/student';
+import { StudentType } from '@/types/student';
 import { formatDateTime } from '@/utils/format';
 import React from 'react';
 
 type DetailDataProps = {
-    data: StudentDevelopment;
+    data: StudentType;
 };
 
 export const DetailData: React.FC<DetailDataProps> = ({ data }) => {
+    console.log(data);
     return (
         <>
             <div className="max-w-4xl rounded-lg bg-background p-6 text-foreground shadow-lg">
@@ -16,9 +17,7 @@ export const DetailData: React.FC<DetailDataProps> = ({ data }) => {
                             <span className="w-40 font-medium">
                                 Nama Siswa:
                             </span>
-                            <div className="flex-1">
-                                {data.Student?.fullname}
-                            </div>
+                            <div className="flex-1">{data.fullname}</div>
                         </div>
                     </div>
 
@@ -27,7 +26,9 @@ export const DetailData: React.FC<DetailDataProps> = ({ data }) => {
                             <span className="w-40 font-medium">
                                 Tinggi Badan:
                             </span>
-                            <div className="flex-1">{data.height} cm</div>
+                            <div className="flex-1">
+                                {data?.development?.height} cm
+                            </div>
                         </div>
                     </div>
 
@@ -36,7 +37,9 @@ export const DetailData: React.FC<DetailDataProps> = ({ data }) => {
                             <span className="w-40 font-medium">
                                 Berat Badan:
                             </span>
-                            <div className="flex-1">{data.weight} kg</div>
+                            <div className="flex-1">
+                                {data?.development?.weight} kg
+                            </div>
                         </div>
                     </div>
 
@@ -46,7 +49,7 @@ export const DetailData: React.FC<DetailDataProps> = ({ data }) => {
                             <div
                                 className="flex-1"
                                 dangerouslySetInnerHTML={{
-                                    __html: data.notes || '',
+                                    __html: data?.development?.notes || '',
                                 }}
                             ></div>
                         </div>
@@ -58,7 +61,8 @@ export const DetailData: React.FC<DetailDataProps> = ({ data }) => {
                                 Dibuat Pada:
                             </span>
                             <div className="flex-1">
-                                {formatDateTime(data.createdAt!)}
+                                {data.development &&
+                                    formatDateTime(data.development.createdAt!)}
                             </div>
                         </div>
                     </div>
@@ -69,7 +73,8 @@ export const DetailData: React.FC<DetailDataProps> = ({ data }) => {
                                 Terakhir Diperbarui:
                             </span>
                             <div className="flex-1">
-                                {formatDateTime(data.updatedAt!)}
+                                {data.development &&
+                                    formatDateTime(data.development.updatedAt!)}
                             </div>
                         </div>
                     </div>

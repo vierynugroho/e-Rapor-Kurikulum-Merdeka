@@ -30,12 +30,12 @@ import { Button } from '@/components/ui/button';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useToast } from '@/hooks/use-toast';
 import { DetailData } from './detail-data';
-import { StudentDevelopment } from '@/types/student';
+import { StudentType } from '@/types/student';
 import UpdateFormStudentDevelopment from '../form/update';
 import { deleteStudentDevelopment } from '@/services/pages/development';
 
 type ActionMenuProps = {
-    data: StudentDevelopment;
+    data: StudentType;
 };
 
 const ActionMenu: React.FC<ActionMenuProps> = ({ data }) => {
@@ -101,7 +101,7 @@ const ActionMenu: React.FC<ActionMenuProps> = ({ data }) => {
                         <DialogHeader>
                             <DialogTitle>Detail Perkembangan Siswa</DialogTitle>
                             <DialogDescription>
-                                Detail Informasi untuk {data.student?.fullname}
+                                Detail Informasi untuk {data.fullname}
                             </DialogDescription>
                         </DialogHeader>
                         <DetailData data={data} />
@@ -151,8 +151,8 @@ const ActionMenu: React.FC<ActionMenuProps> = ({ data }) => {
                             </AlertDialogTitle>
                             <AlertDialogDescription>
                                 Apakah anda yakin untuk menghapus data
-                                perkembangan {data.student?.fullname}? Aksi ini
-                                tidak bisa dikembalikan.
+                                perkembangan {data.fullname}? Aksi ini tidak
+                                bisa dikembalikan.
                             </AlertDialogDescription>
                         </AlertDialogHeader>
                         <AlertDialogFooter>

@@ -24,16 +24,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { DataTablePagination } from '@/components/pagination';
-import { Download, Plus } from 'lucide-react';
-import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
-} from '@/components/ui/dialog';
-import CreateFormTheme from './form/create';
+import { Download } from 'lucide-react';
 
 interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[];
@@ -47,11 +38,6 @@ export function DataTable<TData, TValue>({
     const [sorting, setSorting] = React.useState<SortingState>([]);
     const [columnFilters, setColumnFilters] =
         React.useState<ColumnFiltersState>([]);
-    const [isCreateDialogOpen, setIsCreateDialogOpen] = React.useState(false);
-
-    const handleCloseEditDialog = () => {
-        setIsCreateDialogOpen(false);
-    };
 
     const table = useReactTable({
         data,
@@ -86,33 +72,6 @@ export function DataTable<TData, TValue>({
                     className="w-full sm:max-w-sm"
                 />
                 <div className="user-action flex flex-col gap-2 sm:flex-row">
-                    <Dialog
-                        open={isCreateDialogOpen}
-                        onOpenChange={setIsCreateDialogOpen}
-                    >
-                        <DialogTrigger asChild>
-                            <Button className="w-full bg-blend-hard-light sm:w-auto">
-                                <Plus className="mr-2 h-4 w-4" />
-                                <span>Tambah Data</span>
-                            </Button>
-                        </DialogTrigger>
-                        <DialogContent className="mx-auto w-[95vw] max-w-3xl">
-                            <DialogHeader>
-                                <DialogTitle>
-                                    Tambah Data Perkembangan
-                                </DialogTitle>
-                                <DialogDescription>
-                                    Buat data perkembangan peserta didik sekolah
-                                    anda di sini
-                                </DialogDescription>
-                            </DialogHeader>
-                            <div className="grid gap-4 py-4">
-                                <CreateFormTheme
-                                    onSuccess={handleCloseEditDialog}
-                                />
-                            </div>
-                        </DialogContent>
-                    </Dialog>
                     <Button
                         onClick={() => window.print()}
                         className="w-full bg-green-800 text-white hover:bg-green-600 dark:bg-green-600 dark:hover:bg-green-500 sm:w-auto"

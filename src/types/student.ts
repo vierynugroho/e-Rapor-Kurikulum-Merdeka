@@ -57,11 +57,13 @@ export type StudentDevelopment = {
 };
 export type CreateStudentDevelopment = {
     id?: number;
-    height: number;
-    weight: number;
-    notes: string;
+    height?: number;
+    weight?: number;
+    notes?: string | null | undefined;
     studentID?: number;
     teacherID?: number;
+    studentId?: number;
+    teacherId?: number;
     periodId?: number;
     periodID?: number;
     recordDate?: string | Date;
@@ -125,16 +127,18 @@ export type StudentType = {
     birthDate?: string | Date;
     classID?: number;
     address?: string;
-    createdAt?: string | Date;
-    updatedAt?: string | Date;
+    createdAt?: Date;
+    updatedAt?: Date;
     readyToPrint?: boolean;
     filledAssessment?: boolean;
     filledReflection?: boolean;
     Class?: Class | null;
-    Score?: StudentScore[];
-    Development?: StudentDevelopment[];
+    Score?: StudentScore;
+    Development?: StudentDevelopment;
+    development?: StudentDevelopment;
     teacherClass?: Teacher;
     Reflection?: Reflection;
+    hasDevelopment?: boolean;
 };
 
 //TODO: reflection data

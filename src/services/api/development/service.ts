@@ -1,5 +1,5 @@
 import { CustomError } from '@/utils/error';
-import { Student_Development } from '@prisma/client';
+import { Student, Student_Development } from '@prisma/client';
 import { StudentDevelopmentRepository } from './repository';
 import {
     CreateStudentDevelopment,
@@ -21,9 +21,16 @@ export class StudentDevelopmentService {
         return studentDevelopmentData;
     }
 
+    static async GET_BY_CLASS(teacherID: number): Promise<Partial<Student[]>> {
+        const students =
+            await StudentDevelopmentRepository.GET_BY_CLASS(teacherID);
+
+        return students;
+    }
+
     static async CREATE<T extends CreateStudentDevelopment>(request: T) {
         const dataExist = await StudentDevelopmentRepository.GET_IDENTITY(
-            request.studentID,
+            request.studentID!,
         );
 
         if (dataExist) {
