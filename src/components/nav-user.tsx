@@ -30,6 +30,7 @@ import {
     useSidebar,
 } from '@/components/ui/sidebar';
 import { UserRole } from '@prisma/client';
+import Image from 'next/image';
 
 export function NavUser({
     user,
@@ -69,7 +70,12 @@ export function NavUser({
                                     alt={user.fullname}
                                 />
                                 <AvatarFallback className="rounded-lg">
-                                    VN
+                                    <Image
+                                        src={'/assets/logo.png'}
+                                        alt="profile photo"
+                                        width={50}
+                                        height={50}
+                                    />
                                 </AvatarFallback>
                             </Avatar>
                             <div className="grid flex-1 text-left text-sm leading-tight">
