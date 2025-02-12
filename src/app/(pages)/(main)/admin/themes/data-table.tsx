@@ -35,6 +35,7 @@ import {
     DialogTrigger,
 } from '@/components/ui/dialog';
 import CreateFormTheme from './form/create';
+import { exportToExcel } from '@/utils/toExcel';
 
 interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[];
@@ -52,6 +53,17 @@ export function DataTable<TData, TValue>({
 
     const handleCloseEditDialog = () => {
         setIsCreateDialogOpen(false);
+    };
+
+    const handleExportToExcel = () => {
+        // Define columns to exclude from export (if any)
+        const excludeColumns = ['actions'];
+
+        exportToExcel(data, {
+            filename: 'data-tema-pembelajaran.xlsx',
+            sheetName: 'Data Tema',
+            excludeColumns,
+        });
     };
 
     const table = useReactTable({
@@ -111,10 +123,10 @@ export function DataTable<TData, TValue>({
                         </DialogContent>
                     </Dialog>
                     <Button
-                        onClick={() => window.print()}
+                        onClick={handleExportToExcel}
                         className="bg-green-800 text-white hover:bg-green-600 dark:bg-green-600 dark:hover:bg-green-500"
                     >
-                        <Download /> Unduh Data
+                        <Download /> Export to Excel
                     </Button>
                 </div>
             </div>

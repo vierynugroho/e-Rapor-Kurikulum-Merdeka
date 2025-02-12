@@ -25,6 +25,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { DataTablePagination } from '@/components/pagination';
 import { Download } from 'lucide-react';
+import { exportToExcel } from '@/utils/toExcel';
 
 interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[];
@@ -38,6 +39,17 @@ export function DataTable<TData, TValue>({
     const [sorting, setSorting] = React.useState<SortingState>([]);
     const [columnFilters, setColumnFilters] =
         React.useState<ColumnFiltersState>([]);
+
+    const handleExportToExcel = () => {
+        // Define columns to exclude from export (if any)
+        const excludeColumns = ['actions'];
+
+        exportToExcel(data, {
+            filename: 'data-siswa.xlsx',
+            sheetName: 'Data Siswa',
+            excludeColumns,
+        });
+    };
 
     const table = useReactTable({
         data,
@@ -73,11 +85,11 @@ export function DataTable<TData, TValue>({
                 />
                 <div className="user-action flex flex-col gap-2 sm:flex-row">
                     <Button
-                        onClick={() => window.print()}
+                        onClick={handleExportToExcel}
                         className="w-full bg-green-800 text-white hover:bg-green-600 dark:bg-green-600 dark:hover:bg-green-500 sm:w-auto"
                     >
                         <Download className="mr-2 h-4 w-4" />
-                        <span>Unduh Data</span>
+                        <span>Export to Excel</span>
                     </Button>
                 </div>
             </div>
