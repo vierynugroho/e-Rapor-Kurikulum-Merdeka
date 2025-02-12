@@ -133,11 +133,11 @@ export type StudentType = {
     filledAssessment?: boolean;
     filledReflection?: boolean;
     Class?: Class | null;
-    Score?: StudentScore;
-    Development?: StudentDevelopment;
-    development?: StudentDevelopment;
+    Score?: StudentScore[];
+    Development?: StudentDevelopment[];
+    development?: StudentDevelopment[];
     teacherClass?: Teacher;
-    Reflection?: Reflection;
+    Reflection?: Reflection[];
     hasDevelopment?: boolean;
 };
 

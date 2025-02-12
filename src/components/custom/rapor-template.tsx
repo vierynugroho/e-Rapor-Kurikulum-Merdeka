@@ -11,7 +11,6 @@ import {
 import { StudentType } from '@/types/student';
 import { Semester } from '@prisma/client';
 
-// Create styles
 const styles = StyleSheet.create({
     page: {
         padding: 30,
@@ -81,12 +80,151 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         marginTop: 10,
     },
-    signatureBox: {
-        width: '30%',
+    sectionTitle: {
+        backgroundColor: '#FED8B1', // Light orange for Nilai section
+        padding: 8,
+        fontWeight: 'bold',
+        borderBottom: '1px solid #000',
+    },
+    sectionContent: {
+        padding: 8,
+        minHeight: 60,
+    },
+    steamSection: {
+        marginBottom: 15,
+        border: '1px solid #000',
+    },
+    steamTitle: {
+        backgroundColor: '#ADD8E6', // Light blue for STEAM section
+        padding: 8,
+        fontWeight: 'bold',
+        borderBottom: '1px solid #000',
+    },
+    jatiDiriSection: {
+        marginBottom: 15,
+        border: '1px solid #000',
+    },
+    jatiDiriTitle: {
+        backgroundColor: '#FED8B1', // Light blue for STEAM section
+        padding: 8,
+        fontWeight: 'bold',
+        borderBottom: '1px solid #000',
+    },
+    projectSection: {
+        marginBottom: 15,
+        border: '1px solid #000',
+    },
+    projectTitle: {
+        backgroundColor: '#90EE90', // Light green for Project section
+        padding: 8,
+        fontWeight: 'bold',
+        borderBottom: '1px solid #000',
+    },
+    reflectionSection: {
+        marginBottom: 15,
+        border: '1px solid #000',
+    },
+    signatureContainer: {
+        marginTop: 20,
+        width: '100%',
+    },
+    signatureDate: {
+        textAlign: 'right',
+        marginBottom: 10,
+        paddingRight: 40,
+    },
+    signatureRow: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        marginBottom: 40,
+        width: '100%',
+    },
+    signatureLeft: {
+        width: '45%',
+        paddingLeft: 40,
+    },
+    signatureRight: {
+        width: '45%',
+        paddingRight: 40,
+    },
+    headmasterSection: {
+        width: '100%',
+        alignItems: 'center',
+        marginTop: 20,
+    },
+    signatureText: {
+        marginBottom: 40,
         textAlign: 'center',
     },
-    signatureLine: {
-        marginVertical: 40,
+    signatureName: {
+        marginTop: 4,
+        fontWeight: 'bold',
+        textAlign: 'center',
+    },
+    signatureNIP: {
+        fontSize: 10,
+        textAlign: 'center',
+        color: '#000',
+    },
+    signatureMengetahui: {
+        textAlign: 'center',
+        marginBottom: 4,
+    },
+    signatureRole: {
+        textAlign: 'center',
+        marginBottom: 40,
+    },
+    assessmentSection: {
+        marginBottom: 8,
+    },
+    assessmentTitle: {
+        fontWeight: 'bold',
+        marginBottom: 4,
+    },
+    assessmentText: {
+        marginBottom: 4,
+        lineHeight: 1.5,
+    },
+    attendanceSection: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        marginBottom: 20,
+        width: '100%',
+        alignItems: 'center',
+        textAlign: 'center',
+    },
+    attendanceBox: {
+        width: '35%',
+    },
+    attendanceContent: {
+        height: 30,
+        border: '1px solid #000',
+        marginBottom: 2,
+    },
+    attendanceLabel: {
+        padding: 4,
+        textAlign: 'center',
+        border: '1px solid #000',
+    },
+    sakitLabel: {
+        backgroundColor: '#FED8B1', // Light orange
+    },
+    izinLabel: {
+        backgroundColor: '#ADD8E6', // Light blue
+    },
+    alphaLabel: {
+        backgroundColor: '#90EE90', // Light green
+    },
+
+    // Updated signature styles
+    signatureTitle: {
+        marginBottom: 8,
+        textAlign: 'center',
+    },
+    headmasterBox: {
+        width: '100%',
+        textAlign: 'center',
+        marginTop: 20,
     },
 });
 
@@ -95,33 +233,35 @@ interface RaporPDFDocumentProps {
 }
 
 const RaporPDFDocument: React.FC<RaporPDFDocumentProps> = ({ student }) => {
-    console.log(student);
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { fullname, Class, Development, Score } = student;
-    const teacherName = Score?.[0]?.Teacher?.fullname || 'Nasriyah, S.Pd.AUD';
+    const {
+        fullname,
+        Class,
+        Development,
+        Score,
+        parentName,
+        birthPlace,
+        birthDate,
+        address,
+    } = student;
+
+    const teacherName = student.teacherClass?.fullname || 'Guru Kelas';
+    const teacherNIP = student.teacherClass?.identity_number || '123456789';
     const period = Score?.[0]?.Period || {
         semester: Semester.GANJIL,
         year: '2025',
     };
 
-    const getAssessmentDescription = (value?: string) => {
-        switch (value) {
-            case 'BSB':
-                return 'Berkembang Sangat Baik';
-            case 'BSH':
-                return 'Berkembang Sesuai Harapan';
-            case 'MB':
-                return 'Mulai Berkembang';
-            case 'BB':
-                return 'Belum Berkembang';
-            default:
-                return '';
-        }
+    const formatDate = (date: string | Date) => {
+        return new Date(date).toLocaleDateString('id-ID', {
+            day: 'numeric',
+            month: 'long',
+            year: 'numeric',
+        });
     };
 
     return (
         <Document>
-            <Page size="A4" style={styles.page}>
+            <Page size="A4" style={styles.page} wrap>
                 <View style={styles.header}>
                     <Image
                         src="/assets/logo.png"
@@ -146,10 +286,10 @@ const RaporPDFDocument: React.FC<RaporPDFDocumentProps> = ({ student }) => {
 
                 <Text style={styles.title}>
                     LAPORAN PENILAIAN PERKEMBANGAN ANAK DIDIK{'\n'}TAHUN
-                    PELAJARAN {period.year} SEMESTER {period.semester}
+                    PELAJARAN {period.year} SEMESTER{' '}
+                    {period.semester === 'GANJIL' ? 'GANJIL' : 'GENAP'}
                 </Text>
 
-                {/* Student and Semester Info */}
                 <View style={styles.table}>
                     <View style={styles.tableRow}>
                         <View style={styles.tableColLabel}>
@@ -169,23 +309,36 @@ const RaporPDFDocument: React.FC<RaporPDFDocumentProps> = ({ student }) => {
                     </View>
                     <View style={styles.tableRow}>
                         <View style={styles.tableColLabel}>
-                            <Text>Kelas</Text>
+                            <Text>Tempat, Tanggal Lahir</Text>
                         </View>
                         <View style={styles.tableColValue}>
-                            <Text>{Class?.name}</Text>
+                            <Text>
+                                {birthPlace}, {formatDate(birthDate!)}
+                            </Text>
                         </View>
                     </View>
                     <View style={styles.tableRow}>
                         <View style={styles.tableColLabel}>
-                            <Text>Semester / Tahun Ajaran</Text>
+                            <Text>Nama Orang Tua</Text>
                         </View>
                         <View style={styles.tableColValue}>
-                            <Text>
-                                {period.semester === 'GANJIL'
-                                    ? 'Ganjil'
-                                    : 'Genap'}{' '}
-                                / {period.year}
-                            </Text>
+                            <Text>{parentName}</Text>
+                        </View>
+                    </View>
+                    <View style={styles.tableRow}>
+                        <View style={styles.tableColLabel}>
+                            <Text>Alamat</Text>
+                        </View>
+                        <View style={styles.tableColValue}>
+                            <Text>{address}</Text>
+                        </View>
+                    </View>
+                    <View style={styles.tableRow}>
+                        <View style={styles.tableColLabel}>
+                            <Text>Kelas</Text>
+                        </View>
+                        <View style={styles.tableColValue}>
+                            <Text>{Class?.name}</Text>
                         </View>
                     </View>
                     <View style={styles.tableRow}>
@@ -198,39 +351,186 @@ const RaporPDFDocument: React.FC<RaporPDFDocumentProps> = ({ student }) => {
                     </View>
                 </View>
 
-                {/* Assessment */}
-                {Score?.map(s => (
-                    <View key={s.id} style={styles.section}>
+                <View style={styles.section}>
+                    <Text style={styles.assessmentTitle}>
+                        Perkembangan Fisik
+                    </Text>
+                    <View style={styles.table}>
+                        <View style={styles.tableRow}>
+                            <View style={styles.tableColLabel}>
+                                <Text>Tinggi Badan</Text>
+                            </View>
+                            <View style={styles.tableColValue}>
+                                <Text>{Development?.[0]?.height} cm</Text>
+                            </View>
+                        </View>
+                        <View style={styles.tableRow}>
+                            <View style={styles.tableColLabel}>
+                                <Text>Berat Badan</Text>
+                            </View>
+                            <View style={styles.tableColValue}>
+                                <Text>{Development?.[0]?.weight} kg</Text>
+                            </View>
+                        </View>
+                        <View style={styles.tableRow}>
+                            <View style={styles.tableColLabel}>
+                                <Text>Catatan</Text>
+                            </View>
+                            <View style={styles.tableColValue}>
+                                <Text>
+                                    {Development?.[0]?.notes?.replace(
+                                        /<[^>]*>/g,
+                                        '',
+                                    )}
+                                </Text>
+                            </View>
+                        </View>
+                    </View>
+                </View>
+
+                {/* Nilai Section */}
+                <View style={styles.jatiDiriSection}>
+                    <View style={styles.jatiDiriTitle}>
+                        <Text>JATI DIRI</Text>
+                    </View>
+                    <View style={styles.sectionContent}>
+                        {Score?.filter(
+                            score =>
+                                score?.Indicator?.assesment_type ===
+                                'JATI_DIRI',
+                        ).map(score => (
+                            <Text key={score.id}>
+                                {score.description?.replace(/<[^>]*>/g, '')}
+                            </Text>
+                        ))}
+                    </View>
+                </View>
+
+                {/* STEAM Section */}
+                <View style={styles.steamSection}>
+                    <View style={styles.steamTitle}>
                         <Text>
-                            {s?.Indicator?.assesment_type.replace(/_/g, ' ')}
-                        </Text>
-                        <Text key={s.id}>
-                            - Ananda {student.fullname}{' '}
-                            {getAssessmentDescription(s?.value ?? '')} dalam hal{' '}
-                            {s?.Indicator?.title}. Catatan:{' '}
-                            {s?.description?.replace(/<[^>]*>/g, '') || ''}
+                            Proses dalam Literasi, Matematika, Sains, Teknologi,
+                            Rekayasa dan Seni (STEAM)
                         </Text>
                     </View>
-                ))}
+                    <View style={styles.sectionContent}>
+                        {Score?.filter(
+                            score =>
+                                score?.Indicator?.assesment_type ===
+                                'DASAR_LITERASI_MATEMATIKA_SAINS_TEKNOLOGI_REKAYASA_DAN_SENI',
+                        ).map(score => (
+                            <Text key={score.id}>
+                                {score.description?.replace(/<[^>]*>/g, '')}
+                            </Text>
+                        ))}
+                    </View>
+                </View>
 
-                {/* Footer Info */}
-                <View style={styles.footer}>
-                    <View style={styles.footerRow}>
-                        <View style={styles.signatureBox}>
-                            <Text>Mengetahui,</Text>
-                            <Text>Orang Tua / Wali murid</Text>
-                            <View style={styles.signatureLine} />
-                            <Text>(...........................)</Text>
+                {/* Project Section */}
+                <View style={styles.projectSection}>
+                    <View style={styles.projectTitle}>
+                        <Text>Projek Penguatan Profil Pelajar Pancasila</Text>
+                    </View>
+                    <View style={styles.sectionContent}>
+                        {Score?.filter(
+                            score =>
+                                score?.Indicator?.assesment_type ===
+                                'NILAI_AGAMA_DAN_BUDI_PEKERTI',
+                        ).map(score => (
+                            <Text key={score.id}>
+                                {score.description?.replace(/<[^>]*>/g, '')}
+                            </Text>
+                        ))}
+                    </View>
+                </View>
+
+                {/* Reflection Section */}
+                <View style={styles.reflectionSection}>
+                    <View style={styles.sectionTitle}>
+                        <Text>Refleksi Guru</Text>
+                    </View>
+                    <View style={styles.sectionContent}>
+                        {student.Reflection?.map(reflection => (
+                            <Text key={reflection.id}>
+                                {reflection.description?.replace(
+                                    /<[^>]*>/g,
+                                    '',
+                                )}
+                            </Text>
+                        ))}
+                    </View>
+                </View>
+
+                {/* Attendance Status Boxes */}
+                <View style={styles.attendanceSection}>
+                    <View style={styles.attendanceBox}>
+                        <View style={styles.attendanceContent} />
+                        <View
+                            style={[styles.attendanceLabel, styles.sakitLabel]}
+                        >
+                            <Text>Sakit</Text>
                         </View>
-                        <View style={styles.signatureBox}>
-                            <Text>Blitar, 21 Desember 2023</Text>
-                            <Text>Guru Kelas</Text>
-                            <View style={styles.signatureLine} />
-                            <Text>{student?.teacherClass?.fullname}</Text>
-                            <Text>
-                                NIP. {student?.teacherClass?.identity_number}
+                    </View>
+                    <View style={styles.attendanceBox}>
+                        <View style={styles.attendanceContent} />
+                        <View
+                            style={[styles.attendanceLabel, styles.izinLabel]}
+                        >
+                            <Text>Izin</Text>
+                        </View>
+                    </View>
+                    <View style={styles.attendanceBox}>
+                        <View style={styles.attendanceContent} />
+                        <View
+                            style={[styles.attendanceLabel, styles.alphaLabel]}
+                        >
+                            <Text>Tanpa Keterangan</Text>
+                        </View>
+                    </View>
+                </View>
+
+                {/* Signature Section */}
+                <View style={styles.signatureContainer}>
+                    <Text style={styles.signatureDate}>
+                        Blitar, 21 Desember 2023
+                    </Text>
+
+                    <View style={styles.signatureRow}>
+                        <View style={styles.signatureLeft}>
+                            <Text style={styles.signatureMengetahui}>
+                                Mengetahui
+                            </Text>
+                            <Text style={styles.signatureRole}>
+                                Orang Tua / Walimurid
+                            </Text>
+                            <Text style={styles.signatureName}>
+                                (.........................)
                             </Text>
                         </View>
+
+                        <View style={styles.signatureRight}>
+                            <Text style={styles.signatureRole}>Guru Kelas</Text>
+                            <Text style={styles.signatureName}>
+                                NASRIYAH, S.Pd. AUD
+                            </Text>
+                            <Text style={styles.signatureNIP}>
+                                NIP. 197111082005012011
+                            </Text>
+                        </View>
+                    </View>
+
+                    <View style={styles.headmasterSection}>
+                        <Text style={styles.signatureMengetahui}>
+                            Mengetahui
+                        </Text>
+                        <Text style={styles.signatureRole}>
+                            Kepala UPT SP TK Negeri 2 Sananwetan
+                        </Text>
+                        <Text style={styles.signatureName}>SETIYANI, S.Pd</Text>
+                        <Text style={styles.signatureNIP}>
+                            NIP. {teacherNIP}
+                        </Text>
                     </View>
                 </View>
             </Page>
