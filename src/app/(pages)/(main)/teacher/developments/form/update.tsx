@@ -8,14 +8,14 @@ import { updateSchema } from './validation';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useToast } from '@/hooks/use-toast';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { StudentType } from '@/types/student';
+import { UpdateStudentType } from '@/types/student';
 import LabellingInput from '@/components/form/labelling-input';
 import LongTextInput from '@/components/form/long-text-input';
 import { updateStudentDevelopment } from '@/services/pages/development';
 import { useSession } from 'next-auth/react';
 
 type FormStudentDevelopmentProps = {
-    studentDevelopment?: StudentType;
+    studentDevelopment?: UpdateStudentType;
     onSuccess?: () => void;
 };
 
@@ -25,7 +25,6 @@ export default function UpdateFormStudentDevelopment({
 }: FormStudentDevelopmentProps) {
     const { toast } = useToast();
     const { data: session, status } = useSession();
-    console.log(studentDevelopment);
 
     const form = useForm<z.infer<typeof updateSchema>>({
         resolver: zodResolver(updateSchema),

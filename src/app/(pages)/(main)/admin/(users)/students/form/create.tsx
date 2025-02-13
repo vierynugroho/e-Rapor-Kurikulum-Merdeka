@@ -69,7 +69,6 @@ export default function CreateFormStudent({
     });
 
     const onSubmitForm: SubmitHandler<z.infer<typeof createSchema>> = data => {
-        console.log(data);
         if (typeof data.address === 'object') {
             data.address = JSON.stringify(data.address);
         }

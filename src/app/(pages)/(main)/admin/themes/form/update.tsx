@@ -32,7 +32,6 @@ export default function UpdateFormTheme({ themes, onSuccess }: FormThemeProps) {
 
     const mutation = useMutation({
         mutationFn: (data: z.infer<typeof updateSchema>) => {
-            console.log(data);
             if (!themes?.id) {
                 throw new Error('Theme ID is required for updating data.');
             }

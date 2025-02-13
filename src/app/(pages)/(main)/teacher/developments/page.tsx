@@ -13,6 +13,7 @@ export default function DevelopmentPage() {
     const { data, isLoading, error } = useQuery({
         queryFn: getStudentDevelopments,
         queryKey: ['studentDevelopments', session?.user.id],
+        enabled: !!session?.user.id,
     });
 
     if (isLoading || status === 'loading') {

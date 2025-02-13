@@ -38,7 +38,6 @@ export default function UpdateFormPeriod({
 
     const mutation = useMutation({
         mutationFn: (data: z.infer<typeof updateSchema>) => {
-            console.log(data);
             if (!period?.id) {
                 throw new Error('Period ID is required for updating data.');
             }

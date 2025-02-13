@@ -48,7 +48,6 @@ export default function UpdateFormIndicator({
 
     const mutation = useMutation({
         mutationFn: (data: z.infer<typeof updateSchema>) => {
-            console.log(data);
             if (!indicator?.id) {
                 throw new Error('Indicator ID is required for updating data.');
             }

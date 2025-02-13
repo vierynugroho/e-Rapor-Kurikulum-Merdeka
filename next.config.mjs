@@ -21,6 +21,9 @@ const nextConfig = {
         ],
         unoptimized: false,
     },
+    env: {
+        TZ: 'Asia/Jakarta',
+    },
 };
 
 export default nextConfig;

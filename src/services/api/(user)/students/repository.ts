@@ -157,9 +157,6 @@ export class StudentRepository {
                 const hasDevelopment =
                     student.Development && student.Development.length > 0;
                 const hasAllScores = studentScoreCount === totalClassIndicator;
-                console.log('STUDENT REFLECTION');
-                console.log(studentReflection);
-                console.log(`has reflection: ${hasReflection}`);
 
                 return {
                     ...student,

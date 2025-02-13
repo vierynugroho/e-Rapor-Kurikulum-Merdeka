@@ -55,7 +55,6 @@ export const columns: ColumnDef<ReflectionType>[] = [
     {
         id: 'Aksi',
         cell: ({ row }) => {
-            console.log(row.original);
             const reflection = row.original;
             return <ActionMenu data={reflection} />;
         },

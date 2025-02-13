@@ -23,7 +23,6 @@ export default function UpdateFormReflection({
 }: FormReflectionProps) {
     const { toast } = useToast();
 
-    console.log(reflection);
     const form = useForm<z.infer<typeof updateSchema>>({
         resolver: zodResolver(updateSchema),
         defaultValues: {
@@ -63,7 +62,6 @@ export default function UpdateFormReflection({
     const onSubmitForm: SubmitHandler<
         z.infer<typeof updateSchema>
     > = async data => {
-        console.log(data);
         mutation.mutate(data);
     };
 

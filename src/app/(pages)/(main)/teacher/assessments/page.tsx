@@ -13,6 +13,7 @@ export default function ThemePage() {
     const { data, isLoading, error } = useQuery({
         queryFn: () => getStudentsByTeacher(session?.user.id as number),
         queryKey: ['studentsClass', session?.user.id],
+        enabled: !!session?.user.id,
     });
 
     if (isLoading || status === 'loading') {

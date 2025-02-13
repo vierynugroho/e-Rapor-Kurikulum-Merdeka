@@ -55,6 +55,7 @@ export type StudentDevelopment = {
     Student?: Student | null;
     Teacher?: Teacher | null;
 };
+
 export type CreateStudentDevelopment = {
     id?: number;
     height?: number;
@@ -104,19 +105,6 @@ export type CreateStudentType = {
     id?: number;
 };
 
-export type UpdateStudentType = {
-    id?: number;
-    fullname?: string;
-    gender?: Gender;
-    religion?: Religion;
-    parentName?: string;
-    birthPlace?: string;
-    birthDate?: string | Date;
-    classID?: number | null;
-    address?: string;
-    Class?: Class | null;
-};
-
 export type StudentType = {
     id?: number;
     fullname?: string;
@@ -132,10 +120,44 @@ export type StudentType = {
     readyToPrint?: boolean;
     filledAssessment?: boolean;
     filledReflection?: boolean;
+    attendance?: {
+        sick: number | string;
+        permit: number | string;
+        absent: number | string;
+    };
     Class?: Class | null;
     Score?: StudentScore[];
     Development?: StudentDevelopment[];
     development?: StudentDevelopment[];
+    teacherClass?: Teacher;
+    Reflection?: Reflection[];
+    hasDevelopment?: boolean;
+};
+
+export type UpdateStudentType = {
+    id?: number;
+    fullname?: string;
+    gender?: Gender;
+    religion?: Religion;
+    parentName?: string;
+    birthPlace?: string;
+    birthDate?: string | Date;
+    classID?: number;
+    address?: string;
+    createdAt?: Date;
+    updatedAt?: Date;
+    readyToPrint?: boolean;
+    filledAssessment?: boolean;
+    filledReflection?: boolean;
+    attendance?: {
+        sick: number | string;
+        permit: number | string;
+        absent: number | string;
+    };
+    Class?: Class | null;
+    Score?: StudentScore[];
+    Development?: StudentDevelopment;
+    development?: StudentDevelopment;
     teacherClass?: Teacher;
     Reflection?: Reflection[];
     hasDevelopment?: boolean;

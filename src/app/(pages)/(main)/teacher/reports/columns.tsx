@@ -64,7 +64,6 @@ export const columns: ColumnDef<StudentType>[] = [
     {
         id: 'Aksi',
         cell: ({ row }) => {
-            console.log(row.original);
             const student = row.original;
             return <ActionMenu student={student} />;
         },

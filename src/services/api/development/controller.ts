@@ -54,7 +54,6 @@ export class StudentDevelopmentController {
         try {
             const requestBody = await request.json();
             const data = validateSchema(createSchema, requestBody);
-            console.log(data);
 
             const userLoggedIn = await fetchServerSession();
 

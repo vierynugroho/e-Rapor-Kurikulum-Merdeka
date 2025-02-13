@@ -31,7 +31,6 @@ export default function StudentPage() {
         );
     }
 
-    console.log(data);
     return (
         <div className="container mx-auto py-10">
             <DataTable columns={columns} data={data ?? []} />
