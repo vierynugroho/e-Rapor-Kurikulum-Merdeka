@@ -1,13 +1,12 @@
-import { StudentType } from '@/types/student';
+import { UpdateStudentType } from '@/types/student';
 import { formatDateTime } from '@/utils/format';
 import React from 'react';
 
 type DetailDataProps = {
-    data: StudentType;
+    data: UpdateStudentType;
 };
 
 export const DetailData: React.FC<DetailDataProps> = ({ data }) => {
-    console.log(data);
     return (
         <>
             <div className="max-w-4xl rounded-lg bg-background p-6 text-foreground shadow-lg">

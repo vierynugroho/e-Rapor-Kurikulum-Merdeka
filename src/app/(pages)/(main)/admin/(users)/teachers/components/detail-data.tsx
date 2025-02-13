@@ -30,8 +30,6 @@ export const DetailData: React.FC<DetailDataProps> = ({ data }) => {
             });
     };
 
-    console.log(data);
-
     return (
         <>
             <div className="mx-auto max-w-4xl rounded-lg bg-background p-6 text-foreground shadow-lg">

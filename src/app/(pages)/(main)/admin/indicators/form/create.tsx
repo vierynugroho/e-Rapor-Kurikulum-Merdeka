@@ -72,7 +72,6 @@ export default function CreateFormIndicator({
     const onSubmitForm: SubmitHandler<
         z.infer<typeof createSchema>
     > = async data => {
-        console.log(data);
         mutation.mutate(data);
     };
 

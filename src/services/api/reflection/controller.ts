@@ -20,7 +20,6 @@ export class ReflectionController {
 
     static async GET_BY_CLASS_AND_ACTIVE_PERIOD(request: NextRequest) {
         try {
-            console.log(request.json);
             const token = await getToken({
                 req: request,
                 secret: process.env.NEXTAUTH_SECRET,
@@ -29,6 +28,7 @@ export class ReflectionController {
             if (!token) {
                 throw new CustomError(401, 'unauthorized');
             }
+
             const reflectionData =
                 await ReflectionService.GET_BY_CLASS_AND_ACTIVE_PERIOD(
                     token.id,
@@ -45,8 +45,6 @@ export class ReflectionController {
     static async UPSERT(request: NextRequest) {
         try {
             const requestBody = await request.json();
-            console.log('requestBody');
-            console.log(requestBody);
             const updatedPeriod = await ReflectionService.UPSERT(requestBody);
 
             return APIResponse.success(updatedPeriod, {

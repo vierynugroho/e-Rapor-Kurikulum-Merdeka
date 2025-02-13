@@ -10,6 +10,7 @@ import {
 } from '@react-pdf/renderer';
 import { StudentType } from '@/types/student';
 import { Semester } from '@prisma/client';
+import { formatDate } from '@/utils/format';
 
 const styles = StyleSheet.create({
     page: {
@@ -17,10 +18,12 @@ const styles = StyleSheet.create({
         fontSize: 12,
         backgroundColor: '#ffffff',
     },
-    text: {
-        fontSize: 10,
-    },
+    // Header styles
     header: {
+        position: 'absolute',
+        top: 30,
+        left: 30,
+        right: 30,
         flexDirection: 'row',
         alignItems: 'center',
         marginBottom: 20,
@@ -38,11 +41,35 @@ const styles = StyleSheet.create({
     headerAddress: {
         fontSize: 11,
     },
+    contentWrapper: {
+        marginTop: 120, // Space for header
+        paddingBottom: 30, // Space for footer
+    },
+    text: {
+        fontSize: 10,
+    },
     title: {
         fontSize: 12,
         fontWeight: 'bold',
         textAlign: 'center',
         marginBottom: 15,
+    },
+    tableHeader: {
+        flexDirection: 'row',
+        borderWidth: 1,
+        borderColor: '#000',
+        backgroundColor: '#f2f2f2',
+    },
+    tableHeaderCell: {
+        padding: 5,
+        fontWeight: 'bold',
+    },
+    // Add width variants for table cells
+    tableCell30: {
+        width: '30%',
+    },
+    tableCell70: {
+        width: '70%',
     },
     table: {
         width: '100%',
@@ -57,6 +84,7 @@ const styles = StyleSheet.create({
         width: '30%',
         padding: 5,
         backgroundColor: '#f2f2f2',
+        fontWeight: 'bold',
     },
     tableColValue: {
         width: '70%',
@@ -87,6 +115,13 @@ const styles = StyleSheet.create({
         borderBottom: '1px solid #000',
     },
     sectionContent: {
+        padding: 8,
+        minHeight: 60,
+    },
+    sectionWrapper: {
+        marginBottom: 10,
+    },
+    sectionReflectionContent: {
         padding: 8,
         minHeight: 60,
     },
@@ -200,6 +235,12 @@ const styles = StyleSheet.create({
         height: 30,
         border: '1px solid #000',
         marginBottom: 2,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    attendanceValue: {
+        fontSize: 14,
+        fontWeight: 'bold',
     },
     attendanceLabel: {
         padding: 4,
@@ -232,17 +273,90 @@ interface RaporPDFDocumentProps {
     student: StudentType;
 }
 
+const Header: React.FC = () => (
+    <View style={styles.header}>
+        <Image src="/assets/logo.png" style={{ width: 70, height: 90 }} />
+        <View style={styles.headerText}>
+            <Text style={styles.headerTitle}>PEMERINTAH KOTA BLITAR</Text>
+            <Text style={styles.headerTitle}>DINAS PENDIDIKAN</Text>
+            <Text style={styles.headerTitle}>UPT SATUAN PENDIDIKAN</Text>
+            <Text style={styles.headerTitle}>TK NEGERI 2 SANANWETAN</Text>
+            <Text style={styles.headerAddress}>
+                Jl. Kalimantan No. 2 Kota Blitar
+            </Text>
+        </View>
+    </View>
+);
+
+// Simplified table row component
+const TableRow: React.FC<{
+    label: string;
+    value: string | number | null | undefined;
+}> = ({ label, value }) => (
+    <View style={styles.tableRow}>
+        <View style={styles.tableColLabel}>
+            <Text>{label}</Text>
+        </View>
+        <View style={styles.tableColValue}>
+            <Text>{value}</Text>
+        </View>
+    </View>
+);
+
+// Simplified table section component
+const TableSection: React.FC<{
+    data: Array<{ label: string; value: string | number | null | undefined }>;
+}> = ({ data }) => (
+    <View wrap={false}>
+        {data.map((row, index) => (
+            <TableRow key={index} label={row.label} value={row.value} />
+        ))}
+    </View>
+);
+
+const Section: React.FC<{ children: React.ReactNode }> = ({ children }) => (
+    <View wrap={false} style={styles.sectionWrapper}>
+        {children}
+    </View>
+);
+
+const AttendanceSection: React.FC<{
+    attendance?: {
+        sick: number | string;
+        permit: number | string;
+        absent: number | string;
+    };
+}> = ({ attendance = { sick: 0, permit: 0, absent: 0 } }) => (
+    <View style={styles.attendanceSection}>
+        <View style={styles.attendanceBox}>
+            <View style={styles.attendanceContent}>
+                <Text style={styles.attendanceValue}>{attendance.sick}</Text>
+            </View>
+            <View style={[styles.attendanceLabel, styles.sakitLabel]}>
+                <Text>Sakit</Text>
+            </View>
+        </View>
+        <View style={styles.attendanceBox}>
+            <View style={styles.attendanceContent}>
+                <Text style={styles.attendanceValue}>{attendance.permit}</Text>
+            </View>
+            <View style={[styles.attendanceLabel, styles.izinLabel]}>
+                <Text>Izin</Text>
+            </View>
+        </View>
+        <View style={styles.attendanceBox}>
+            <View style={styles.attendanceContent}>
+                <Text style={styles.attendanceValue}>{attendance.absent}</Text>
+            </View>
+            <View style={[styles.attendanceLabel, styles.alphaLabel]}>
+                <Text>Tanpa Keterangan</Text>
+            </View>
+        </View>
+    </View>
+);
+
 const RaporPDFDocument: React.FC<RaporPDFDocumentProps> = ({ student }) => {
-    const {
-        fullname,
-        Class,
-        Development,
-        Score,
-        parentName,
-        birthPlace,
-        birthDate,
-        address,
-    } = student;
+    const { fullname, Class, Development, Score } = student;
 
     const teacherName = student.teacherClass?.fullname || 'Guru Kelas';
     const teacherNIP = student.teacherClass?.identity_number || '123456789';
@@ -250,288 +364,215 @@ const RaporPDFDocument: React.FC<RaporPDFDocumentProps> = ({ student }) => {
         semester: Semester.GANJIL,
         year: '2025',
     };
-
-    const formatDate = (date: string | Date) => {
-        return new Date(date).toLocaleDateString('id-ID', {
-            day: 'numeric',
-            month: 'long',
-            year: 'numeric',
-        });
+    const attendance = {
+        sick: student.attendance?.sick || 0,
+        permit: student.attendance?.permit || 0,
+        absent: student.attendance?.absent || 0,
     };
 
     return (
         <Document>
             <Page size="A4" style={styles.page} wrap>
-                <View style={styles.header}>
-                    <Image
-                        src="/assets/logo.png"
-                        style={{ width: 70, height: 90 }}
-                    />
-                    <View style={styles.headerText}>
-                        <Text style={styles.headerTitle}>
-                            PEMERINTAH KOTA BLITAR
+                <Header />
+                <View style={styles.contentWrapper}>
+                    <Section>
+                        <Text style={styles.title}>
+                            LAPORAN PENILAIAN PERKEMBANGAN ANAK DIDIK{'\n'}TAHUN
+                            PELAJARAN {period.year} SEMESTER{' '}
+                            {period.semester === 'GANJIL' ? 'GANJIL' : 'GENAP'}
                         </Text>
-                        <Text style={styles.headerTitle}>DINAS PENDIDIKAN</Text>
-                        <Text style={styles.headerTitle}>
-                            UPT SATUAN PENDIDIKAN
-                        </Text>
-                        <Text style={styles.headerTitle}>
-                            TK NEGERI 2 SANANWETAN
-                        </Text>
-                        <Text style={styles.headerAddress}>
-                            Jl. Kalimantan No. 2 Kota Blitar
-                        </Text>
-                    </View>
-                </View>
 
-                <Text style={styles.title}>
-                    LAPORAN PENILAIAN PERKEMBANGAN ANAK DIDIK{'\n'}TAHUN
-                    PELAJARAN {period.year} SEMESTER{' '}
-                    {period.semester === 'GANJIL' ? 'GANJIL' : 'GENAP'}
-                </Text>
+                        <TableSection
+                            data={[
+                                {
+                                    label: 'Nama Sekolah',
+                                    value: 'TKN 2 Sananwetan',
+                                },
+                                { label: 'Nama Siswa', value: fullname },
+                                { label: 'Kelas', value: Class?.name },
+                                { label: 'Guru Kelas', value: teacherName },
+                                {
+                                    label: 'Semester / TA',
+                                    value: `${period.semester} / ${period.year}`,
+                                },
+                                {
+                                    label: 'Fase',
+                                    value: 'Fondasi',
+                                },
+                            ]}
+                        />
+                    </Section>
 
-                <View style={styles.table}>
-                    <View style={styles.tableRow}>
-                        <View style={styles.tableColLabel}>
-                            <Text>Nama Sekolah</Text>
+                    <Section>
+                        <TableSection
+                            data={[
+                                {
+                                    label: 'Tinggi Badan',
+                                    value: `${Development?.[0]?.height} cm`,
+                                },
+                                {
+                                    label: 'Berat Badan',
+                                    value: `${Development?.[0]?.weight} kg`,
+                                },
+                            ]}
+                        />
+                    </Section>
+                    {/* Nilai Section */}
+                    <Section>
+                        <View style={styles.jatiDiriSection}>
+                            <View style={styles.jatiDiriTitle}>
+                                <Text>JATI DIRI</Text>
+                            </View>
+                            <View style={styles.sectionContent}>
+                                {Score?.filter(
+                                    score =>
+                                        score?.Indicator?.assesment_type ===
+                                        'JATI_DIRI',
+                                ).map(score => (
+                                    <Text key={score.id}>
+                                        {score.description?.replace(
+                                            /<[^>]*>/g,
+                                            '',
+                                        )}
+                                    </Text>
+                                ))}
+                            </View>
                         </View>
-                        <View style={styles.tableColValue}>
-                            <Text>TKN 2 Sananwetan</Text>
-                        </View>
-                    </View>
-                    <View style={styles.tableRow}>
-                        <View style={styles.tableColLabel}>
-                            <Text>Nama Siswa</Text>
-                        </View>
-                        <View style={styles.tableColValue}>
-                            <Text>{fullname}</Text>
-                        </View>
-                    </View>
-                    <View style={styles.tableRow}>
-                        <View style={styles.tableColLabel}>
-                            <Text>Tempat, Tanggal Lahir</Text>
-                        </View>
-                        <View style={styles.tableColValue}>
-                            <Text>
-                                {birthPlace}, {formatDate(birthDate!)}
-                            </Text>
-                        </View>
-                    </View>
-                    <View style={styles.tableRow}>
-                        <View style={styles.tableColLabel}>
-                            <Text>Nama Orang Tua</Text>
-                        </View>
-                        <View style={styles.tableColValue}>
-                            <Text>{parentName}</Text>
-                        </View>
-                    </View>
-                    <View style={styles.tableRow}>
-                        <View style={styles.tableColLabel}>
-                            <Text>Alamat</Text>
-                        </View>
-                        <View style={styles.tableColValue}>
-                            <Text>{address}</Text>
-                        </View>
-                    </View>
-                    <View style={styles.tableRow}>
-                        <View style={styles.tableColLabel}>
-                            <Text>Kelas</Text>
-                        </View>
-                        <View style={styles.tableColValue}>
-                            <Text>{Class?.name}</Text>
-                        </View>
-                    </View>
-                    <View style={styles.tableRow}>
-                        <View style={styles.tableColLabel}>
-                            <Text>Guru Kelas</Text>
-                        </View>
-                        <View style={styles.tableColValue}>
-                            <Text>{teacherName}</Text>
-                        </View>
-                    </View>
-                </View>
+                    </Section>
 
-                <View style={styles.section}>
-                    <Text style={styles.assessmentTitle}>
-                        Perkembangan Fisik
-                    </Text>
-                    <View style={styles.table}>
-                        <View style={styles.tableRow}>
-                            <View style={styles.tableColLabel}>
-                                <Text>Tinggi Badan</Text>
-                            </View>
-                            <View style={styles.tableColValue}>
-                                <Text>{Development?.[0]?.height} cm</Text>
-                            </View>
-                        </View>
-                        <View style={styles.tableRow}>
-                            <View style={styles.tableColLabel}>
-                                <Text>Berat Badan</Text>
-                            </View>
-                            <View style={styles.tableColValue}>
-                                <Text>{Development?.[0]?.weight} kg</Text>
-                            </View>
-                        </View>
-                        <View style={styles.tableRow}>
-                            <View style={styles.tableColLabel}>
-                                <Text>Catatan</Text>
-                            </View>
-                            <View style={styles.tableColValue}>
+                    {/* STEAM Section */}
+                    <Section>
+                        <View style={styles.steamSection}>
+                            <View style={styles.steamTitle}>
                                 <Text>
-                                    {Development?.[0]?.notes?.replace(
-                                        /<[^>]*>/g,
-                                        '',
-                                    )}
+                                    Proses dalam Literasi, Matematika, Sains,
+                                    Teknologi, Rekayasa dan Seni (STEAM)
+                                </Text>
+                            </View>
+                            <View style={styles.sectionContent}>
+                                {Score?.filter(
+                                    score =>
+                                        score?.Indicator?.assesment_type ===
+                                        'DASAR_LITERASI_MATEMATIKA_SAINS_TEKNOLOGI_REKAYASA_DAN_SENI',
+                                ).map(score => (
+                                    <Text key={score.id}>
+                                        {score.description?.replace(
+                                            /<[^>]*>/g,
+                                            '',
+                                        )}
+                                    </Text>
+                                ))}
+                            </View>
+                        </View>
+                    </Section>
+                    {/* Project Section */}
+                    <Section>
+                        <View style={styles.projectSection}>
+                            <View style={styles.projectTitle}>
+                                <Text>
+                                    Projek Penguatan Profil Pelajar Pancasila
+                                </Text>
+                            </View>
+                            <View style={styles.sectionContent}>
+                                {Score?.filter(
+                                    score =>
+                                        score?.Indicator?.assesment_type ===
+                                        'NILAI_AGAMA_DAN_BUDI_PEKERTI',
+                                ).map(score => (
+                                    <Text key={score.id}>
+                                        {score.description?.replace(
+                                            /<[^>]*>/g,
+                                            '',
+                                        )}
+                                    </Text>
+                                ))}
+                            </View>
+                        </View>
+                    </Section>
+
+                    {/* Reflection Section */}
+                    <Section>
+                        <View style={styles.reflectionSection}>
+                            <View style={styles.sectionTitle}>
+                                <Text>Refleksi Guru</Text>
+                            </View>
+                            <View style={styles.sectionContent}>
+                                {student.Reflection?.map(reflection => (
+                                    <Text key={reflection.id}>
+                                        {reflection.description?.replace(
+                                            /<[^>]*>/g,
+                                            '',
+                                        )}
+                                    </Text>
+                                ))}
+                            </View>
+                        </View>
+                    </Section>
+                    <Section>
+                        <View style={styles.reflectionSection}>
+                            <View style={styles.sectionTitle}>
+                                <Text>Refleksi Orang Tua</Text>
+                            </View>
+                            <View
+                                style={styles.sectionReflectionContent}
+                            ></View>
+                        </View>
+                    </Section>
+
+                    {/* Attendance Status Boxes */}
+                    <Section>
+                        <AttendanceSection attendance={attendance} />
+                    </Section>
+
+                    {/* Signature Section */}
+                    <Section>
+                        <View style={styles.signatureContainer}>
+                            <Text style={styles.signatureDate}>
+                                Blitar, {formatDate(new Date())}
+                            </Text>
+
+                            <View style={styles.signatureRow}>
+                                <View style={styles.signatureLeft}>
+                                    <Text style={styles.signatureMengetahui}>
+                                        Mengetahui
+                                    </Text>
+                                    <Text style={styles.signatureRole}>
+                                        Orang Tua / Walimurid
+                                    </Text>
+                                    <Text style={styles.signatureName}>
+                                        (.........................)
+                                    </Text>
+                                </View>
+
+                                <View style={styles.signatureRight}>
+                                    <Text style={styles.signatureRole}>
+                                        Guru Kelas
+                                    </Text>
+                                    <Text style={styles.signatureName}>
+                                        NASRIYAH, S.Pd. AUD
+                                    </Text>
+                                    <Text style={styles.signatureNIP}>
+                                        NIP. 197111082005012011
+                                    </Text>
+                                </View>
+                            </View>
+
+                            <View style={styles.headmasterSection}>
+                                <Text style={styles.signatureMengetahui}>
+                                    Mengetahui
+                                </Text>
+                                <Text style={styles.signatureRole}>
+                                    Kepala UPT SP TK Negeri 2 Sananwetan
+                                </Text>
+                                <Text style={styles.signatureName}>
+                                    SETIYANI, S.Pd
+                                </Text>
+                                <Text style={styles.signatureNIP}>
+                                    NIP. {teacherNIP}
                                 </Text>
                             </View>
                         </View>
-                    </View>
-                </View>
-
-                {/* Nilai Section */}
-                <View style={styles.jatiDiriSection}>
-                    <View style={styles.jatiDiriTitle}>
-                        <Text>JATI DIRI</Text>
-                    </View>
-                    <View style={styles.sectionContent}>
-                        {Score?.filter(
-                            score =>
-                                score?.Indicator?.assesment_type ===
-                                'JATI_DIRI',
-                        ).map(score => (
-                            <Text key={score.id}>
-                                {score.description?.replace(/<[^>]*>/g, '')}
-                            </Text>
-                        ))}
-                    </View>
-                </View>
-
-                {/* STEAM Section */}
-                <View style={styles.steamSection}>
-                    <View style={styles.steamTitle}>
-                        <Text>
-                            Proses dalam Literasi, Matematika, Sains, Teknologi,
-                            Rekayasa dan Seni (STEAM)
-                        </Text>
-                    </View>
-                    <View style={styles.sectionContent}>
-                        {Score?.filter(
-                            score =>
-                                score?.Indicator?.assesment_type ===
-                                'DASAR_LITERASI_MATEMATIKA_SAINS_TEKNOLOGI_REKAYASA_DAN_SENI',
-                        ).map(score => (
-                            <Text key={score.id}>
-                                {score.description?.replace(/<[^>]*>/g, '')}
-                            </Text>
-                        ))}
-                    </View>
-                </View>
-
-                {/* Project Section */}
-                <View style={styles.projectSection}>
-                    <View style={styles.projectTitle}>
-                        <Text>Projek Penguatan Profil Pelajar Pancasila</Text>
-                    </View>
-                    <View style={styles.sectionContent}>
-                        {Score?.filter(
-                            score =>
-                                score?.Indicator?.assesment_type ===
-                                'NILAI_AGAMA_DAN_BUDI_PEKERTI',
-                        ).map(score => (
-                            <Text key={score.id}>
-                                {score.description?.replace(/<[^>]*>/g, '')}
-                            </Text>
-                        ))}
-                    </View>
-                </View>
-
-                {/* Reflection Section */}
-                <View style={styles.reflectionSection}>
-                    <View style={styles.sectionTitle}>
-                        <Text>Refleksi Guru</Text>
-                    </View>
-                    <View style={styles.sectionContent}>
-                        {student.Reflection?.map(reflection => (
-                            <Text key={reflection.id}>
-                                {reflection.description?.replace(
-                                    /<[^>]*>/g,
-                                    '',
-                                )}
-                            </Text>
-                        ))}
-                    </View>
-                </View>
-
-                {/* Attendance Status Boxes */}
-                <View style={styles.attendanceSection}>
-                    <View style={styles.attendanceBox}>
-                        <View style={styles.attendanceContent} />
-                        <View
-                            style={[styles.attendanceLabel, styles.sakitLabel]}
-                        >
-                            <Text>Sakit</Text>
-                        </View>
-                    </View>
-                    <View style={styles.attendanceBox}>
-                        <View style={styles.attendanceContent} />
-                        <View
-                            style={[styles.attendanceLabel, styles.izinLabel]}
-                        >
-                            <Text>Izin</Text>
-                        </View>
-                    </View>
-                    <View style={styles.attendanceBox}>
-                        <View style={styles.attendanceContent} />
-                        <View
-                            style={[styles.attendanceLabel, styles.alphaLabel]}
-                        >
-                            <Text>Tanpa Keterangan</Text>
-                        </View>
-                    </View>
-                </View>
-
-                {/* Signature Section */}
-                <View style={styles.signatureContainer}>
-                    <Text style={styles.signatureDate}>
-                        Blitar, 21 Desember 2023
-                    </Text>
-
-                    <View style={styles.signatureRow}>
-                        <View style={styles.signatureLeft}>
-                            <Text style={styles.signatureMengetahui}>
-                                Mengetahui
-                            </Text>
-                            <Text style={styles.signatureRole}>
-                                Orang Tua / Walimurid
-                            </Text>
-                            <Text style={styles.signatureName}>
-                                (.........................)
-                            </Text>
-                        </View>
-
-                        <View style={styles.signatureRight}>
-                            <Text style={styles.signatureRole}>Guru Kelas</Text>
-                            <Text style={styles.signatureName}>
-                                NASRIYAH, S.Pd. AUD
-                            </Text>
-                            <Text style={styles.signatureNIP}>
-                                NIP. 197111082005012011
-                            </Text>
-                        </View>
-                    </View>
-
-                    <View style={styles.headmasterSection}>
-                        <Text style={styles.signatureMengetahui}>
-                            Mengetahui
-                        </Text>
-                        <Text style={styles.signatureRole}>
-                            Kepala UPT SP TK Negeri 2 Sananwetan
-                        </Text>
-                        <Text style={styles.signatureName}>SETIYANI, S.Pd</Text>
-                        <Text style={styles.signatureNIP}>
-                            NIP. {teacherNIP}
-                        </Text>
-                    </View>
+                    </Section>
                 </View>
             </Page>
         </Document>

@@ -91,15 +91,13 @@ export const AssessmentForm: React.FC<FormAssessmentProps> = ({
             queryKey: ['studentsAssessments', student.id],
             staleTime: 5 * 60 * 1000,
             retry: 2,
+            enabled: !!student.id,
         });
 
     const { data: activePeriod } = useQuery({
         queryKey: ['activePeriod'],
         queryFn: getActivePeriod,
     });
-
-    console.log('active period');
-    console.log(activePeriod);
 
     const allIndicators: Record<IndicatorWithTheme[]> = useMemo(() => {
         const grouped: Record<IndicatorWithTheme[]> = {

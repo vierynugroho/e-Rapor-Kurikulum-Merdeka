@@ -74,7 +74,6 @@ export default function UpdateFormStudent({
     });
 
     const onSubmitForm: SubmitHandler<z.infer<typeof updateSchema>> = data => {
-        console.log(data.address);
         if (typeof data.address === 'object') {
             data.address = JSON.stringify(data.address);
         }

@@ -44,7 +44,6 @@ export const columns: ColumnDef<IndicatorType>[] = [
     {
         id: 'Aksi',
         cell: ({ row }) => {
-            console.log(row.original);
             const themes = row.original;
             return <ActionMenu data={themes} />;
         },

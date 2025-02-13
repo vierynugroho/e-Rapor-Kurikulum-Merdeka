@@ -13,6 +13,7 @@ export default function StudentPage() {
     const { data, isLoading, error } = useQuery({
         queryFn: () => getStudentsByTeacher(session?.user.id as number),
         queryKey: ['students'],
+        enabled: !!session?.user.id,
     });
 
     if (isLoading || status === 'loading') {
@@ -33,7 +34,6 @@ export default function StudentPage() {
         );
     }
 
-    console.log(data);
     return (
         <div className="container mx-auto py-10">
             <DataTable columns={columns} data={data ?? []} />
