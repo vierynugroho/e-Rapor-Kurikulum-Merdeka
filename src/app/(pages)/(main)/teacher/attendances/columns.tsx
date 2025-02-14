@@ -1,12 +1,15 @@
 import React from 'react';
 import { ColumnDef } from '@tanstack/react-table';
-import { ArrowUpDown, Check, X } from 'lucide-react';
-import { Button } from '@/components/ui/button';
 import ActionMenu from './components/action-menu';
 import { StudentType } from '@/types/student';
-import StatusHoverCard from '@/components/custom/info-status';
-
+import { ArrowUpDown, Check, X } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 export const columns: ColumnDef<StudentType>[] = [
+    {
+        id: 'ID',
+        accessorKey: 'id',
+        header: 'ID',
+    },
     {
         accessorKey: 'fullname',
         header: ({ column }) => (
@@ -22,25 +25,11 @@ export const columns: ColumnDef<StudentType>[] = [
         ),
     },
     {
-        accessorKey: 'gender',
-        header: 'Jenis Kelamin',
-        cell: ({ row }) =>
-            row.original.gender === 'LAKI_LAKI' ? 'Laki-Laki' : 'Perempuan',
-    },
-    {
-        accessorKey: 'religion',
-        header: 'Agama',
-    },
-    {
-        accessorFn: row => row.Class?.name || '-',
-        header: 'Kelas',
-    },
-    {
-        accessorFn: row => row.readyToPrint || false,
-        id: 'readyToPrint',
-        header: 'Siap Dicetak',
+        accessorFn: row => row.hasAttendance || false,
+        id: 'hasAttendance',
+        header: 'Telah Diisi',
         cell: ({ row }) => {
-            const isActive = row.getValue<boolean>('readyToPrint');
+            const isActive = row.getValue<boolean>('hasAttendance');
             return (
                 <div
                     className={`inline-flex items-center rounded-full px-2 py-1 text-sm font-medium ${
@@ -51,30 +40,23 @@ export const columns: ColumnDef<StudentType>[] = [
                 >
                     {isActive ? (
                         <>
-                            <Check className="mr-1 h-4 w-4" /> Siap
+                            <Check className="mr-1 h-4 w-4" /> Diisi
                         </>
                     ) : (
                         <>
-                            <X className="mr-1 h-4 w-4" /> Belum Siap
+                            <X className="mr-1 h-4 w-4" /> Belum Diisi
                         </>
                     )}
                 </div>
             );
         },
     },
-    {
-        id: 'Status Info',
-        header: 'Status Info',
-        cell: ({ row }) => {
-            const student = row.original.status;
-            return <StatusHoverCard data={student} />;
-        },
-    },
+
     {
         id: 'Aksi',
         cell: ({ row }) => {
             const student = row.original;
-            return <ActionMenu student={student} />;
+            return <ActionMenu data={student} />;
         },
     },
 ];
