@@ -159,9 +159,9 @@ export type UpdateStudentType = {
     filledAssessment?: boolean;
     filledReflection?: boolean;
     attendance?: {
-        sick?: number | string;
-        permit?: number | string;
-        absent?: number | string;
+        sick?: number | string | undefined;
+        permit?: number | string | undefined;
+        absent?: number | string | undefined;
     };
     Class?: Class | null;
     Score?: StudentScore[];

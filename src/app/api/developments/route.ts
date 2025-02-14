@@ -1,3 +1,3 @@
 import { StudentDevelopmentController } from '@/services/api/development';
 
-export const { GET, POST } = StudentDevelopmentController;
+export const { GET, UPSERT: POST } = StudentDevelopmentController;

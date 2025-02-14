@@ -11,7 +11,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { UpdateStudentType } from '@/types/student';
 import LabellingInput from '@/components/form/labelling-input';
 import LongTextInput from '@/components/form/long-text-input';
-import { updateStudentDevelopment } from '@/services/pages/development';
+import { upsertStudentDevelopment } from '@/services/pages/development';
 import { useSession } from 'next-auth/react';
 
 type FormStudentDevelopmentProps = {
@@ -34,7 +34,7 @@ export default function UpdateFormStudentDevelopment({
             notes: studentDevelopment?.development?.notes || '',
             studentID: studentDevelopment?.id || undefined,
             teacherID:
-                studentDevelopment?.development?.teacherID || session?.user.id,
+                session?.user.id || studentDevelopment?.development?.teacherID,
         },
     });
 
@@ -48,7 +48,7 @@ export default function UpdateFormStudentDevelopment({
                     'Student Development ID is required for updating data.',
                 );
             }
-            return updateStudentDevelopment(studentDevelopment.id, data);
+            return upsertStudentDevelopment(data);
         },
         onSuccess: () => {
             toast({

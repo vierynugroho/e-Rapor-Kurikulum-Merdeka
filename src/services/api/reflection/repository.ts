@@ -70,8 +70,7 @@ export class ReflectionRepository {
             const hasReflection =
                 student.Reflection && student.Reflection.length > 0;
             const reflection = hasReflection ? student.Reflection[0] : null;
-            console.log('REFLECTION');
-            console.log(reflection);
+
             return {
                 ...student,
                 periodId: activePeriod.id,

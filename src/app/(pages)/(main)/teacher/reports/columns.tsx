@@ -63,8 +63,8 @@ export const columns: ColumnDef<StudentType>[] = [
         },
     },
     {
-        id: 'Status Info',
-        header: 'Status Info',
+        id: 'information',
+        header: 'Status Data',
         cell: ({ row }) => {
             const student = row.original.status;
             return <StatusHoverCard data={student} />;

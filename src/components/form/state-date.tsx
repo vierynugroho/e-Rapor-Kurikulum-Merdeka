@@ -27,7 +27,7 @@ export const OnStateDatePicker: React.FC<DatePickerProps> = ({
     disabledDates,
     minDate = new Date('2010-01-01'),
     maxDate,
-    value,
+    value = new Date(),
     onChange,
     className,
 }) => {

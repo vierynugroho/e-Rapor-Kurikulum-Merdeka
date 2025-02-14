@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { MoreHorizontal, Edit, Trash, Eye } from 'lucide-react';
+import { MoreHorizontal, Edit, Eye } from 'lucide-react';
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -15,69 +15,22 @@ import {
     DialogTitle,
     DialogTrigger,
 } from '@/components/ui/dialog';
-import {
-    AlertDialog,
-    AlertDialogAction,
-    AlertDialogCancel,
-    AlertDialogContent,
-    AlertDialogDescription,
-    AlertDialogFooter,
-    AlertDialogHeader,
-    AlertDialogTitle,
-    AlertDialogTrigger,
-} from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { useToast } from '@/hooks/use-toast';
 import { DetailData } from './detail-data';
-import { StudentType } from '@/types/student';
+import { UpdateStudentType } from '@/types/student';
 import UpdateFormStudentDevelopment from '../form/update';
-import { deleteStudentDevelopment } from '@/services/pages/development';
 
 type ActionMenuProps = {
-    data: StudentType;
+    data: UpdateStudentType;
 };
 
 const ActionMenu: React.FC<ActionMenuProps> = ({ data }) => {
-    const { toast } = useToast();
     const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
     const handleCloseEditDialog = () => {
         setIsEditDialogOpen(false);
         setIsDropdownOpen(false);
-    };
-
-    const queryClient = useQueryClient();
-
-    const deleteMutation = useMutation({
-        mutationFn: deleteStudentDevelopment,
-        onSuccess: () => {
-            toast({
-                title: 'Berhasil',
-                description: 'Data perkembangan berhasil dihapus.',
-                variant: 'default',
-            });
-            queryClient.invalidateQueries({
-                queryKey: ['studentDevelopments'],
-            });
-            setIsDropdownOpen(false);
-        },
-        onError: error => {
-            toast({
-                title: 'Gagal',
-                description: error.message,
-                variant: 'destructive',
-            });
-            console.error('Error:', error);
-            setIsDropdownOpen(false);
-        },
-    });
-
-    const handleDelete = () => {
-        if (data.id) {
-            deleteMutation.mutate(data.id);
-        }
     };
 
     return (
@@ -115,7 +68,7 @@ const ActionMenu: React.FC<ActionMenuProps> = ({ data }) => {
                 >
                     <DialogTrigger asChild>
                         <DropdownMenuItem onSelect={e => e.preventDefault()}>
-                            <Edit className="mr-2 h-4 w-4" /> Edit Data
+                            <Edit className="mr-2 h-4 w-4" /> Nilai Perkembangan
                         </DropdownMenuItem>
                     </DialogTrigger>
                     <DialogContent className="sm:max-w-[425px] md:max-w-[768px]">
@@ -136,36 +89,6 @@ const ActionMenu: React.FC<ActionMenuProps> = ({ data }) => {
                         </div>
                     </DialogContent>
                 </Dialog>
-
-                {/* Delete Action */}
-                <AlertDialog>
-                    <AlertDialogTrigger asChild>
-                        <DropdownMenuItem onSelect={e => e.preventDefault()}>
-                            <Trash className="mr-2 h-4 w-4" /> Hapus Data
-                        </DropdownMenuItem>
-                    </AlertDialogTrigger>
-                    <AlertDialogContent>
-                        <AlertDialogHeader>
-                            <AlertDialogTitle>
-                                Hapus Data Perkembangan
-                            </AlertDialogTitle>
-                            <AlertDialogDescription>
-                                Apakah anda yakin untuk menghapus data
-                                perkembangan {data.fullname}? Aksi ini tidak
-                                bisa dikembalikan.
-                            </AlertDialogDescription>
-                        </AlertDialogHeader>
-                        <AlertDialogFooter>
-                            <AlertDialogCancel>Batal</AlertDialogCancel>
-                            <AlertDialogAction
-                                className="bg-red-600"
-                                onClick={handleDelete}
-                            >
-                                Hapus
-                            </AlertDialogAction>
-                        </AlertDialogFooter>
-                    </AlertDialogContent>
-                </AlertDialog>
             </DropdownMenuContent>
         </DropdownMenu>
     );
