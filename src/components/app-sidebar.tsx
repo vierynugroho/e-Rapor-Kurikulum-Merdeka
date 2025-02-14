@@ -135,6 +135,10 @@ const data = {
                     title: 'Refleksi Guru',
                     url: '/teacher/reflections',
                 },
+                {
+                    title: 'Kehadiran',
+                    url: '/teacher/attendances',
+                },
             ],
         },
     ],

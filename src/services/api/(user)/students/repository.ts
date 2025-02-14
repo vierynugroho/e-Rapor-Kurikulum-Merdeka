@@ -78,6 +78,11 @@ export class StudentRepository {
                         periodId: activePeriod?.id,
                     },
                 },
+                Attendance: {
+                    where: {
+                        periodId: activePeriod?.id,
+                    },
+                },
                 Class: {
                     select: {
                         name: true,
@@ -153,7 +158,15 @@ export class StudentRepository {
                     },
                 });
 
+                const studentAttendance = await prisma.reflection.findFirst({
+                    where: {
+                        studentId: student.id,
+                        periodId: activePeriod?.id,
+                    },
+                });
+
                 const hasReflection = studentReflection !== null;
+                const hasAttendance = studentAttendance !== null;
                 const hasDevelopment =
                     student.Development && student.Development.length > 0;
                 const hasAllScores = studentScoreCount === totalClassIndicator;
@@ -162,8 +175,17 @@ export class StudentRepository {
                     ...student,
                     filledAssessment: hasAllScores,
                     teacherClass: teacherClass,
+                    status: {
+                        hasDevelopment,
+                        hasAllScores,
+                        hasReflection,
+                        hasAttendance,
+                    },
                     readyToPrint:
-                        hasDevelopment && hasAllScores && hasReflection,
+                        hasDevelopment &&
+                        hasAllScores &&
+                        hasReflection &&
+                        hasAttendance,
                 };
             }),
         );

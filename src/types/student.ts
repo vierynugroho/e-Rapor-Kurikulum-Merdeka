@@ -8,6 +8,7 @@ import {
     Teacher,
     Class,
     Reflection,
+    Attendance,
 } from '@prisma/client';
 
 //TODO: Student Score
@@ -120,18 +121,26 @@ export type StudentType = {
     readyToPrint?: boolean;
     filledAssessment?: boolean;
     filledReflection?: boolean;
+    hasAttendance?: boolean;
     attendance?: {
-        sick: number | string;
-        permit: number | string;
-        absent: number | string;
+        sick: number | null;
+        permit: number | null;
+        absent: number | null;
     };
     Class?: Class | null;
     Score?: StudentScore[];
     Development?: StudentDevelopment[];
     development?: StudentDevelopment[];
+    Attendance?: Attendance[];
     teacherClass?: Teacher;
     Reflection?: Reflection[];
     hasDevelopment?: boolean;
+    status?: {
+        hasDevelopment: boolean;
+        hasAllScores: boolean;
+        hasReflection: boolean;
+        hasAttendance: boolean;
+    };
 };
 
 export type UpdateStudentType = {
@@ -150,9 +159,9 @@ export type UpdateStudentType = {
     filledAssessment?: boolean;
     filledReflection?: boolean;
     attendance?: {
-        sick: number | string;
-        permit: number | string;
-        absent: number | string;
+        sick?: number | string;
+        permit?: number | string;
+        absent?: number | string;
     };
     Class?: Class | null;
     Score?: StudentScore[];
@@ -183,4 +192,29 @@ export type ReflectionType = {
     Teacher?: Teacher | null;
     Reflection?: Reflection;
     reflection?: Reflection;
+};
+
+//TODO: attendance data
+export type StudentAttendanceType = {
+    id?: number;
+    classID?: number;
+    studentID?: number;
+    teacherID?: number;
+    createdAt?: Date;
+    updatedAt?: Date;
+    hasdAttendance?: boolean;
+
+    sick?: number | null;
+    permit?: number | null;
+    absent?: number | null;
+
+    attendance?: {
+        sick?: number | null;
+        permit?: number | null;
+        absent?: number | null;
+    };
+
+    Class?: Class | null;
+    Teacher?: Teacher;
+    Reflection?: Reflection[];
 };

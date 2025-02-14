@@ -357,18 +357,18 @@ const AttendanceSection: React.FC<{
 );
 
 const RaporPDFDocument: React.FC<RaporPDFDocumentProps> = ({ student }) => {
-    const { fullname, Class, Development, Score } = student;
-
+    const { fullname, Class, Development, Attendance, Score } = student;
     const teacherName = student.teacherClass?.fullname || 'Guru Kelas';
     const teacherNIP = student.teacherClass?.identity_number || '123456789';
     const period = Score?.[0]?.Period || {
         semester: Semester.GANJIL,
         year: '2025',
     };
+
     const attendance = {
-        sick: student.attendance?.sick || 0,
-        permit: student.attendance?.permit || 0,
-        absent: student.attendance?.absent || 0,
+        sick: Attendance?.[0].sick || 0,
+        permit: Attendance?.[0].permit || 0,
+        absent: Attendance?.[0].absent || 0,
     };
 
     const [selectedDate, setSelectedDate] = React.useState<Date | null>(
@@ -420,11 +420,11 @@ const RaporPDFDocument: React.FC<RaporPDFDocumentProps> = ({ student }) => {
                             data={[
                                 {
                                     label: 'Tinggi Badan',
-                                    value: `${Development?.[0]?.height} cm`,
+                                    value: `${Development?.[0]?.height || '-'} cm`,
                                 },
                                 {
                                     label: 'Berat Badan',
-                                    value: `${Development?.[0]?.weight} kg`,
+                                    value: `${Development?.[0]?.weight || '-'} kg`,
                                 },
                             ]}
                         />
