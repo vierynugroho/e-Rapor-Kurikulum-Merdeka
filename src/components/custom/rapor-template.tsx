@@ -371,7 +371,9 @@ const RaporPDFDocument: React.FC<RaporPDFDocumentProps> = ({ student }) => {
         absent: student.attendance?.absent || 0,
     };
 
-    const [selectedDate, setSelectedDate] = React.useState<Date | null>(null);
+    const [selectedDate, setSelectedDate] = React.useState<Date | null>(
+        new Date(),
+    );
 
     React.useEffect(() => {
         const savedDate = localStorage.getItem('selectedDate');
