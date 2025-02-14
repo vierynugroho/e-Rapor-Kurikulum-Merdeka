@@ -358,12 +358,26 @@ const AttendanceSection: React.FC<{
     </View>
 );
 
+const getAssessmentDescription = (value?: string) => {
+    switch (value) {
+        case 'BSB':
+            return 'Berkembang Sangat Baik';
+        case 'BSH':
+            return 'Berkembang Sesuai Harapan';
+        case 'MB':
+            return 'Mulai Berkembang';
+        case 'BB':
+            return 'Belum Berkembang';
+        default:
+            return '';
+    }
+};
+
 const RaporPDFDocument: React.FC<RaporPDFDocumentProps> = ({
     student,
     headmaster,
 }) => {
     const { fullname, Class, Development, Attendance, Score } = student;
-    console.log(student);
     const teacherName = student.teacherClass?.fullname || 'Guru Kelas';
     const teacherNIP = student.teacherClass?.identity_number || '123456789';
     const period = Score?.[0]?.Period || {
@@ -395,6 +409,7 @@ const RaporPDFDocument: React.FC<RaporPDFDocumentProps> = ({
         }
     }, []);
 
+    console.log(Score);
     return (
         <Document>
             <Page size="A4" style={styles.page} wrap>
@@ -428,6 +443,7 @@ const RaporPDFDocument: React.FC<RaporPDFDocumentProps> = ({
                         />
                     </Section>
 
+                    {/* Perkembangan */}
                     <Section>
                         <TableSection
                             data={[
@@ -442,80 +458,158 @@ const RaporPDFDocument: React.FC<RaporPDFDocumentProps> = ({
                             ]}
                         />
                     </Section>
-                    {/* Nilai Section */}
+
+                    {/* JATI DIRI */}
                     <Section>
                         <View style={styles.jatiDiriSection}>
                             <View style={styles.jatiDiriTitle}>
                                 <Text>JATI DIRI</Text>
                             </View>
                             <View style={styles.sectionContent}>
-                                {Score?.filter(
-                                    score =>
-                                        score?.Indicator?.assesment_type ===
-                                        'JATI_DIRI',
-                                ).map(score => (
-                                    <Text key={score.id}>
-                                        {score.description?.replace(
-                                            /<[^>]*>/g,
-                                            '',
+                                {Score && Score.length > 0 && (
+                                    <Text key={`jatidiri-${fullname}`}>
+                                        {Score.filter(
+                                            score =>
+                                                score?.Indicator
+                                                    ?.assesment_type ===
+                                                'JATI_DIRI',
+                                        ).map((score, index) => (
+                                            <Text
+                                                key={`jatidiri-content-${index}`}
+                                            >
+                                                Pada pembelajaran{' '}
+                                                {score?.Indicator?.title?.replace(
+                                                    /<[^>]*>/g,
+                                                    '',
+                                                )}{' '}
+                                                ananda{' '}
+                                                {score?.value &&
+                                                    getAssessmentDescription(
+                                                        score.value.replace(
+                                                            /<[^>]*>/g,
+                                                            '',
+                                                        ),
+                                                    )}
+                                                .{' '}
+                                            </Text>
+                                        ))}
+                                        {Score[0]?.description && (
+                                            <Text>
+                                                {'\n'}Dengan catatan:{' '}
+                                                {Score[0].description.replace(
+                                                    /<[^>]*>/g,
+                                                    '',
+                                                )}
+                                            </Text>
                                         )}
                                     </Text>
-                                ))}
+                                )}
                             </View>
                         </View>
                     </Section>
 
-                    {/* STEAM Section */}
+                    {/* STEAM */}
                     <Section>
                         <View style={styles.steamSection}>
                             <View style={styles.steamTitle}>
                                 <Text>
-                                    Proses dalam Literasi, Matematika, Sains,
-                                    Teknologi, Rekayasa dan Seni (STEAM)
+                                    DASAR LITERASI MATEMATIKA SAINS TEKNOLOGI
+                                    REKAYASA DAN SENI (STEAM)
                                 </Text>
                             </View>
                             <View style={styles.sectionContent}>
-                                {Score?.filter(
-                                    score =>
-                                        score?.Indicator?.assesment_type ===
-                                        'DASAR_LITERASI_MATEMATIKA_SAINS_TEKNOLOGI_REKAYASA_DAN_SENI',
-                                ).map(score => (
-                                    <Text key={score.id}>
-                                        {score.description?.replace(
-                                            /<[^>]*>/g,
-                                            '',
+                                {Score && Score.length > 0 && (
+                                    <Text key={`steam-${fullname}`}>
+                                        {Score.filter(
+                                            score =>
+                                                score?.Indicator
+                                                    ?.assesment_type ===
+                                                'DASAR_LITERASI_MATEMATIKA_SAINS_TEKNOLOGI_REKAYASA_DAN_SENI',
+                                        ).map((score, index) => (
+                                            <Text
+                                                key={`steam-content-${index}`}
+                                            >
+                                                Pada pembelajaran{' '}
+                                                {score?.Indicator?.title?.replace(
+                                                    /<[^>]*>/g,
+                                                    '',
+                                                )}{' '}
+                                                ananda{' '}
+                                                {score?.value &&
+                                                    getAssessmentDescription(
+                                                        score.value.replace(
+                                                            /<[^>]*>/g,
+                                                            '',
+                                                        ),
+                                                    )}
+                                                .{' '}
+                                            </Text>
+                                        ))}
+                                        {Score[0]?.description && (
+                                            <Text>
+                                                {'\n'}Dengan catatan:{' '}
+                                                {Score[0].description.replace(
+                                                    /<[^>]*>/g,
+                                                    '',
+                                                )}
+                                            </Text>
                                         )}
                                     </Text>
-                                ))}
-                            </View>
-                        </View>
-                    </Section>
-                    {/* Project Section */}
-                    <Section>
-                        <View style={styles.projectSection}>
-                            <View style={styles.projectTitle}>
-                                <Text>
-                                    Projek Penguatan Profil Pelajar Pancasila
-                                </Text>
-                            </View>
-                            <View style={styles.sectionContent}>
-                                {Score?.filter(
-                                    score =>
-                                        score?.Indicator?.assesment_type ===
-                                        'NILAI_AGAMA_DAN_BUDI_PEKERTI',
-                                ).map(score => (
-                                    <Text key={score.id}>
-                                        {score.description?.replace(
-                                            /<[^>]*>/g,
-                                            '',
-                                        )}
-                                    </Text>
-                                ))}
+                                )}
                             </View>
                         </View>
                     </Section>
 
-                    {/* Reflection Section */}
+                    {/* Nilai Agama dan Budi Pekerti */}
+                    <Section>
+                        <View style={styles.projectSection}>
+                            <View style={styles.projectTitle}>
+                                <Text>NILAI AGAMA DAN BUDI PEKERTI</Text>
+                            </View>
+                            <View style={styles.sectionContent}>
+                                {Score && Score.length > 0 && (
+                                    <Text key={`nilai_agama-${fullname}`}>
+                                        {Score.filter(
+                                            score =>
+                                                score?.Indicator
+                                                    ?.assesment_type ===
+                                                'JATI_DIRI',
+                                        ).map((score, index) => (
+                                            <Text
+                                                key={`nilai_agama-content-${index}`}
+                                            >
+                                                Pada pembelajaran{' '}
+                                                {score?.Indicator?.title?.replace(
+                                                    /<[^>]*>/g,
+                                                    '',
+                                                )}{' '}
+                                                ananda{' '}
+                                                {score?.value &&
+                                                    getAssessmentDescription(
+                                                        score.value.replace(
+                                                            /<[^>]*>/g,
+                                                            '',
+                                                        ),
+                                                    )}
+                                                .{' '}
+                                            </Text>
+                                        ))}
+                                        {Score[0]?.description && (
+                                            <Text>
+                                                {'\n'}Dengan catatan:{' '}
+                                                {Score[0].description.replace(
+                                                    /<[^>]*>/g,
+                                                    '',
+                                                )}
+                                            </Text>
+                                        )}
+                                    </Text>
+                                )}
+                            </View>
+                        </View>
+                    </Section>
+
+                    {/* Reflection */}
                     <Section>
                         <View style={styles.reflectionSection}>
                             <View style={styles.sectionTitle}>
@@ -544,12 +638,12 @@ const RaporPDFDocument: React.FC<RaporPDFDocumentProps> = ({
                         </View>
                     </Section>
 
-                    {/* Attendance Status Boxes */}
+                    {/* Attendance */}
                     <Section>
                         <AttendanceSection attendance={attendance} />
                     </Section>
 
-                    {/* Signature Section */}
+                    {/* Signature */}
                     <Section>
                         <View style={styles.signatureContainer}>
                             <Text style={styles.signatureDate}>
@@ -565,7 +659,7 @@ const RaporPDFDocument: React.FC<RaporPDFDocumentProps> = ({
                                         Orang Tua / Walimurid
                                     </Text>
                                     <Text style={styles.signatureName}>
-                                        (.........................)
+                                        (...................................)
                                     </Text>
                                 </View>
 

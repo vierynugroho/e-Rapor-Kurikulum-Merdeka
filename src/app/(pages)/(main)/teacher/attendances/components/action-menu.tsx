@@ -49,7 +49,7 @@ const ActionMenu: React.FC<ActionMenuProps> = ({ data }) => {
                 >
                     <DialogTrigger asChild>
                         <DropdownMenuItem onSelect={e => e.preventDefault()}>
-                            <Edit className="mr-2 h-4 w-4" /> Edit Data
+                            <Edit className="mr-2 h-4 w-4" /> Isi Kehadiran
                         </DropdownMenuItem>
                     </DialogTrigger>
                     <DialogContent className="sm:max-w-[425px] md:max-w-[768px]">

@@ -27,7 +27,7 @@ export const columns: ColumnDef<StudentType>[] = [
     {
         accessorFn: row => row.hasAttendance || false,
         id: 'hasAttendance',
-        header: 'Telah Diisi',
+        header: 'Status Data',
         cell: ({ row }) => {
             const isActive = row.getValue<boolean>('hasAttendance');
             return (
@@ -40,11 +40,11 @@ export const columns: ColumnDef<StudentType>[] = [
                 >
                     {isActive ? (
                         <>
-                            <Check className="mr-1 h-4 w-4" /> Diisi
+                            <Check className="mr-1 h-4 w-4" /> Terisi
                         </>
                     ) : (
                         <>
-                            <X className="mr-1 h-4 w-4" /> Belum Diisi
+                            <X className="mr-1 h-4 w-4" /> Belum Terisi
                         </>
                     )}
                 </div>

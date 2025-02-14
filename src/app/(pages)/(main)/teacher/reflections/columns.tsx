@@ -28,7 +28,7 @@ export const columns: ColumnDef<ReflectionType>[] = [
     {
         accessorFn: row => row.filledReflection || false,
         id: 'filledReflection',
-        header: 'Refleksi Guru',
+        header: 'Status Data',
         cell: ({ row }) => {
             const isActive = row.getValue<boolean>('filledReflection');
             return (
@@ -41,11 +41,11 @@ export const columns: ColumnDef<ReflectionType>[] = [
                 >
                     {isActive ? (
                         <>
-                            <Check className="mr-1 h-4 w-4" /> Diisi
+                            <Check className="mr-1 h-4 w-4" /> Terisi
                         </>
                     ) : (
                         <>
-                            <X className="mr-1 h-4 w-4" /> Belum Diisi
+                            <X className="mr-1 h-4 w-4" /> Belum Terisi
                         </>
                     )}
                 </div>

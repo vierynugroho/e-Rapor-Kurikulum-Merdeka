@@ -29,7 +29,7 @@ export const columns: ColumnDef<StudentType>[] = [
     {
         accessorFn: row => row.filledAssessment || false,
         id: 'filledAssessment',
-        header: 'Penilaian',
+        header: 'Status Data',
         cell: ({ row }) => {
             const isActive = row.getValue<boolean>('filledAssessment');
             return (

@@ -6,7 +6,7 @@ import {
 import { CustomError } from '@/utils/error';
 
 export class StudentDevelopmentRepository {
-    static async CREATE(studentDevelopmentData: CreateStudentDevelopment) {
+    static async UPSERT(studentDevelopmentData: CreateStudentDevelopment) {
         try {
             const activePeriod = await prisma.period.findFirst({
                 where: { isActive: true },
@@ -16,7 +16,7 @@ export class StudentDevelopmentRepository {
                 throw new Error('No active period found');
             }
 
-            const reflection = await prisma.$transaction(async tx => {
+            const studentDevelopment = await prisma.$transaction(async tx => {
                 const existing = await tx.student_Development.findFirst({
                     where: {
                         periodId: activePeriod?.id,
@@ -57,9 +57,9 @@ export class StudentDevelopmentRepository {
                 return result;
             });
 
-            return reflection;
+            return studentDevelopment;
         } catch (error) {
-            console.error('Error in UPSERT reflection:', error);
+            console.error('Error in UPSERT studentDevelopment:', error);
             throw error;
         }
     }
