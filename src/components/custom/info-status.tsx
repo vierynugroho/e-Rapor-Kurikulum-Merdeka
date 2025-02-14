@@ -30,7 +30,6 @@ const StatusItem = ({ label, value }: { label: string; value?: boolean }) => (
 );
 
 const StatusHoverCard = ({ data, trigger }: StatusHoverCardProps) => {
-    console.log(data);
     const statusItems = [
         { label: 'Perkembangan', value: data?.hasDevelopment || false },
         { label: 'Penilaian', value: data?.hasAllScores || false },

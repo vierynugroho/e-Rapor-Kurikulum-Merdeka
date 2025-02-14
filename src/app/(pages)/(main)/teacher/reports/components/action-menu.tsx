@@ -21,6 +21,9 @@ import { Button } from '@/components/ui/button';
 import { StudentType } from '@/types/student';
 import { DetailData } from './detail-data';
 import RaporPDFDocument from '@/components/custom/rapor-template';
+import { getHeadmaster } from '@/services/pages/(user)/teachers';
+import { useQuery } from '@tanstack/react-query';
+import { TeacherType } from '@/types/teacher';
 
 type ActionMenuProps = {
     student: StudentType;
@@ -28,6 +31,10 @@ type ActionMenuProps = {
 
 const ActionMenu: React.FC<ActionMenuProps> = ({ student }) => {
     const [isPdfPreviewOpen, setIsPdfPreviewOpen] = useState(false);
+    const { data: headmasterData } = useQuery({
+        queryFn: getHeadmaster,
+        queryKey: ['headmaster'],
+    });
 
     const getPdfFilename = () => {
         return `${student?.fullname!.toLowerCase().replace(/\s+/g, '-')}-rapor.pdf`;
@@ -98,7 +105,17 @@ const ActionMenu: React.FC<ActionMenuProps> = ({ student }) => {
                                     className="rounded-md"
                                     showToolbar={false}
                                 >
-                                    <RaporPDFDocument student={student} />
+                                    <RaporPDFDocument
+                                        student={student}
+                                        headmaster={
+                                            headmasterData ||
+                                            ({
+                                                fullname: 'SETIYANI, S.Pd',
+                                                identity_number:
+                                                    '196609101987022005',
+                                            } as TeacherType)
+                                        }
+                                    />
                                 </PDFViewer>
                             </div>
                         </DialogContent>
@@ -109,7 +126,17 @@ const ActionMenu: React.FC<ActionMenuProps> = ({ student }) => {
                         {student.readyToPrint && (
                             <PDFDownloadLink
                                 document={
-                                    <RaporPDFDocument student={student} />
+                                    <RaporPDFDocument
+                                        student={student}
+                                        headmaster={
+                                            headmasterData ||
+                                            ({
+                                                fullname: 'SETIYANI, S.Pd',
+                                                identity_number:
+                                                    '196609101987022005',
+                                            } as TeacherType)
+                                        }
+                                    />
                                 }
                                 fileName={getPdfFilename()}
                                 className="flex items-center"

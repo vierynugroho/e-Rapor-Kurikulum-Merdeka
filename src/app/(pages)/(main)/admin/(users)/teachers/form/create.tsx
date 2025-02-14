@@ -33,6 +33,7 @@ export default function CreateFormTeacher({
             identity_number: teacher?.identity_number || '',
             classID: teacher?.Class?.id || undefined,
             role: teacher?.role || undefined,
+            position: teacher?.position || undefined,
             password: teacher?.password,
         },
     });
@@ -110,7 +111,7 @@ export default function CreateFormTeacher({
                             />
                         </div>
 
-                        <div className="grid grid-cols-2 gap-4">
+                        <div className="grid grid-cols-3 gap-4">
                             <SelectInput
                                 control={form.control}
                                 name="classID"
@@ -132,6 +133,21 @@ export default function CreateFormTeacher({
                                 options={[
                                     { value: 'TEACHER', label: 'GURU' },
                                     { value: 'ADMIN', label: 'ADMIN' },
+                                ]}
+                            />
+
+                            <SelectInput
+                                control={form.control}
+                                name="role"
+                                label="Jabatan"
+                                placeholder="Pilih Jabatan"
+                                options={[
+                                    { value: 'TEACHER', label: 'GURU' },
+                                    {
+                                        value: 'HEADMASTER',
+                                        label: 'KEPALA SEKOLAH',
+                                    },
+                                    { value: 'COMMITTEE', label: 'KOMITE' },
                                 ]}
                             />
                         </div>

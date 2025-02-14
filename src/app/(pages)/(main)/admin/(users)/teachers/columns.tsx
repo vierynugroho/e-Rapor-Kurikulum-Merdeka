@@ -49,6 +49,34 @@ export const columns: ColumnDef<TeacherType>[] = [
     {
         accessorKey: 'role',
         header: 'Peran',
+        cell: ({ row }) => {
+            const role = row.getValue('role');
+            switch (role) {
+                case 'TEACHER':
+                    return 'Guru';
+                case 'ADMIN':
+                    return 'Admin';
+                default:
+                    return role;
+            }
+        },
+    },
+    {
+        accessorKey: 'position',
+        header: 'Jabatan',
+        cell: ({ row }) => {
+            const position = row.getValue('position');
+            switch (position) {
+                case 'TEACHER':
+                    return 'Guru';
+                case 'HEADMASTER':
+                    return 'Kepala Sekolah';
+                case 'committee':
+                    return 'Komite';
+                default:
+                    return position;
+            }
+        },
     },
     {
         id: 'Aksi',

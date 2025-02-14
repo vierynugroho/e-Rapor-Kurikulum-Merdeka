@@ -26,6 +26,21 @@ export class TeacherService {
         return teacherWithoutPassword;
     }
 
+    static async GET_HEADMASTER(): Promise<Partial<Teacher | null>> {
+        const teacher = await TeacherRepository.GET_HEADMASTER();
+
+        if (!teacher) {
+            throw new CustomError(
+                404,
+                'teacher with position headmaster is not found',
+            );
+        }
+
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { password, ...teacherWithoutPassword } = teacher;
+        return teacherWithoutPassword;
+    }
+
     static async CREATE<T extends CreateTeacherType>(request: T) {
         const emailExist = await TeacherRepository.GET_EMAIL(request.email!);
 

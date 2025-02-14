@@ -26,7 +26,7 @@ export const OnStateDatePicker: React.FC<DatePickerProps> = ({
     buttonLabel = 'Pilih tanggal',
     disabledDates,
     minDate = new Date('2010-01-01'),
-    maxDate = new Date(),
+    maxDate,
     value,
     onChange,
     className,
@@ -62,7 +62,7 @@ export const OnStateDatePicker: React.FC<DatePickerProps> = ({
                         onSelect={onChange}
                         disabled={(date: Date) =>
                             (disabledDates && disabledDates(date)) ||
-                            date > maxDate ||
+                            (maxDate ? date > maxDate : false) ||
                             date < minDate
                         }
                         initialFocus

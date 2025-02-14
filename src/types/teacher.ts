@@ -1,4 +1,4 @@
-import { ClassCategory } from '@prisma/client';
+import { ClassCategory, UserPosition } from '@prisma/client';
 import { StudentDevelopment, StudentScore } from './student';
 
 export type UserRole = 'ADMIN' | 'TEACHER';
@@ -20,6 +20,7 @@ export type CreateTeacherType = {
     createdAt?: Date;
     updatedAt?: Date;
 
+    position: UserPosition;
     role: UserRole;
     Class?: Class | null;
     Score?: StudentScore[];
@@ -37,6 +38,7 @@ export type UpdateTeacherType = {
     createdAt?: Date;
     updatedAt?: Date;
 
+    position?: UserPosition;
     role?: UserRole;
     Class?: Class | null;
     Score?: StudentScore[];
@@ -50,6 +52,7 @@ export type TeacherType = {
     identity_number?: string;
     password?: string;
     classID?: number | null;
+    position?: UserPosition;
 
     createdAt?: Date;
     updatedAt?: Date;

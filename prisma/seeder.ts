@@ -7,6 +7,7 @@ import {
     Semester,
     AssessmentAspects,
     ClassCategory,
+    UserPosition,
 } from '@prisma/client';
 
 const prisma = new PrismaClient();
@@ -46,10 +47,11 @@ async function main() {
     console.log('seeding teachers...');
     await prisma.teacher.create({
         data: {
-            fullname: 'Guru Kelas',
-            email: 'guru@sanewa.com',
-            identity_number: '123456789',
+            fullname: 'NASRIYAH, S.Pd. AUD',
+            email: 'nasriyah@sanewa.com',
+            identity_number: '197111082005012011',
             password: encryptedPassword,
+            position: UserPosition.TEACHER,
             role: UserRole.TEACHER,
             classID: 1,
         },
@@ -61,6 +63,18 @@ async function main() {
             email: 'admin@sanewa.com',
             identity_number: '987654321',
             password: encryptedPassword,
+            position: UserPosition.TEACHER,
+            role: UserRole.ADMIN,
+        },
+    });
+
+    await prisma.teacher.create({
+        data: {
+            fullname: 'SETIYANI, S.Pd',
+            email: 'setiyani@sanewa.com',
+            identity_number: '196609101987022005',
+            password: encryptedPassword,
+            position: UserPosition.HEADMASTER,
             role: UserRole.ADMIN,
         },
     });
@@ -169,6 +183,15 @@ async function main() {
             {
                 title: 'Pendidikan SAINTEK',
                 description: 'SAINTEK: Pemanfaatan AI',
+                assesment_type:
+                    AssessmentAspects.DASAR_LITERASI_MATEMATIKA_SAINS_TEKNOLOGI_REKAYASA_DAN_SENI,
+                themeId: 1,
+                classCategory: ClassCategory.A,
+            },
+            {
+                title: 'Pendidikan SAINTEK: Programming',
+                description:
+                    'SAINTEK: Pemrograman Javasript untuk Anak Usia Dini',
                 assesment_type:
                     AssessmentAspects.DASAR_LITERASI_MATEMATIKA_SAINS_TEKNOLOGI_REKAYASA_DAN_SENI,
                 themeId: 1,
