@@ -1,4 +1,5 @@
 /* eslint-disable jsx-a11y/alt-text */
+'use client';
 import React from 'react';
 import {
     Document,
@@ -370,6 +371,15 @@ const RaporPDFDocument: React.FC<RaporPDFDocumentProps> = ({ student }) => {
         absent: student.attendance?.absent || 0,
     };
 
+    const [selectedDate, setSelectedDate] = React.useState<Date | null>(null);
+
+    React.useEffect(() => {
+        const savedDate = localStorage.getItem('selectedDate');
+        if (savedDate) {
+            setSelectedDate(new Date(savedDate));
+        }
+    }, []);
+
     return (
         <Document>
             <Page size="A4" style={styles.page} wrap>
@@ -528,7 +538,7 @@ const RaporPDFDocument: React.FC<RaporPDFDocumentProps> = ({ student }) => {
                     <Section>
                         <View style={styles.signatureContainer}>
                             <Text style={styles.signatureDate}>
-                                Blitar, {formatDate(new Date())}
+                                Blitar, {formatDate(selectedDate!)}
                             </Text>
 
                             <View style={styles.signatureRow}>

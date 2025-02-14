@@ -22,10 +22,9 @@ import {
     TableRow,
 } from '@/components/ui/table';
 
-import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { DataTablePagination } from '@/components/pagination';
-import { Download } from 'lucide-react';
+import { OnStateDatePicker } from '@/components/form/state-date';
 
 interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[];
@@ -39,6 +38,29 @@ export function DataTable<TData, TValue>({
     const [sorting, setSorting] = React.useState<SortingState>([]);
     const [columnFilters, setColumnFilters] =
         React.useState<ColumnFiltersState>([]);
+
+    // State untuk menyimpan tanggal
+    const [selectedDate, setSelectedDate] = React.useState<Date | undefined>(
+        undefined,
+    );
+
+    // Ambil tanggal dari localStorage saat pertama kali render
+    React.useEffect(() => {
+        const savedDate = localStorage.getItem('selectedDate');
+        if (savedDate) {
+            setSelectedDate(new Date(savedDate));
+        }
+    }, []);
+
+    // Simpan tanggal ke localStorage setiap kali berubah
+    const handleDateChange = (date: Date | undefined) => {
+        setSelectedDate(date);
+        if (date) {
+            localStorage.setItem('selectedDate', date.toISOString());
+        } else {
+            localStorage.removeItem('selectedDate');
+        }
+    };
 
     const table = useReactTable({
         data,
@@ -73,13 +95,12 @@ export function DataTable<TData, TValue>({
                     className="w-full sm:max-w-sm"
                 />
                 <div className="user-action">
-                    <Button
-                        onClick={() => window.print()}
-                        className="w-full bg-green-800 text-white hover:bg-green-600 dark:bg-green-600 dark:hover:bg-green-500 sm:w-auto"
-                    >
-                        <Download className="mr-2 h-4 w-4" />
-                        <span>Unduh Data</span>
-                    </Button>
+                    <OnStateDatePicker
+                        value={selectedDate}
+                        onChange={handleDateChange}
+                        label="Pilih Tanggal Rapor"
+                        buttonLabel="Set Tanggal Rapor"
+                    />
                 </div>
             </div>
 
@@ -89,22 +110,20 @@ export function DataTable<TData, TValue>({
                         <TableHeader>
                             {table.getHeaderGroups().map(headerGroup => (
                                 <TableRow key={headerGroup.id}>
-                                    {headerGroup.headers.map(header => {
-                                        return (
-                                            <TableHead
-                                                key={header.id}
-                                                className="whitespace-nowrap"
-                                            >
-                                                {header.isPlaceholder
-                                                    ? null
-                                                    : flexRender(
-                                                          header.column
-                                                              .columnDef.header,
-                                                          header.getContext(),
-                                                      )}
-                                            </TableHead>
-                                        );
-                                    })}
+                                    {headerGroup.headers.map(header => (
+                                        <TableHead
+                                            key={header.id}
+                                            className="whitespace-nowrap"
+                                        >
+                                            {header.isPlaceholder
+                                                ? null
+                                                : flexRender(
+                                                      header.column.columnDef
+                                                          .header,
+                                                      header.getContext(),
+                                                  )}
+                                        </TableHead>
+                                    ))}
                                 </TableRow>
                             ))}
                         </TableHeader>
