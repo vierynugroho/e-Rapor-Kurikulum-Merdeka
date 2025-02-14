@@ -12,6 +12,7 @@ import {
 import { StudentType } from '@/types/student';
 import { Semester } from '@prisma/client';
 import { formatDate } from '@/utils/format';
+import { TeacherType } from '@/types/teacher';
 
 const styles = StyleSheet.create({
     page: {
@@ -272,6 +273,7 @@ const styles = StyleSheet.create({
 
 interface RaporPDFDocumentProps {
     student: StudentType;
+    headmaster: TeacherType;
 }
 
 const Header: React.FC = () => (
@@ -356,8 +358,12 @@ const AttendanceSection: React.FC<{
     </View>
 );
 
-const RaporPDFDocument: React.FC<RaporPDFDocumentProps> = ({ student }) => {
+const RaporPDFDocument: React.FC<RaporPDFDocumentProps> = ({
+    student,
+    headmaster,
+}) => {
     const { fullname, Class, Development, Attendance, Score } = student;
+    console.log(student);
     const teacherName = student.teacherClass?.fullname || 'Guru Kelas';
     const teacherNIP = student.teacherClass?.identity_number || '123456789';
     const period = Score?.[0]?.Period || {
@@ -365,11 +371,18 @@ const RaporPDFDocument: React.FC<RaporPDFDocumentProps> = ({ student }) => {
         year: '2025',
     };
 
-    const attendance = {
-        sick: Attendance?.[0].sick || 0,
-        permit: Attendance?.[0].permit || 0,
-        absent: Attendance?.[0].absent || 0,
-    };
+    const attendance =
+        Attendance && Attendance.length > 0
+            ? {
+                  sick: Attendance[0].sick || 0,
+                  permit: Attendance[0].permit || 0,
+                  absent: Attendance[0].absent || 0,
+              }
+            : {
+                  sick: 0,
+                  permit: 0,
+                  absent: 0,
+              };
 
     const [selectedDate, setSelectedDate] = React.useState<Date | null>(
         new Date(),
@@ -561,10 +574,10 @@ const RaporPDFDocument: React.FC<RaporPDFDocumentProps> = ({ student }) => {
                                         Guru Kelas
                                     </Text>
                                     <Text style={styles.signatureName}>
-                                        NASRIYAH, S.Pd. AUD
+                                        {teacherName}
                                     </Text>
                                     <Text style={styles.signatureNIP}>
-                                        NIP. 197111082005012011
+                                        NIP. {teacherNIP}
                                     </Text>
                                 </View>
                             </View>
@@ -577,10 +590,10 @@ const RaporPDFDocument: React.FC<RaporPDFDocumentProps> = ({ student }) => {
                                     Kepala UPT SP TK Negeri 2 Sananwetan
                                 </Text>
                                 <Text style={styles.signatureName}>
-                                    SETIYANI, S.Pd
+                                    {headmaster?.fullname}
                                 </Text>
                                 <Text style={styles.signatureNIP}>
-                                    NIP. {teacherNIP}
+                                    NIP. {headmaster?.identity_number}
                                 </Text>
                             </View>
                         </View>

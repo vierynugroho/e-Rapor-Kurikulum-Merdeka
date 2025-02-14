@@ -13,6 +13,9 @@ export const createSchema = z.object({
     role: z.enum(['TEACHER', 'ADMIN'], {
         required_error: 'Silakan pilih peran',
     }),
+    position: z.enum(['TEACHER', 'HEADMASTER', 'COMMITTEE'], {
+        required_error: 'Silakan pilih peran',
+    }),
 });
 
 export const updateSchema = z.object({
@@ -36,6 +39,11 @@ export const updateSchema = z.object({
         .optional(),
     role: z
         .enum(['TEACHER', 'ADMIN'], {
+            required_error: 'Silakan pilih peran',
+        })
+        .optional(),
+    position: z
+        .enum(['TEACHER', 'HEADMASTER', 'COMMITTEE'], {
             required_error: 'Silakan pilih peran',
         })
         .optional(),

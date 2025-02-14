@@ -33,12 +33,12 @@ const roleConfig: RoleMiddlewareConfig[] = [
     {
         path: '/admin',
         roles: [UserRole.ADMIN],
-        redirect: '/', // Redirect ke login jika role tidak sesuai
+        redirect: '/login', // Redirect ke login jika role tidak sesuai
     },
     {
         path: '/teacher',
         roles: [UserRole.TEACHER],
-        redirect: '/', // Redirect ke login jika role tidak sesuai
+        redirect: '/login', // Redirect ke login jika role tidak sesuai
     },
 ];
 

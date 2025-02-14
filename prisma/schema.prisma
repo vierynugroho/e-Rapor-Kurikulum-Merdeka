@@ -18,6 +18,12 @@ enum UserRole {
   ADMIN
 }
 
+enum UserPosition {
+  TEACHER
+  HEADMASTER
+  COMMITTEE
+}
+
 enum DevelopmentLevel {
   BB // Belum Berkembang
   MB // Mulai Berkembang
@@ -67,6 +73,7 @@ model Teacher {
   updatedAt DateTime @updatedAt @map("update_at")
 
   role        UserRole
+  position    UserPosition
   Class       Class?                @relation(fields: [classID], references: [id])
   Score       Student_Score[]
   Development Student_Development[]

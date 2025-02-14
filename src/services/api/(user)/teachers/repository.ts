@@ -1,5 +1,6 @@
 import { prisma } from '@/lib/prisma';
 import { CreateTeacherType, UpdateTeacherType } from '@/types/teacher';
+import { UserPosition } from '@prisma/client';
 
 export class TeacherRepository {
     static async CREATE(teacherData: CreateTeacherType) {
@@ -11,6 +12,7 @@ export class TeacherRepository {
                 classID: teacherData.classID,
                 password: teacherData.password,
                 role: teacherData.role,
+                position: teacherData.position,
             },
         });
         return teacher;
@@ -46,6 +48,16 @@ export class TeacherRepository {
         return teacher;
     }
 
+    static async GET_HEADMASTER() {
+        const teacher = await prisma.teacher.findFirst({
+            where: {
+                position: UserPosition.HEADMASTER,
+            },
+        });
+
+        return teacher;
+    }
+
     static async GET_IDENTITY(identity_number: string) {
         const teacher = await prisma.teacher.findUnique({
             where: {
@@ -68,6 +80,7 @@ export class TeacherRepository {
                 classID: teacherData.classID,
                 password: teacherData.password,
                 role: teacherData.role,
+                position: teacherData.position,
             },
         });
 

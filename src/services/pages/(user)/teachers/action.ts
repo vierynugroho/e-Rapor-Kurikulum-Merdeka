@@ -5,8 +5,12 @@ export const getTeachers = async () => {
     return apiClient.get<TeacherType[]>('/teachers');
 };
 
+export const getHeadmaster = async () => {
+    return apiClient.get<TeacherType>('/teachers/get-position/headmaster');
+};
+
 export const getTeacher = async (teacherID: number) => {
-    return apiClient.get<TeacherType[]>(`/teachers/${teacherID}`);
+    return apiClient.get<TeacherType>(`/teachers/${teacherID}`);
 };
 
 export const createTeacher = async (data: TeacherType) => {

@@ -22,6 +22,19 @@ export class TeacherController {
         }
     }
 
+    static async GET_HEADMASTER(request: NextRequest) {
+        try {
+            console.log(request.json);
+            const data = await TeacherService.GET_HEADMASTER();
+
+            return APIResponse.success(data, {
+                message: 'headmaster data retrieved successfully',
+            });
+        } catch (error) {
+            return errorHandler(error);
+        }
+    }
+
     static async GET_ID(
         request: NextRequest,
         { params }: { params: { id: string } },
