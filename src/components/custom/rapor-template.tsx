@@ -409,7 +409,6 @@ const RaporPDFDocument: React.FC<RaporPDFDocumentProps> = ({
         }
     }, []);
 
-    console.log(Score);
     return (
         <Document>
             <Page size="A4" style={styles.page} wrap>

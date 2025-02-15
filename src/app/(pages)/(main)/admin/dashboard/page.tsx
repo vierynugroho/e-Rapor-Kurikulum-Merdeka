@@ -6,7 +6,7 @@ import { useQuery } from '@tanstack/react-query';
 import { Loader2, Users, BookOpen, Calendar, School } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 
-export default function TeacherDashboardPage() {
+export default function AdminDashboardPage() {
     const { data: session, status } = useSession();
     const { data, isLoading, error } = useQuery({
         queryFn: getDashboardData,
