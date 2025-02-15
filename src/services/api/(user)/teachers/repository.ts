@@ -33,6 +33,9 @@ export class TeacherRepository {
             where: {
                 id: teacherID,
             },
+            include: {
+                Class: true,
+            },
         });
 
         return teacher;

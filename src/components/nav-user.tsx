@@ -29,21 +29,27 @@ import {
     SidebarMenuItem,
     useSidebar,
 } from '@/components/ui/sidebar';
-import { UserRole } from '@prisma/client';
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from '@/components/ui/dialog';
 import Image from 'next/image';
+import { UpdateTeacherType } from '@/types/teacher';
+import UpdateProfile from '@/app/(pages)/(main)/profile/update';
+import { getTeacher } from '@/services/pages/(user)/teachers';
+import { useQuery } from '@tanstack/react-query';
 
-export function NavUser({
-    user,
-}: {
-    user: {
-        id: number;
-        email: string | null;
-        role: UserRole;
-        fullname: string;
-        identity_number: string;
-    };
-}) {
+export function NavUser({ user }: { user: UpdateTeacherType }) {
     const { isMobile } = useSidebar();
+    const { data } = useQuery({
+        queryFn: () => getTeacher(user.id!),
+        queryKey: ['profileData', user.id],
+        enabled: !!user,
+    });
 
     const handleLogout = async () => {
         try {
@@ -118,10 +124,30 @@ export function NavUser({
                         </DropdownMenuLabel>
                         <DropdownMenuSeparator />
                         <DropdownMenuGroup>
-                            <DropdownMenuItem>
-                                <BadgeCheck />
-                                Profile
-                            </DropdownMenuItem>
+                            {/* Edit Action */}
+                            <Dialog>
+                                <DialogTrigger asChild>
+                                    <DropdownMenuItem
+                                        onSelect={e => e.preventDefault()}
+                                    >
+                                        <BadgeCheck />
+                                        Profile
+                                    </DropdownMenuItem>
+                                </DialogTrigger>
+                                <DialogContent className="sm:max-w-[425px] md:max-w-[768px]">
+                                    <DialogHeader>
+                                        <DialogTitle>
+                                            Perbarui Data Anda
+                                        </DialogTitle>
+                                        <DialogDescription>
+                                            Perbarui data anda di sini
+                                        </DialogDescription>
+                                    </DialogHeader>
+                                    <div className="grid gap-4 py-4">
+                                        <UpdateProfile user={data!} />
+                                    </div>
+                                </DialogContent>
+                            </Dialog>
                         </DropdownMenuGroup>
                         <DropdownMenuSeparator />
 

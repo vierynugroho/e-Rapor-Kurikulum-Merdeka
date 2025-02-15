@@ -21,9 +21,7 @@ export class TeacherService {
             throw new CustomError(404, 'teacher data is not found');
         }
 
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const { password, ...teacherWithoutPassword } = teacher;
-        return teacherWithoutPassword;
+        return teacher;
     }
 
     static async GET_HEADMASTER(): Promise<Partial<Teacher | null>> {
