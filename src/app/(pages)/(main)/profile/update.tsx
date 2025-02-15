@@ -21,7 +21,6 @@ type FormTeacherProps = {
 
 export default function UpdateProfile({ user, onSuccess }: FormTeacherProps) {
     const { toast } = useToast();
-    console.log(user);
     const form = useForm<z.infer<typeof updateSchema>>({
         resolver: zodResolver(updateSchema),
         defaultValues: {
