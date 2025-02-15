@@ -13,7 +13,6 @@ export default function TeacherDashboardPage() {
         queryKey: ['dashboardData', session?.user.id],
         enabled: !!session?.user.id,
     });
-    console.log(data);
 
     if (isLoading || status === 'loading') {
         return (
