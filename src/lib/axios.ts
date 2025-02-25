@@ -8,10 +8,11 @@ class ApiClient {
     private tokenKey: string;
 
     constructor() {
-        this.baseURL = process.env.BASE_URL || 'http://localhost:3000/api';
-        console.log(`ENV BASE_URL: ${process.env.BASE_URL}`);
+        this.baseURL =
+            process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000/api';
+        console.log(`ENV BASE_URL: ${process.env.NEXT_PUBLIC_BASE_URL}`);
         console.log(`baseUrl: ${this.baseURL}`);
-        this.tokenKey = process.env.TOKEN_KEY || 'token';
+        this.tokenKey = process.env.NEXT_PUBLIC_AUTH_SECRET || 'token';
 
         this.api = axios.create({
             baseURL: this.baseURL,
@@ -33,7 +34,8 @@ class ApiClient {
                     if (isServer) {
                         const { cookies } = await import('next/headers');
                         token =
-                            cookies().get(process.env.TOKEN_KEY!)?.value || '';
+                            cookies().get(process.env.NEXT_PUBLIC_AUTH_SECRET!)
+                                ?.value || '';
                     } else {
                         token = document.cookie.replace(
                             new RegExp(

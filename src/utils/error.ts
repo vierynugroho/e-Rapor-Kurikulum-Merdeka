@@ -12,7 +12,7 @@ export class CustomError extends Error {
 }
 
 export function errorHandler(error: unknown) {
-    const NODE_ENV = process.env.NODE_ENV || 'development';
+    const NODE_ENV = process.env.NEXT_PUBLIC_NODE_ENV || 'development';
     const isDevelopment = NODE_ENV === 'development' ? true : false;
 
     if (isDevelopment) {
