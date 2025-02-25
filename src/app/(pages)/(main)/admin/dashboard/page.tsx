@@ -47,7 +47,7 @@ export default function AdminDashboardPage() {
         },
         {
             title: 'Periode Aktif',
-            value: `${data?.activePeriod.semester} ${data?.activePeriod.year}`,
+            value: `${data?.activePeriod?.semester} ${data?.activePeriod?.year}`,
             icon: Calendar,
             description: 'Semester berjalan',
         },
@@ -83,7 +83,7 @@ export default function AdminDashboardPage() {
                         </h2>
                         <p className="mt-2 opacity-90">
                             {data?.userData?.role == 'TEACHER'
-                                ? `Guru di kelas di ${data?.userData?.Class.name}}`
+                                ? `Guru di kelas di ${data?.userData?.Class?.name}}`
                                 : 'Admin di TK Negeri 2 Sananwetan'}
                         </p>
                     </div>
