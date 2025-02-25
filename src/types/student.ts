@@ -9,7 +9,6 @@ import {
     Class,
     Reflection,
     Attendance,
-    Student_Development,
 } from '@prisma/client';
 
 //TODO: Student Score
@@ -58,14 +57,40 @@ export type StudentDevelopment = {
     Teacher?: Teacher | null;
 };
 
-export type CreateStudentDevelopment = Omit<
-    Student_Development,
-    'id' | 'createdAt' | 'deletedAt'
->;
+export type CreateStudentDevelopment = {
+    id?: number;
+    height?: number;
+    weight?: number;
+    notes?: string | null | undefined;
+    studentID?: number;
+    teacherID?: number;
+    studentId?: number;
+    teacherId?: number;
+    periodId?: number;
+    periodID?: number;
+    recordDate?: string | Date;
+    createdAt?: string | Date;
+    updatedAt?: string | Date;
 
-export type UpdateStudentDevelopment =
-    | Partial<Omit<StudentDevelopment, 'id' | 'createdAt' | 'deletedAt'>>
-    | Partial<Omit<StudentDevelopment, 'id' | 'createdAt' | 'deletedAt'>>[];
+    Student?: Student | null;
+    Teacher?: Teacher | null;
+};
+export type UpdateStudentDevelopment = {
+    id?: number;
+    height?: number;
+    weight?: number;
+    notes?: string;
+    studentID?: number;
+    teacherID?: number;
+    periodId?: number;
+    periodID?: number;
+    recordDate?: string | Date;
+    createdAt?: string | Date;
+    updatedAt?: string | Date;
+
+    Student?: Student | null;
+    Teacher?: Teacher | null;
+};
 
 //TODO: Student Data
 export type CreateStudentType = {

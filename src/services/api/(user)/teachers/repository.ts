@@ -78,7 +78,7 @@ export class TeacherRepository {
             },
             data: {
                 fullname: teacherData.fullname,
-                email: teacherData.email,
+                email: teacherData.email!,
                 identity_number: teacherData.identity_number,
                 classID: teacherData.classID,
                 password: teacherData.password,
