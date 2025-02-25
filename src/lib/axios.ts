@@ -9,6 +9,8 @@ class ApiClient {
 
     constructor() {
         this.baseURL = process.env.BASE_URL || 'http://localhost:3000/api';
+        console.log(`ENV BASE_URL: ${process.env.BASE_URL}`);
+        console.log(`baseUrl: ${this.baseURL}`);
         this.tokenKey = process.env.TOKEN_KEY || 'token';
 
         this.api = axios.create({
