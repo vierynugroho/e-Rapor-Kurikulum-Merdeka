@@ -9,6 +9,7 @@ import {
     Class,
     Reflection,
     Attendance,
+    Student_Development,
 } from '@prisma/client';
 
 //TODO: Student Score
@@ -57,40 +58,14 @@ export type StudentDevelopment = {
     Teacher?: Teacher | null;
 };
 
-export type CreateStudentDevelopment = {
-    id?: number;
-    height?: number;
-    weight?: number;
-    notes?: string | null | undefined;
-    studentID?: number;
-    teacherID?: number;
-    studentId?: number;
-    teacherId?: number;
-    periodId?: number;
-    periodID?: number;
-    recordDate?: string | Date;
-    createdAt?: string | Date;
-    updatedAt?: string | Date;
+export type CreateStudentDevelopment = Omit<
+    Student_Development,
+    'id' | 'createdAt' | 'deletedAt'
+>;
 
-    Student?: Student | null;
-    Teacher?: Teacher | null;
-};
-export type UpdateStudentDevelopment = {
-    id?: number;
-    height?: number;
-    weight?: number;
-    notes?: string;
-    studentID?: number;
-    teacherID?: number;
-    periodId?: number;
-    periodID?: number;
-    recordDate?: string | Date;
-    createdAt?: string | Date;
-    updatedAt?: string | Date;
-
-    Student?: Student | null;
-    Teacher?: Teacher | null;
-};
+export type UpdateStudentDevelopment =
+    | Partial<Omit<StudentDevelopment, 'id' | 'createdAt' | 'deletedAt'>>
+    | Partial<Omit<StudentDevelopment, 'id' | 'createdAt' | 'deletedAt'>>[];
 
 //TODO: Student Data
 export type CreateStudentType = {
@@ -123,9 +98,9 @@ export type StudentType = {
     filledReflection?: boolean;
     hasAttendance?: boolean;
     attendance?: {
-        sick: number | null;
-        permit: number | null;
-        absent: number | null;
+        sick?: number | null;
+        permit?: number | null;
+        absent?: number | null;
     };
     Class?: Class | null;
     Score?: StudentScore[];
@@ -141,6 +116,9 @@ export type StudentType = {
         hasReflection: boolean;
         hasAttendance: boolean;
     };
+    sick?: number | null;
+    permit?: number | null;
+    absent?: number | null;
 };
 
 export type UpdateStudentType = {
@@ -159,14 +137,14 @@ export type UpdateStudentType = {
     filledAssessment?: boolean;
     filledReflection?: boolean;
     attendance?: {
-        sick?: number | string | undefined;
-        permit?: number | string | undefined;
-        absent?: number | string | undefined;
+        sick?: number | null;
+        permit?: number | null;
+        absent?: number | null;
     };
     Class?: Class | null;
     Score?: StudentScore[];
-    Development?: StudentDevelopment;
     development?: StudentDevelopment;
+    Development?: StudentDevelopment[]; // Perbaikan: Ubah menjadi array
     teacherClass?: Teacher;
     Reflection?: Reflection[];
     hasDevelopment?: boolean;
