@@ -15,14 +15,14 @@ const protectedPaths = ['/teacher', '/admin'];
 
 // Daftar route API yang dilindungi (memerlukan token)
 const protectedApiPaths = [
-    '/api/v1/assessments',
-    '/api/v1/students',
-    '/api/v1/indicators',
-    '/api/v1/developments',
-    '/api/v1/themes',
-    '/api/v1/classes',
-    '/api/v1/periods',
-    '/api/v1/teachers',
+    '/api/assessments',
+    '/api/students',
+    '/api/indicators',
+    '/api/developments',
+    '/api/themes',
+    '/api/classes',
+    '/api/periods',
+    '/api/teachers',
 ];
 
 // Daftar route yang dapat diakses tanpa autentikasi
