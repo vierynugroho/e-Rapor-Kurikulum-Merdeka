@@ -134,32 +134,38 @@ const ActionMenu: React.FC<ActionMenuProps> = ({ data }) => {
                 </Dialog>
 
                 {/* Delete Action */}
-                <AlertDialog>
-                    <AlertDialogTrigger asChild>
-                        <DropdownMenuItem onSelect={e => e.preventDefault()}>
-                            <Trash className="mr-2 h-4 w-4" /> Hapus Data
-                        </DropdownMenuItem>
-                    </AlertDialogTrigger>
-                    <AlertDialogContent>
-                        <AlertDialogHeader>
-                            <AlertDialogTitle>Hapus Periode</AlertDialogTitle>
-                            <AlertDialogDescription>
-                                Apakah anda yakin untuk menghapus data{' '}
-                                {data.year} {data.semester}? Aksi ini tidak bisa
-                                dikembalikan.
-                            </AlertDialogDescription>
-                        </AlertDialogHeader>
-                        <AlertDialogFooter>
-                            <AlertDialogCancel>Batal</AlertDialogCancel>
-                            <AlertDialogAction
-                                className="bg-red-600"
-                                onClick={handleDelete}
+                {!data.isActive && (
+                    <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                            <DropdownMenuItem
+                                onSelect={e => e.preventDefault()}
                             >
-                                Hapus
-                            </AlertDialogAction>
-                        </AlertDialogFooter>
-                    </AlertDialogContent>
-                </AlertDialog>
+                                <Trash className="mr-2 h-4 w-4" /> Hapus Data
+                            </DropdownMenuItem>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                            <AlertDialogHeader>
+                                <AlertDialogTitle>
+                                    Hapus Periode
+                                </AlertDialogTitle>
+                                <AlertDialogDescription>
+                                    Apakah anda yakin untuk menghapus data{' '}
+                                    {data.year} {data.semester}? Aksi ini tidak
+                                    bisa dikembalikan.
+                                </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                                <AlertDialogCancel>Batal</AlertDialogCancel>
+                                <AlertDialogAction
+                                    className="bg-red-600"
+                                    onClick={handleDelete}
+                                >
+                                    Hapus
+                                </AlertDialogAction>
+                            </AlertDialogFooter>
+                        </AlertDialogContent>
+                    </AlertDialog>
+                )}
             </DropdownMenuContent>
         </DropdownMenu>
     );

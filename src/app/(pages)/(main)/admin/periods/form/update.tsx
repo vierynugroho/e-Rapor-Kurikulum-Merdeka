@@ -100,6 +100,7 @@ export default function UpdateFormPeriod({
                             control={form.control}
                             name="isActive"
                             label="Status Periode"
+                            disabled={period?.isActive}
                             placeholder="Pilih Status Periode"
                             options={[
                                 { value: 'true', label: 'AKTIF' },
