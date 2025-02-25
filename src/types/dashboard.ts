@@ -3,16 +3,16 @@ export interface ActivePeriod {
     semester: string;
     year: string;
     isActive: boolean;
-    createdAt: string;
-    updatedAt: string;
+    createdAt: Date;
+    updatedAt: Date;
 }
 
 export interface Clas {
     id: number;
     name: string;
     category: string;
-    createdAt: string;
-    updatedAt: string;
+    createdAt: Date;
+    updatedAt: Date;
 }
 
 export interface _count {
@@ -28,12 +28,12 @@ export interface UserData {
     email: string;
     identity_number: string;
     password: string;
-    classID: number;
-    createdAt: string;
-    updatedAt: string;
+    classID: number | null;
+    createdAt: Date;
+    updatedAt: Date;
     role: string;
     position: string;
-    Class: Clas;
+    Class: Clas | null;
     _count: _count;
 }
 
@@ -43,6 +43,6 @@ export type DashboardType = {
     totalIndicator: number;
     totalThemes: number;
     totalClass: number;
-    activePeriod: ActivePeriod;
+    activePeriod: ActivePeriod | null;
     userData: UserData;
 };

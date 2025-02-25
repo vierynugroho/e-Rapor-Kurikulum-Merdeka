@@ -56,7 +56,16 @@ export const columns: ColumnDef<StudentType>[] = [
         id: 'Aksi',
         cell: ({ row }) => {
             const student = row.original;
-            return <ActionMenu data={student} />;
+            return (
+                <ActionMenu
+                    data={{
+                        ...student,
+                        development: student.development
+                            ? student.development[0]
+                            : undefined, // Ambil objek pertama
+                    }}
+                />
+            );
         },
     },
 ];

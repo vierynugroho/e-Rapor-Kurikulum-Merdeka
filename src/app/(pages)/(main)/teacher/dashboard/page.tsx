@@ -35,7 +35,7 @@ export default function TeacherDashboardPage() {
     const stats = [
         {
             title: 'Kelas Anda',
-            value: data?.userData?.Class.name,
+            value: data?.userData?.Class?.name,
             icon: School,
             description: 'Kelas yang Anda ampu',
         },
@@ -47,7 +47,7 @@ export default function TeacherDashboardPage() {
         },
         {
             title: 'Periode Aktif',
-            value: `${data?.activePeriod.semester} ${data?.activePeriod.year}`,
+            value: `${data?.activePeriod?.semester} ${data?.activePeriod?.year}`,
             icon: Calendar,
             description: 'Semester berjalan',
         },
@@ -85,7 +85,7 @@ export default function TeacherDashboardPage() {
                             {data?.userData?.role == 'TEACHER'
                                 ? 'Guru'
                                 : 'Admin'}{' '}
-                            di {data?.userData?.Class.name}
+                            di {data?.userData?.Class?.name}
                         </p>
                     </div>
                 </CardContent>

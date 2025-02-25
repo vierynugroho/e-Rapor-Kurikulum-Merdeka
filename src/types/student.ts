@@ -123,9 +123,9 @@ export type StudentType = {
     filledReflection?: boolean;
     hasAttendance?: boolean;
     attendance?: {
-        sick: number | null;
-        permit: number | null;
-        absent: number | null;
+        sick?: number | null;
+        permit?: number | null;
+        absent?: number | null;
     };
     Class?: Class | null;
     Score?: StudentScore[];
@@ -141,6 +141,9 @@ export type StudentType = {
         hasReflection: boolean;
         hasAttendance: boolean;
     };
+    sick?: number | null;
+    permit?: number | null;
+    absent?: number | null;
 };
 
 export type UpdateStudentType = {
@@ -159,14 +162,14 @@ export type UpdateStudentType = {
     filledAssessment?: boolean;
     filledReflection?: boolean;
     attendance?: {
-        sick?: number | string | undefined;
-        permit?: number | string | undefined;
-        absent?: number | string | undefined;
+        sick?: number | null;
+        permit?: number | null;
+        absent?: number | null;
     };
     Class?: Class | null;
     Score?: StudentScore[];
-    Development?: StudentDevelopment;
     development?: StudentDevelopment;
+    Development?: StudentDevelopment[]; // Perbaikan: Ubah menjadi array
     teacherClass?: Teacher;
     Reflection?: Reflection[];
     hasDevelopment?: boolean;
