@@ -25,7 +25,7 @@ export default function UpdateProfile({ user, onSuccess }: FormTeacherProps) {
         resolver: zodResolver(updateSchema),
         defaultValues: {
             fullname: user?.fullname,
-            email: user?.email,
+            email: user?.email ?? undefined,
             identity_number: user?.identity_number,
             classID: user?.Class?.id,
             role: user?.role,
