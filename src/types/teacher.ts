@@ -30,7 +30,7 @@ export type CreateTeacherType = {
 export type UpdateTeacherType = {
     id?: number;
     fullname?: string;
-    email?: string;
+    email?: string | null;
     identity_number?: string;
     password?: string;
     classID?: number | null;
