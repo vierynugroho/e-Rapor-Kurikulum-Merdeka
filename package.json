@@ -19,7 +19,8 @@
         "db:reset": "npx prisma migrate reset",
         "db:push": "npx prisma db push",
         "db:studio": "npx prisma studio",
-        "db:seed": "set NODE_OPTIONS=--loader ts-node/esm && ts-node --esm prisma/seeder.ts"
+        "db:seed": "set NODE_OPTIONS=--loader ts-node/esm && ts-node --esm prisma/seeder.ts",
+        "postinstall": "prisma generate"
     },
     "husky": {
         "hooks": {
