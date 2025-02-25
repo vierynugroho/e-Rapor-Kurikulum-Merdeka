@@ -88,6 +88,7 @@ export const authOptions: NextAuthOptions = {
         signIn: '/login',
         signOut: '/auth/signout',
     },
+    secret: process.env.NEXT_PUBLIC_AUTH_SECRET,
 };
 
 export default NextAuth(authOptions);

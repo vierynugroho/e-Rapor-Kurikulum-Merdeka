@@ -4,7 +4,9 @@ import * as jose from 'jose';
 
 export const jwtService = {
     createToken: async (payload: JWTPayload): Promise<string> => {
-        const secret = new TextEncoder().encode(process.env.AUTH_SECRET);
+        const secret = new TextEncoder().encode(
+            process.env.NEXT_PUBLIC_AUTH_SECRET,
+        );
 
         if (!secret) throw new CustomError(401, 'Missing token or secret');
 
@@ -18,7 +20,9 @@ export const jwtService = {
     },
 
     verifyToken: async (token: string): Promise<JWTPayload> => {
-        const secret = new TextEncoder().encode(process.env.AUTH_SECRET);
+        const secret = new TextEncoder().encode(
+            process.env.NEXT_PUBLIC_AUTH_SECRET,
+        );
 
         if (!secret) throw new CustomError(401, 'Missing token or secret');
 

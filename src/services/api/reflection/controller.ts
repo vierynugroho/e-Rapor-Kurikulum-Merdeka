@@ -22,7 +22,7 @@ export class ReflectionController {
         try {
             const token = await getToken({
                 req: request,
-                secret: process.env.NEXTAUTH_SECRET,
+                secret: process.env.NEXT_PUBLIC_AUTH_SECRET,
             });
 
             if (!token) {

@@ -11,7 +11,7 @@ export const withRole = (
         const pathname = request.nextUrl.pathname;
         const token = await getToken({
             req: request,
-            secret: process.env.AUTH_SECRET,
+            secret: process.env.NEXT_PUBLIC_AUTH_SECRET,
         });
 
         if (!token) {
