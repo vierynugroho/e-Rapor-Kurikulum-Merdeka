@@ -1,11 +1,11 @@
 import { prisma } from '@/lib/prisma';
-import { Argon } from '@/utils/cryptography';
 import { NextAuthOptions } from 'next-auth';
 import NextAuth from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import { UserRole } from '@prisma/client';
 import { PrismaAdapter } from '@next-auth/prisma-adapter';
 import { CustomError } from '../../../utils/error';
+import { Cryptography } from '@/utils/cryptography';
 
 export const authOptions: NextAuthOptions = {
     adapter: PrismaAdapter(prisma),
@@ -39,7 +39,7 @@ export const authOptions: NextAuthOptions = {
                         throw new CustomError(401, 'Wrong Credential');
                     }
 
-                    const isPasswordValid = await Argon.verify(
+                    const isPasswordValid = await Cryptography.verify(
                         user.password,
                         credentials.password,
                     );

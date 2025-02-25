@@ -1,11 +1,16 @@
-import * as argon from 'argon2';
+import * as bcrypt from 'bcrypt';
 
-export class Argon {
-    static async encrypt(plainText: string) {
-        return await argon.hash(plainText);
+export class Cryptography {
+    private static readonly SALT_ROUNDS = 10;
+
+    static async encrypt(plainText: string): Promise<string> {
+        return await bcrypt.hash(plainText, this.SALT_ROUNDS);
     }
 
-    static async verify(encriptedText: string, plainText: string) {
-        return await argon.verify(encriptedText, plainText);
+    static async verify(
+        encryptedText: string,
+        plainText: string,
+    ): Promise<boolean> {
+        return await bcrypt.compare(plainText, encryptedText);
     }
 }

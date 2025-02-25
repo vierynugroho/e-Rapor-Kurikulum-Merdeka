@@ -1,4 +1,4 @@
-import * as argon from 'argon2';
+import * as bcrypt from 'bcrypt';
 import {
     PrismaClient,
     Gender,
@@ -13,7 +13,7 @@ import {
 const prisma = new PrismaClient();
 
 async function main() {
-    const encryptedPassword = await argon.hash('password');
+    const encryptedPassword = await bcrypt.hash('password', 10);
 
     // Seed Classes
     console.log('seeding start!');
