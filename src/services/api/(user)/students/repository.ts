@@ -158,7 +158,7 @@ export class StudentRepository {
                     },
                 });
 
-                const studentAttendance = await prisma.reflection.findFirst({
+                const studentAttendance = await prisma.attendance.findFirst({
                     where: {
                         studentId: student.id,
                         periodId: activePeriod?.id,
