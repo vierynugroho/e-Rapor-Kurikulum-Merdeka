@@ -31,7 +31,7 @@ export class StudentAttendanceRepository {
                             absent: studentAttendanceData?.absent || 0,
                             sick: studentAttendanceData?.sick || 0,
                             studentId: studentAttendanceData.studentID,
-                            teacherId: studentAttendanceData.studentID,
+                            teacherId: studentAttendanceData.teacherID,
                             periodId: activePeriod.id,
                         },
                     });
@@ -42,7 +42,7 @@ export class StudentAttendanceRepository {
                             absent: studentAttendanceData?.absent || 0,
                             sick: studentAttendanceData?.sick || 0,
                             studentId: studentAttendanceData.studentID!,
-                            teacherId: studentAttendanceData.studentID!,
+                            teacherId: studentAttendanceData.techerID!,
                             periodId: activePeriod.id,
                         },
                     });
