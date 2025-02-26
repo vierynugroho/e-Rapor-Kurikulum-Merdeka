@@ -36,6 +36,7 @@ import {
 } from '@/components/ui/dialog';
 import CreateFormIndicator from './form/create';
 import { exportToExcel } from '@/utils/toExcel';
+import CustomPDFViewer from '@/components/custom/btn-pdf-viewer';
 
 interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[];
@@ -125,6 +126,11 @@ export function DataTable<TData, TValue>({
                             </div>
                         </DialogContent>
                     </Dialog>
+                    <CustomPDFViewer
+                        fileUrl="/api/proxy"
+                        buttonText="Capaian Pembelajaran"
+                        documentTitle="Capaian Pembelajaran PAUD"
+                    />
                     <Button
                         onClick={handleExportToExcel}
                         className="bg-green-800 text-white hover:bg-green-600 dark:bg-green-600 dark:hover:bg-green-500"
