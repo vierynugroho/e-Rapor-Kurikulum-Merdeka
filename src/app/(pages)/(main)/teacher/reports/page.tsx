@@ -11,16 +11,15 @@ import { useSession } from 'next-auth/react';
 export default function StudentPage() {
     const { data: session, status } = useSession();
     const { data, isLoading, error } = useQuery({
+        queryKey: ['students', session?.user.id],
         queryFn: () => getStudentsByTeacher(session?.user.id as number),
-        queryKey: ['students', session?.user.id], // Menambahkan user.id ke queryKey untuk memastikan cache per user
         enabled: !!session?.user.id,
-        // Konfigurasi caching
-        staleTime: 5 * 60 * 1000, // Data dianggap fresh selama 5 menit
-        cacheTime: 30 * 60 * 1000, // Data disimpan di cache selama 30 menit
-        refetchOnWindowFocus: false, // Tidak refetch saat window mendapat focus
-        refetchOnMount: false, // Gunakan cache jika tersedia saat komponen di-mount
-        retry: 3, // Coba ulang 3 kali jika terjadi error
-        retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000), // Exponential backoff
+        staleTime: 5 * 60 * 1000,
+        gcTime: 30 * 60 * 1000, // 'cacheTime' telah diganti dengan 'gcTime' di versi terbaru
+        refetchOnWindowFocus: false,
+        refetchOnMount: false,
+        retry: 3,
+        retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
     });
 
     if (isLoading || status === 'loading') {
