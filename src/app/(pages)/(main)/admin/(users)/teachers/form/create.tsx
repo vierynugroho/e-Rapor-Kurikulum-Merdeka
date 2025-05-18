@@ -138,7 +138,7 @@ export default function CreateFormTeacher({
 
                             <SelectInput
                                 control={form.control}
-                                name="role"
+                                name="position"
                                 label="Jabatan"
                                 placeholder="Pilih Jabatan"
                                 options={[
