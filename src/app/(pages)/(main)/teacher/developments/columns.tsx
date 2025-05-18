@@ -60,9 +60,7 @@ export const columns: ColumnDef<StudentType>[] = [
                 <ActionMenu
                     data={{
                         ...student,
-                        development: student.development
-                            ? student.development[0]
-                            : undefined, // Ambil objek pertama
+                        development: student.development, // Ambil objek pertama
                     }}
                 />
             );

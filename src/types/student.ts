@@ -42,7 +42,7 @@ export type UpsertStudentScore = {
 }[];
 
 //TODO: Student Development
-export type StudentDevelopment = {
+export type StudentDevelopmentType = {
     id?: number;
     height: number;
     weight: number;
@@ -129,8 +129,7 @@ export type StudentType = {
     };
     Class?: Class | null;
     Score?: StudentScore[];
-    Development?: StudentDevelopment[];
-    development?: StudentDevelopment[];
+    development?: StudentDevelopmentType[];
     Attendance?: Attendance[];
     teacherClass?: Teacher;
     Reflection?: Reflection[];
@@ -168,8 +167,7 @@ export type UpdateStudentType = {
     };
     Class?: Class | null;
     Score?: StudentScore[];
-    development?: StudentDevelopment;
-    Development?: StudentDevelopment[]; // Perbaikan: Ubah menjadi array
+    development?: StudentDevelopmentType[];
     teacherClass?: Teacher;
     Reflection?: Reflection[];
     hasDevelopment?: boolean;
