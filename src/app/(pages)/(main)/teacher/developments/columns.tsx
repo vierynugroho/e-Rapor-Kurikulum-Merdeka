@@ -1,11 +1,11 @@
 import React from 'react';
 import { ColumnDef } from '@tanstack/react-table';
 import ActionMenu from './components/action-menu';
-import { StudentType } from '@/types/student';
+import { StudentDevelopmentType } from '@/types/student';
 import { ArrowUpDown, Check, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
-export const columns: ColumnDef<StudentType>[] = [
+export const columns: ColumnDef<StudentDevelopmentType>[] = [
     {
         id: 'ID',
         accessorKey: 'id',
@@ -56,14 +56,7 @@ export const columns: ColumnDef<StudentType>[] = [
         id: 'Aksi',
         cell: ({ row }) => {
             const student = row.original;
-            return (
-                <ActionMenu
-                    data={{
-                        ...student,
-                        development: student.development, // Ambil objek pertama
-                    }}
-                />
-            );
+            return <ActionMenu data={student} />;
         },
     },
 ];

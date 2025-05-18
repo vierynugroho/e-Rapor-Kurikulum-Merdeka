@@ -1,11 +1,9 @@
-import { StudentDevelopmentType, UpdateStudentType } from '@/types/student';
+import { StudentDevelopmentType } from '@/types/student';
 import { formatDateTime } from '@/utils/format';
 import React from 'react';
 
 type DetailDataProps = {
-    data: UpdateStudentType & {
-        development?: StudentDevelopmentType;
-    };
+    data: StudentDevelopmentType;
 };
 
 export const DetailData: React.FC<DetailDataProps> = ({ data }) => {

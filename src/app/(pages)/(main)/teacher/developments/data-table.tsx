@@ -39,7 +39,6 @@ export function DataTable<TData, TValue>({
     const [sorting, setSorting] = React.useState<SortingState>([]);
     const [columnFilters, setColumnFilters] =
         React.useState<ColumnFiltersState>([]);
-    console.log(data);
 
     const handleExportToExcel = () => {
         // Define columns to exclude from export (if any)
