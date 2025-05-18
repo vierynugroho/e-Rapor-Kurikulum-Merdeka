@@ -1,9 +1,9 @@
-import { UpdateStudentType } from '@/types/student';
+import { StudentDevelopmentType } from '@/types/student';
 import { formatDateTime } from '@/utils/format';
 import React from 'react';
 
 type DetailDataProps = {
-    data: UpdateStudentType;
+    data: StudentDevelopmentType;
 };
 
 export const DetailData: React.FC<DetailDataProps> = ({ data }) => {
@@ -26,7 +26,7 @@ export const DetailData: React.FC<DetailDataProps> = ({ data }) => {
                                 Tinggi Badan:
                             </span>
                             <div className="flex-1">
-                                {data?.development?.height} cm
+                                {data?.development?.height || '-'} cm
                             </div>
                         </div>
                     </div>
@@ -37,7 +37,7 @@ export const DetailData: React.FC<DetailDataProps> = ({ data }) => {
                                 Berat Badan:
                             </span>
                             <div className="flex-1">
-                                {data?.development?.weight} kg
+                                {data?.development?.weight || '-'} kg
                             </div>
                         </div>
                     </div>

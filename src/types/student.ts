@@ -9,6 +9,7 @@ import {
     Class,
     Reflection,
     Attendance,
+    Student_Development,
 } from '@prisma/client';
 
 //TODO: Student Score
@@ -42,19 +43,32 @@ export type UpsertStudentScore = {
 }[];
 
 //TODO: Student Development
-export type StudentDevelopment = {
+export type StudentDevelopmentType = {
     id?: number;
     height: number;
     weight: number;
     notes?: string;
-    studentID: number;
-    teacherID: number;
+    fullname: string;
+    studentId: number;
+    teacherId: number;
+    periodId?: number;
     recordDate?: string | Date;
     createdAt?: string | Date;
     updatedAt?: string | Date;
 
     Student?: Student | null;
     Teacher?: Teacher | null;
+    Period?: Period | null;
+    Class?: Class | null;
+    development?: Student_Development & {
+        teacherID?: number;
+    };
+    teacherClass?: {
+        fullname: string;
+        identity_number: string;
+        classID: number;
+    } | null;
+    hasDevelopment?: boolean;
 };
 
 export type CreateStudentDevelopment = {
@@ -129,8 +143,8 @@ export type StudentType = {
     };
     Class?: Class | null;
     Score?: StudentScore[];
-    Development?: StudentDevelopment[];
-    development?: StudentDevelopment[];
+    development?: StudentDevelopmentType[];
+    Development?: StudentDevelopmentType[];
     Attendance?: Attendance[];
     teacherClass?: Teacher;
     Reflection?: Reflection[];
@@ -168,8 +182,7 @@ export type UpdateStudentType = {
     };
     Class?: Class | null;
     Score?: StudentScore[];
-    development?: StudentDevelopment;
-    Development?: StudentDevelopment[]; // Perbaikan: Ubah menjadi array
+    development?: Student_Development;
     teacherClass?: Teacher;
     Reflection?: Reflection[];
     hasDevelopment?: boolean;

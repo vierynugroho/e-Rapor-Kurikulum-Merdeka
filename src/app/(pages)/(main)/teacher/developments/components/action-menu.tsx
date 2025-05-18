@@ -17,11 +17,11 @@ import {
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { DetailData } from './detail-data';
-import { UpdateStudentType } from '@/types/student';
+import { StudentDevelopmentType } from '@/types/student';
 import UpdateFormStudentDevelopment from '../form/update';
 
 type ActionMenuProps = {
-    data: UpdateStudentType;
+    data: StudentDevelopmentType;
 };
 
 const ActionMenu: React.FC<ActionMenuProps> = ({ data }) => {

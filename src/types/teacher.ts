@@ -1,5 +1,5 @@
 import { ClassCategory, UserPosition } from '@prisma/client';
-import { StudentDevelopment, StudentScore } from './student';
+import { StudentDevelopmentType, StudentScore } from './student';
 
 export type UserRole = 'ADMIN' | 'TEACHER';
 
@@ -24,7 +24,7 @@ export type CreateTeacherType = {
     role: UserRole;
     Class?: Class | null;
     Score?: StudentScore[];
-    Development?: StudentDevelopment[];
+    Development?: StudentDevelopmentType[];
 };
 
 export type UpdateTeacherType = {
@@ -42,7 +42,7 @@ export type UpdateTeacherType = {
     role?: UserRole;
     Class?: Class | null;
     Score?: StudentScore[];
-    Development?: StudentDevelopment[];
+    Development?: StudentDevelopmentType[];
 };
 
 export type TeacherType = {
@@ -60,5 +60,5 @@ export type TeacherType = {
     role?: UserRole;
     Class?: Class | null;
     Score?: StudentScore[];
-    Development?: StudentDevelopment[];
+    Development?: StudentDevelopmentType[];
 };

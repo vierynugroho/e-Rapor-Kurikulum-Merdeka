@@ -30,7 +30,7 @@ import { Button } from '@/components/ui/button';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useToast } from '@/hooks/use-toast';
 import { DetailData } from './detail-data';
-import { deleteTheme } from '@/services/pages/theme';
+import { deletePeriod } from '@/services/pages/period';
 import { UpdatePeriodType } from '@/types/period';
 import UpdateFormPeriod from '../form/update';
 
@@ -51,7 +51,7 @@ const ActionMenu: React.FC<ActionMenuProps> = ({ data }) => {
     const queryClient = useQueryClient();
 
     const deleteMutation = useMutation({
-        mutationFn: deleteTheme,
+        mutationFn: deletePeriod,
         onSuccess: () => {
             toast({
                 title: 'Berhasil',
