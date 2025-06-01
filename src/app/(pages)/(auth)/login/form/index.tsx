@@ -50,6 +50,7 @@ export function LoginForm() {
                 description: 'Login berhasil.',
                 variant: 'default',
             });
+            router.refresh();
             router.push('/');
             form.reset();
         },

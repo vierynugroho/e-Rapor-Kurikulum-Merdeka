@@ -67,7 +67,7 @@ export function DataTable<TData, TValue>({
     });
 
     return (
-        <div className="w-full">
+        <div>
             <div className="flex flex-col gap-4 py-4 sm:flex-row sm:items-center sm:justify-between">
                 <Input
                     placeholder="Filter berdasarkan nama siswa..."
@@ -88,14 +88,12 @@ export function DataTable<TData, TValue>({
                         onClick={handleExportToExcel}
                         className="w-full bg-green-800 text-white hover:bg-green-600 dark:bg-green-600 dark:hover:bg-green-500 sm:w-auto"
                     >
-                        <Download className="mr-2 h-4 w-4" />
-                        <span>Export to Excel</span>
+                        <Download className="mr-2 h-4 w-4" /> Export to Excel
                     </Button>
                 </div>
             </div>
-
             <div className="overflow-x-auto rounded-md border">
-                <Table>
+                <Table className="w-full table-auto">
                     <TableHeader>
                         {table.getHeaderGroups().map(headerGroup => (
                             <TableRow key={headerGroup.id}>
@@ -103,7 +101,7 @@ export function DataTable<TData, TValue>({
                                     return (
                                         <TableHead
                                             key={header.id}
-                                            className="whitespace-nowrap"
+                                            className="whitespace-nowrap px-2 py-3 text-sm font-medium"
                                         >
                                             {header.isPlaceholder
                                                 ? null
@@ -130,7 +128,8 @@ export function DataTable<TData, TValue>({
                                     {row.getVisibleCells().map(cell => (
                                         <TableCell
                                             key={cell.id}
-                                            className="whitespace-nowrap"
+                                            className="max-w-[120px] truncate px-2 py-2 text-sm sm:max-w-[180px] md:max-w-[250px]"
+                                            title={String(cell.getValue())}
                                         >
                                             {flexRender(
                                                 cell.column.columnDef.cell,
@@ -153,8 +152,10 @@ export function DataTable<TData, TValue>({
                     </TableBody>
                 </Table>
             </div>
-
-            <div className="flex items-center justify-end space-x-2 overflow-x-auto py-4">
+            <div className="flex flex-col items-center justify-between space-y-2 py-4 sm:flex-row sm:space-x-2 sm:space-y-0">
+                <div className="text-sm text-muted-foreground">
+                    {table.getFilteredRowModel().rows.length} data ditemukan.
+                </div>
                 <DataTablePagination table={table} />
             </div>
         </div>
