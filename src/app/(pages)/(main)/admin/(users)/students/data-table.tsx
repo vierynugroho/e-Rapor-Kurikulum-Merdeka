@@ -83,7 +83,7 @@ export function DataTable<TData, TValue>({
 
     return (
         <div>
-            <div className="flex items-center justify-between py-4">
+            <div className="flex flex-col gap-4 py-4 sm:flex-row sm:items-center sm:justify-between">
                 <Input
                     placeholder="Filter berdasarkan nama..."
                     value={
@@ -96,16 +96,16 @@ export function DataTable<TData, TValue>({
                             .getColumn('fullname')
                             ?.setFilterValue(event.target.value)
                     }
-                    className="max-w-sm"
+                    className="w-full sm:max-w-sm"
                 />
-                <div className="user-action flex gap-2">
+                <div className="user-action flex flex-col gap-2 sm:flex-row">
                     <Dialog
                         open={isCreateDialogOpen}
                         onOpenChange={setIsCreateDialogOpen}
                     >
                         <DialogTrigger asChild>
-                            <Button className="bg-blend-hard-light">
-                                <Plus /> Tambah Data
+                            <Button className="w-full bg-blend-hard-light sm:w-auto">
+                                <Plus className="mr-2 h-4 w-4" /> Tambah Data
                             </Button>
                         </DialogTrigger>
                         <DialogContent className="sm:max-w-[425px] md:max-w-[768px]">
@@ -124,14 +124,14 @@ export function DataTable<TData, TValue>({
                     </Dialog>
                     <Button
                         onClick={handleExportToExcel}
-                        className="bg-green-800 text-white hover:bg-green-600 dark:bg-green-600 dark:hover:bg-green-500"
+                        className="w-full bg-green-800 text-white hover:bg-green-600 dark:bg-green-600 dark:hover:bg-green-500 sm:w-auto"
                     >
-                        <Download /> Export to Excel
+                        <Download className="mr-2 h-4 w-4" /> Export to Excel
                     </Button>
                 </div>
             </div>
-            <div className="rounded-md border">
-                <Table>
+            <div className="overflow-x-auto rounded-md border">
+                <Table className="w-full table-auto">
                     <TableHeader>
                         {table.getHeaderGroups().map(headerGroup => (
                             <TableRow key={headerGroup.id}>

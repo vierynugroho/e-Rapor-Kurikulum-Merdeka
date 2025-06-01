@@ -80,6 +80,7 @@ model Teacher {
   Reflection  Reflection[]
   Attendance  Attendance[]
 
+  @@index([classID], name: "idx_teacher_classId")
   @@map("teachers")
 }
 
@@ -96,6 +97,8 @@ model Class {
   Reflection Reflection[]
   Attendance Attendance[]
 
+  @@index([name], name: "idx_class_name")
+  @@index([category], name: "idx_class_category")
   @@map("class")
 }
 
@@ -113,6 +116,8 @@ model Period {
   Reflection          Reflection[]
   Attendance          Attendance[]
 
+  @@index([isActive], name: "idx_period_isActive")
+  @@index([semester, year], name: "idx_period_semester_year")
   @@map("periods")
 }
 
@@ -124,6 +129,7 @@ model Theme {
   updatedAt DateTime    @updatedAt @map("update_at")
   Indicator Indicator[]
 
+  @@index([title], name: "idx_theme_title")
   @@map("themes")
 }
 
@@ -141,6 +147,9 @@ model Indicator {
   Theme Theme           @relation(fields: [themeId], references: [id])
   Score Student_Score[]
 
+  @@index([themeId], name: "idx_indicator_themeId")
+  @@index([assesment_type], name: "idx_indicator_assessmentType")
+  @@index([classCategory], name: "idx_indicator_classCategory")
   @@map("indicators")
 }
 
@@ -164,6 +173,10 @@ model Student {
   Reflection  Reflection[]
   Attendance  Attendance[]
 
+  @@index([fullname], name: "idx_student_fullname")
+  @@index([classID], name: "idx_student_classId")
+  @@index([gender], name: "idx_student_gender")
+  @@index([religion], name: "idx_student_religion")
   @@map("students")
 }
 
@@ -188,6 +201,8 @@ model Student_Score {
   @@index([studentId], name: "idx_studentId")
   @@index([indicatorId], name: "idx_indicatorId")
   @@index([periodId], name: "idx_periodId")
+  @@index([teacherId], name: "idx_score_teacherId")
+  @@index([value], name: "idx_score_value")
   @@index([studentId, indicatorId, periodId], name: "idx_composite")
   @@map("student_scores")
 }
@@ -211,6 +226,8 @@ model Reflection {
   @@unique([studentId, teacherId, periodId, classId])
   @@index([studentId], name: "idx_reflection_studentId")
   @@index([periodId], name: "idx_reflection_periodId")
+  @@index([teacherId], name: "idx_reflection_teacherId")
+  @@index([classId], name: "idx_reflection_classId")
   @@index([studentId, periodId], name: "idx_reflection_composite")
   @@map("reflections")
 }
@@ -236,6 +253,8 @@ model Attendance {
   @@unique([studentId, teacherId, periodId, classId])
   @@index([studentId], name: "idx_attendance_studentId")
   @@index([periodId], name: "idx_attendance_periodId")
+  @@index([teacherId], name: "idx_attendance_teacherId")
+  @@index([classId], name: "idx_attendance_classId")
   @@index([studentId, periodId], name: "idx_attendance_composite")
   @@map("attendances")
 }
@@ -257,5 +276,10 @@ model Student_Development {
   Student Student @relation(fields: [studentId], references: [id])
   Period  Period  @relation(fields: [periodId], references: [id])
 
+  @@index([studentId], name: "idx_development_studentId")
+  @@index([teacherId], name: "idx_development_teacherId")
+  @@index([periodId], name: "idx_development_periodId")
+  @@index([recordDate], name: "idx_development_recordDate")
+  @@index([studentId, periodId], name: "idx_development_student_period")
   @@map("student_developments")
 }

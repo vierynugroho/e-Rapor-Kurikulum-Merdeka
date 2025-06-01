@@ -79,9 +79,9 @@ export function DataTable<TData, TValue>({
 
     return (
         <div className="w-full space-y-4">
-            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex flex-col gap-4 py-4 sm:flex-row sm:items-center sm:justify-between">
                 <Input
-                    placeholder="Filter berdasarkan nama..."
+                    placeholder="Filter berdasarkan nama siswa..."
                     value={
                         (table
                             .getColumn('fullname')
@@ -94,7 +94,7 @@ export function DataTable<TData, TValue>({
                     }
                     className="w-full sm:max-w-sm"
                 />
-                <div className="user-action">
+                <div className="user-action flex flex-col gap-2 sm:flex-row">
                     <OnStateDatePicker
                         value={selectedDate}
                         onChange={handleDateChange}
@@ -105,66 +105,68 @@ export function DataTable<TData, TValue>({
             </div>
 
             <div className="overflow-x-auto rounded-md border">
-                <div className="min-w-full align-middle">
-                    <Table>
-                        <TableHeader>
-                            {table.getHeaderGroups().map(headerGroup => (
-                                <TableRow key={headerGroup.id}>
-                                    {headerGroup.headers.map(header => (
-                                        <TableHead
-                                            key={header.id}
-                                            className="whitespace-nowrap"
+                <Table className="w-full table-auto">
+                    <TableHeader>
+                        {table.getHeaderGroups().map(headerGroup => (
+                            <TableRow key={headerGroup.id}>
+                                {headerGroup.headers.map(header => (
+                                    <TableHead
+                                        key={header.id}
+                                        className="whitespace-nowrap px-2 py-3 text-sm font-medium"
+                                    >
+                                        {header.isPlaceholder
+                                            ? null
+                                            : flexRender(
+                                                  header.column.columnDef
+                                                      .header,
+                                                  header.getContext(),
+                                              )}
+                                    </TableHead>
+                                ))}
+                            </TableRow>
+                        ))}
+                    </TableHeader>
+                    <TableBody>
+                        {table.getRowModel().rows?.length ? (
+                            table.getRowModel().rows.map(row => (
+                                <TableRow
+                                    key={row.id}
+                                    data-state={
+                                        row.getIsSelected() && 'selected'
+                                    }
+                                >
+                                    {row.getVisibleCells().map(cell => (
+                                        <TableCell
+                                            key={cell.id}
+                                            className="max-w-[120px] truncate px-2 py-2 text-sm sm:max-w-[180px] md:max-w-[250px]"
+                                            title={String(cell.getValue())}
                                         >
-                                            {header.isPlaceholder
-                                                ? null
-                                                : flexRender(
-                                                      header.column.columnDef
-                                                          .header,
-                                                      header.getContext(),
-                                                  )}
-                                        </TableHead>
+                                            {flexRender(
+                                                cell.column.columnDef.cell,
+                                                cell.getContext(),
+                                            )}
+                                        </TableCell>
                                     ))}
                                 </TableRow>
-                            ))}
-                        </TableHeader>
-                        <TableBody>
-                            {table.getRowModel().rows?.length ? (
-                                table.getRowModel().rows.map(row => (
-                                    <TableRow
-                                        key={row.id}
-                                        data-state={
-                                            row.getIsSelected() && 'selected'
-                                        }
-                                    >
-                                        {row.getVisibleCells().map(cell => (
-                                            <TableCell
-                                                key={cell.id}
-                                                className="whitespace-nowrap"
-                                            >
-                                                {flexRender(
-                                                    cell.column.columnDef.cell,
-                                                    cell.getContext(),
-                                                )}
-                                            </TableCell>
-                                        ))}
-                                    </TableRow>
-                                ))
-                            ) : (
-                                <TableRow>
-                                    <TableCell
-                                        colSpan={columns.length}
-                                        className="h-24 text-center"
-                                    >
-                                        Data Tidak Ditemukan.
-                                    </TableCell>
-                                </TableRow>
-                            )}
-                        </TableBody>
-                    </Table>
-                </div>
+                            ))
+                        ) : (
+                            <TableRow>
+                                <TableCell
+                                    colSpan={columns.length}
+                                    className="h-24 text-center"
+                                >
+                                    Data Tidak Ditemukan.
+                                </TableCell>
+                            </TableRow>
+                        )}
+                    </TableBody>
+                </Table>
             </div>
 
-            <div className="flex flex-col items-center justify-end gap-4 sm:flex-row sm:gap-2">
+            <div className="flex flex-col items-center justify-between space-y-2 py-4 sm:flex-row sm:space-x-2 sm:space-y-0">
+                <div className="text-sm text-muted-foreground">
+                    {table.getFilteredRowModel().rows.length} data ditemukan.
+                </div>
                 <DataTablePagination table={table} />
             </div>
         </div>
