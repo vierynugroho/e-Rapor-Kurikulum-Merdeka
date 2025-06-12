@@ -9,7 +9,12 @@ import { useSession } from 'next-auth/react';
 export default function TeacherDashboardPage() {
     const { data: session, status } = useSession();
     const { data, isLoading, error } = useQuery({
-        queryFn: getDashboardData,
+        queryFn: () => {
+            if (!session?.user.id) {
+                throw new Error('User ID is required');
+            }
+            return getDashboardData(session.user.id);
+        },
         queryKey: ['dashboardData', session?.user.id],
         enabled: !!session?.user.id,
     });
