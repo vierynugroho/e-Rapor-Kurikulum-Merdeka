@@ -26,22 +26,12 @@ class ApiClient {
         this.api.interceptors.request.use(
             async config => {
                 try {
-                    const isServer = typeof window === 'undefined';
-                    let token = '';
-
-                    if (isServer) {
-                        const { cookies } = await import('next/headers');
-                        token =
-                            cookies().get(process.env.NEXT_PUBLIC_AUTH_SECRET!)
-                                ?.value || '';
-                    } else {
-                        token = document.cookie.replace(
-                            new RegExp(
-                                `(?:(?:^|.*;\\s*)${this.tokenKey}\\s*=\\s*([^;]*).*$)|^.*$`,
-                            ),
-                            '$1',
-                        );
-                    }
+                    const token = document.cookie.replace(
+                        new RegExp(
+                            `(?:(?:^|.*;\\s*)${this.tokenKey}\\s*=\\s*([^;]*).*$)|^.*$`,
+                        ),
+                        '$1',
+                    );
 
                     if (token) {
                         config.headers.Authorization = `Bearer ${token}`;

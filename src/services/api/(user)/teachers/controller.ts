@@ -9,9 +9,8 @@ import {
 } from '@/app/(pages)/(main)/admin/(users)/teachers/form/validation';
 
 export class TeacherController {
-    static async GET(request: NextRequest) {
+    static async GET() {
         try {
-            console.log(request.json);
             const data = await TeacherService.GET();
 
             return APIResponse.success(data, {
@@ -22,9 +21,8 @@ export class TeacherController {
         }
     }
 
-    static async GET_HEADMASTER(request: NextRequest) {
+    static async GET_HEADMASTER() {
         try {
-            console.log(request.json);
             const data = await TeacherService.GET_HEADMASTER();
 
             return APIResponse.success(data, {

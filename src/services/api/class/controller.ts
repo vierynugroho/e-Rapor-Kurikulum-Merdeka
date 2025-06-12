@@ -9,9 +9,8 @@ import {
 } from '@/app/(pages)/(main)/admin/classes/form/validation';
 
 export class ClassController {
-    static async GET(request: NextRequest) {
+    static async GET() {
         try {
-            console.log(request.json);
             const data = await ClassService.GET();
 
             return APIResponse.success(data, {

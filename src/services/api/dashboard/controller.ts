@@ -1,17 +1,28 @@
+// Pastikan export dynamic ditempatkan setelah import
 import { APIResponse } from '@/utils/api-response';
-import { errorHandler } from '@/utils/error';
-import { NextRequest } from 'next/server';
+import { CustomError, errorHandler } from '@/utils/error';
 import { DashboardService } from './service';
-import { fetchServerSession } from '@/hooks/use-user';
+import { NextRequest } from 'next/server';
+
+// Deklarasi dynamic harus ditempatkan di level modul, bukan di dalam class
+export const dynamic = 'force-dynamic';
+export const fetchCache = 'force-no-store';
+export const revalidate = 0;
 
 export class DashboardController {
-    static async GET(request: NextRequest) {
+    static async GET(
+        request: NextRequest,
+        { params }: { params: { id: string } },
+    ) {
         try {
-            console.log(request.json);
-            const userLoggedIn = await fetchServerSession();
-            const data = await DashboardService.GET(userLoggedIn.id);
+            const { id } = params;
+            const userId = parseInt(id);
 
-            console.log(data);
+            if (isNaN(userId)) {
+                throw new CustomError(400, 'invalid user ID');
+            }
+
+            const data = await DashboardService.GET(userId);
 
             return APIResponse.success(data, {
                 message: 'data retrieved successfully',

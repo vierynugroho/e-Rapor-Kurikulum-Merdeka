@@ -1,7 +1,7 @@
 import * as z from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { signIn } from 'next-auth/react';
+import { getSession, signIn } from 'next-auth/react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import {
@@ -19,6 +19,7 @@ import { formSchema } from '@/app/(pages)/(auth)/login/form/validation';
 import { PasswordInput } from '@/components/form/password-input';
 import { useMutation } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
+import { UserRole } from '@prisma/client';
 
 export function LoginForm() {
     const { toast } = useToast();
@@ -44,15 +45,24 @@ export function LoginForm() {
             }
             return response;
         },
-        onSuccess: () => {
+        onSuccess: async () => {
             toast({
                 title: 'Berhasil',
                 description: 'Login berhasil.',
                 variant: 'default',
             });
-            router.refresh();
-            router.push('/');
             form.reset();
+
+            const session = await getSession();
+            const role = session?.user.role;
+
+            if (role === UserRole.ADMIN) {
+                router.push('/admin/dashboard');
+            } else if (role === UserRole.TEACHER) {
+                router.push('/teacher/dashboard');
+            } else {
+                router.push('/');
+            }
         },
         onError: error => {
             toast({

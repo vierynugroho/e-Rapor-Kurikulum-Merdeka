@@ -10,9 +10,8 @@ import { PeriodService } from './service';
 import { CreatePeriodType, UpdatePeriodType } from '@/types/period';
 
 export class PeriodController {
-    static async GET(request: NextRequest) {
+    static async GET() {
         try {
-            console.log(request.json);
             const data = await PeriodService.GET();
 
             return APIResponse.success(data, {
@@ -23,9 +22,8 @@ export class PeriodController {
         }
     }
 
-    static async GET_ACTIVE_PERIOD(request: NextRequest) {
+    static async GET_ACTIVE_PERIOD() {
         try {
-            console.log(request.json);
             const periodData = await PeriodService.GET_ACTIVE_PERIOD();
 
             return APIResponse.success(periodData, {
