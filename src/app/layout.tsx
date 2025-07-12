@@ -39,18 +39,18 @@ export default function RootLayout({
             <body
                 className={`${geistSans.variable} ${geistMono.variable} font-sans antialiased`}
             >
-                <ThemeProvider
-                    attribute="class"
-                    defaultTheme="system"
-                    enableSystem
-                    disableTransitionOnChange
-                >
-                    <AuthSessionProvider>
-                        <TanstackProvider>
+                <AuthSessionProvider>
+                    <TanstackProvider>
+                        <ThemeProvider
+                            attribute="class"
+                            defaultTheme="system"
+                            enableSystem
+                            disableTransitionOnChange
+                        >
                             <ToastProvider>{children}</ToastProvider>
-                        </TanstackProvider>
-                    </AuthSessionProvider>
-                </ThemeProvider>
+                        </ThemeProvider>
+                    </TanstackProvider>
+                </AuthSessionProvider>
             </body>
         </html>
     );
