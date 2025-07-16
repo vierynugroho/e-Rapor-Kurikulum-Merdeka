@@ -5,6 +5,12 @@ import { AssessmentAspects, ClassCategory } from '@prisma/client';
 
 export class IndicatorRepository {
     static async CREATE(indicatorData: CreateIndicatorType) {
+        const activePeriod = await prisma.period.findFirst({
+            where: {
+                isActive: true,
+            },
+        });
+
         const newIndicator = await prisma.indicator.create({
             data: {
                 title: indicatorData.title,
@@ -12,6 +18,7 @@ export class IndicatorRepository {
                 assesment_type: indicatorData.assesment_type,
                 themeId: indicatorData.themeID || 1,
                 classCategory: indicatorData.classCategory || ClassCategory.A,
+                periodId: activePeriod?.id,
             },
         });
         return newIndicator;

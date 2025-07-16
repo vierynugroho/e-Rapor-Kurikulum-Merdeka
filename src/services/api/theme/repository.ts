@@ -4,9 +4,16 @@ import { CustomError } from '@/utils/error';
 
 export class ThemeRepository {
     static async CREATE(themeData: CreateThemeType) {
+        const activePeriod = await prisma.period.findFirst({
+            where: {
+                isActive: true,
+            },
+        });
+
         const newTheme = await prisma.theme.create({
             data: {
                 title: themeData.title,
+                periodId: activePeriod?.id,
             },
         });
         return newTheme;
@@ -80,10 +87,19 @@ export class ThemeRepository {
             );
         }
 
-        const deletedTheme = await prisma.theme.delete({
-            where: {
-                id: themeID,
-            },
+        const deletedTheme = await prisma.$transaction(async tx => {
+            await tx.indicator.deleteMany({
+                where: {
+                    themeId: themeID,
+                },
+            });
+
+            // Delete the theme itself
+            return tx.theme.delete({
+                where: {
+                    id: themeID,
+                },
+            });
         });
 
         return deletedTheme;
