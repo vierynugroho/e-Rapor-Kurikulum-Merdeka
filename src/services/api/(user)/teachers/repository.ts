@@ -74,6 +74,7 @@ export class TeacherRepository {
     }
 
     static async UPDATE(teacherID: number, teacherData: UpdateTeacherType) {
+        console.log({ teacherData });
         const updatedData = {
             fullname: teacherData.fullname,
             email: teacherData.email!,

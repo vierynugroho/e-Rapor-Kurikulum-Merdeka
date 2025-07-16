@@ -71,12 +71,7 @@ export class TeacherService {
             throw new CustomError(404, 'teacher data is not found');
         }
 
-        const updatedData = {
-            ...teacherExist,
-            ...request,
-        };
-
-        const teacher = await TeacherRepository.UPDATE(teacherID, updatedData);
+        const teacher = await TeacherRepository.UPDATE(teacherID, request);
 
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { password, ...teacherWithoutPassword } = teacher;

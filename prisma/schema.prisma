@@ -117,6 +117,7 @@ model Period {
   Attendance          Attendance[]
   Indicator           Indicator[]
   Theme               Theme[]
+  Student             Student[]
 
   @@index([isActive], name: "idx_period_isActive")
   @@index([semester, year], name: "idx_period_semester_year")
@@ -160,19 +161,22 @@ model Indicator {
 }
 
 model Student {
-  id         Int      @id @default(autoincrement())
-  fullname   String
-  gender     Gender
-  religion   Religion
-  parentName String?  @map("parent_name")
-  birthPlace String   @map("birth_place")
-  birthDate  DateTime @map("birth_date")
-  classID    Int?     @map("class_id")
-  address    String?
+  id             Int      @id @default(autoincrement())
+  fullname       String
+  gender         Gender
+  religion       Religion
+  parentName     String?  @map("parent_name")
+  birthPlace     String   @map("birth_place")
+  birthDate      DateTime @map("birth_date")
+  classID        Int?     @map("class_id")
+  address        String?
+  currentPeriod  Int?
+  classAndPeriod Json?
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("update_at")
 
+  Period      Period?               @relation(fields: [currentPeriod], references: [id])
   Class       Class?                @relation(fields: [classID], references: [id])
   Score       Student_Score[]
   Development Student_Development[]

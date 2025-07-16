@@ -5,9 +5,22 @@ import { Gender } from '@prisma/client';
 
 export class StudentRepository {
     static async CREATE(studentData: CreateStudentType) {
+        const activePeriod = await prisma.period.findFirst({
+            where: {
+                isActive: true,
+            },
+        });
+
         const student = await prisma.student.create({
             data: {
                 fullname: studentData.fullname,
+                currentPeriod: activePeriod?.id,
+                classAndPeriod: [
+                    {
+                        classID: studentData.classID,
+                        periodID: activePeriod?.id,
+                    },
+                ],
                 gender: studentData.gender,
                 religion: studentData.religion,
                 parentName: studentData.parentName,
@@ -22,7 +35,16 @@ export class StudentRepository {
     }
 
     static async GET() {
+        const activePeriod = await prisma.period.findFirst({
+            where: {
+                isActive: true,
+            },
+        });
+
         const students = await prisma.student.findMany({
+            where: {
+                currentPeriod: activePeriod?.id,
+            },
             include: {
                 Class: true,
                 Score: true,
@@ -34,9 +56,16 @@ export class StudentRepository {
     }
 
     static async GET_ID(studentID: number) {
+        const activePeriod = await prisma.period.findFirst({
+            where: {
+                isActive: true,
+            },
+        });
+
         const student = await prisma.student.findUnique({
             where: {
                 id: studentID,
+                currentPeriod: activePeriod?.id,
             },
         });
 
@@ -68,6 +97,7 @@ export class StudentRepository {
         const students = await prisma.student.findMany({
             where: {
                 classID: teacherClass.classID,
+                currentPeriod: activePeriod?.id,
             },
             orderBy: {
                 fullname: 'asc',
@@ -207,12 +237,45 @@ export class StudentRepository {
     }
 
     static async UPDATE(studentID: number, studentData: UpdateStudentType) {
+        const activePeriod = await prisma.period.findFirst({
+            where: {
+                isActive: true,
+            },
+        });
+
+        // Ambil data student lama untuk cek perubahan classID
+        const oldStudent = await prisma.student.findUnique({
+            where: { id: studentID },
+        });
+
+        let newClassAndPeriod = oldStudent?.classAndPeriod ?? [];
+
+        // Jika classID berubah, tambahkan entri baru ke classAndPeriod
+        if (
+            studentData.classID !== undefined &&
+            studentData.classID !== oldStudent?.classID
+        ) {
+            // Pastikan newClassAndPeriod adalah array
+            if (!Array.isArray(newClassAndPeriod)) {
+                newClassAndPeriod = [];
+            }
+            newClassAndPeriod = [
+                ...newClassAndPeriod,
+                {
+                    classID: studentData.classID,
+                    periodID: activePeriod?.id,
+                },
+            ];
+        }
+
         const student = await prisma.student.update({
             where: {
                 id: studentID,
             },
             data: {
                 fullname: studentData.fullname,
+                currentPeriod: activePeriod?.id,
+                classAndPeriod: newClassAndPeriod,
                 gender: studentData.gender || Gender.LAKI_LAKI,
                 religion: studentData.religion,
                 parentName: studentData.parentName,
