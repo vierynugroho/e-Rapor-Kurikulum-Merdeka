@@ -115,6 +115,8 @@ model Period {
   Student_Development Student_Development[]
   Reflection          Reflection[]
   Attendance          Attendance[]
+  Indicator           Indicator[]
+  Theme               Theme[]
 
   @@index([isActive], name: "idx_period_isActive")
   @@index([semester, year], name: "idx_period_semester_year")
@@ -122,11 +124,13 @@ model Period {
 }
 
 model Theme {
-  id    Int    @id @default(autoincrement())
-  title String
+  id       Int    @id @default(autoincrement())
+  title    String
+  periodId Int?
 
   createdAt DateTime    @default(now()) @map("created_at")
   updatedAt DateTime    @updatedAt @map("update_at")
+  Period    Period?     @relation(fields: [periodId], references: [id])
   Indicator Indicator[]
 
   @@index([title], name: "idx_theme_title")
@@ -139,13 +143,15 @@ model Indicator {
   description    String
   assesment_type AssessmentAspects
   themeId        Int
+  periodId       Int?
   classCategory  ClassCategory
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("update_at")
 
-  Theme Theme           @relation(fields: [themeId], references: [id])
-  Score Student_Score[]
+  Theme  Theme           @relation(fields: [themeId], references: [id])
+  Period Period?         @relation(fields: [periodId], references: [id])
+  Score  Student_Score[]
 
   @@index([themeId], name: "idx_indicator_themeId")
   @@index([assesment_type], name: "idx_indicator_assessmentType")

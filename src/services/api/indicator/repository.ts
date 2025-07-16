@@ -22,6 +22,11 @@ export class IndicatorRepository {
             include: {
                 Theme: true,
             },
+            where: {
+                Period: {
+                    isActive: true,
+                },
+            },
         });
 
         return indicators;
@@ -31,6 +36,9 @@ export class IndicatorRepository {
         const indicatorData = await prisma.indicator.findUnique({
             where: {
                 id: indicatorID,
+                Period: {
+                    isActive: true,
+                },
             },
             include: {
                 Theme: true,
@@ -44,6 +52,9 @@ export class IndicatorRepository {
         const indicatorData = await prisma.indicator.findMany({
             where: {
                 classCategory: classCategory,
+                Period: {
+                    isActive: true,
+                },
             },
             include: {
                 Theme: true,
@@ -57,6 +68,9 @@ export class IndicatorRepository {
         const indicatorData = await prisma.indicator.findMany({
             where: {
                 assesment_type: indicatorType,
+                Period: {
+                    isActive: true,
+                },
             },
             include: {
                 Theme: true,
@@ -77,6 +91,9 @@ export class IndicatorRepository {
                     mode: 'insensitive',
                     equals: indicatorTitle,
                 },
+                Period: {
+                    isActive: true,
+                },
                 themeId: indicatorThemeID,
                 classCategory: classCategory as ClassCategory,
             },
@@ -92,6 +109,9 @@ export class IndicatorRepository {
         const updatedIndicator = await prisma.indicator.update({
             where: {
                 id: indicatorID,
+                Period: {
+                    isActive: true,
+                },
             },
             data: {
                 title: indicatorData.title,

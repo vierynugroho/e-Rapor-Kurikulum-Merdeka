@@ -1,5 +1,6 @@
 import { prisma } from '@/lib/prisma';
 import { CreateThemeType, UpdateThemeType } from '@/types/theme';
+import { CustomError } from '@/utils/error';
 
 export class ThemeRepository {
     static async CREATE(themeData: CreateThemeType) {
@@ -12,7 +13,13 @@ export class ThemeRepository {
     }
 
     static async GET() {
-        const themes = await prisma.theme.findMany();
+        const themes = await prisma.theme.findMany({
+            where: {
+                Period: {
+                    isActive: true,
+                },
+            },
+        });
 
         return themes;
     }
@@ -21,6 +28,9 @@ export class ThemeRepository {
         const themeData = await prisma.theme.findUnique({
             where: {
                 id: themeID,
+                Period: {
+                    isActive: true,
+                },
             },
         });
 
@@ -33,6 +43,9 @@ export class ThemeRepository {
                 title: {
                     mode: 'insensitive',
                     equals: theme_title,
+                },
+                Period: {
+                    isActive: true,
                 },
             },
         });
@@ -54,6 +67,19 @@ export class ThemeRepository {
     }
 
     static async DELETE(themeID: number) {
+        const isUsed = await prisma.indicator.findFirst({
+            where: {
+                themeId: themeID,
+            },
+        });
+
+        if (isUsed) {
+            throw new CustomError(
+                400,
+                'Theme cannot be deleted because it is already used in an indicator.',
+            );
+        }
+
         const deletedTheme = await prisma.theme.delete({
             where: {
                 id: themeID,
