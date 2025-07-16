@@ -224,9 +224,12 @@ export const AssessmentForm: React.FC<FormAssessmentProps> = ({
                 <div className="flex flex-col md:flex-row md:justify-between md:space-x-4">
                     <div className="flex-grow space-y-2">
                         <h5 className="font-medium">{indicator.title}</h5>
-                        <p className="text-sm text-muted-foreground">
-                            {indicator.description}
-                        </p>
+                        <div
+                            className="text-sm text-muted-foreground"
+                            dangerouslySetInnerHTML={{
+                                __html: indicator.description ?? '',
+                            }}
+                        />
                         <p className="text-sm text-muted-foreground">
                             Tema: {indicator?.Theme?.title || ''}
                         </p>

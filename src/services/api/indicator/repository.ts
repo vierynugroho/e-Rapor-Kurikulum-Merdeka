@@ -1,5 +1,6 @@
 import { prisma } from '@/lib/prisma';
 import { CreateIndicatorType, UpdateIndicatorType } from '@/types/indicator';
+import { CustomError } from '@/utils/error';
 import { AssessmentAspects, ClassCategory } from '@prisma/client';
 
 export class IndicatorRepository {
@@ -105,10 +106,26 @@ export class IndicatorRepository {
     }
 
     static async DELETE(indicatorID: number) {
-        const deletedIndicator = await prisma.indicator.delete({
-            where: {
-                id: indicatorID,
-            },
+        // Gunakan transaction, cek apakah indicator ada pada penilaian (Student_Score)
+        const deletedIndicator = await prisma.$transaction(async tx => {
+            const isUsed = await tx.student_Score.findFirst({
+                where: {
+                    indicatorId: indicatorID,
+                },
+            });
+
+            if (isUsed) {
+                throw new CustomError(
+                    400,
+                    'Indicator cannot be deleted because it is already used in an assessment.',
+                );
+            }
+
+            return tx.indicator.delete({
+                where: {
+                    id: indicatorID,
+                },
+            });
         });
 
         return deletedIndicator;
