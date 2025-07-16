@@ -68,6 +68,7 @@ export class IndicatorRepository {
     static async GET_IDENTITY(
         indicatorTitle: string,
         indicatorThemeID: number,
+        classCategory: string,
     ) {
         const indicatorData = await prisma.indicator.findFirst({
             where: {
@@ -76,6 +77,7 @@ export class IndicatorRepository {
                     equals: indicatorTitle,
                 },
                 themeId: indicatorThemeID,
+                classCategory: classCategory as ClassCategory,
             },
         });
 

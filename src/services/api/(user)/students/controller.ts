@@ -40,6 +40,7 @@ export class StudentController {
                 message: 'student data retrieved successfully',
             });
         } catch (error) {
+            console.log(error);
             return errorHandler(error);
         }
     }
@@ -118,6 +119,7 @@ export class StudentController {
                 message: 'student data deleted successfully',
             });
         } catch (error) {
+            console.log(error);
             return errorHandler(error);
         }
     }

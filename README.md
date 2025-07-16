@@ -1,36 +1,93 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+<!--
+Catatan: Jika Anda mengalami error parsing pada file README.md, pastikan file ini tidak mengandung karakter atau sintaks yang tidak valid (misal: awalan "s" di baris pertama atau komentar yang tidak sesuai format Markdown). Jika menggunakan ESLint, pastikan juga file README.md tidak di-parse sebagai file JavaScript/TypeScript.
+-->
 
-## Getting Started
+<!-- Ini adalah proyek [Next.js](https://nextjs.org) yang di-bootstrapped dengan [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app) dan telah terintegrasi dengan [Prisma](https://www.prisma.io/) sebagai ORM untuk pengelolaan database. -->
 
-First, run the development server:
+## Langkah Instalasi
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+1. **Clone repository ini**
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+    ```bash
+    git clone <repository-url>
+    cd <nama-folder>
+    ```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+2. **Install dependencies**
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+    ```bash
+    npm install
+    # atau
+    yarn install
+    # atau
+    pnpm install
+    # atau
+    bun install
+    ```
 
-## Learn More
+3. **Konfigurasi environment**
 
-To learn more about Next.js, take a look at the following resources:
+    - Salin file `.env.example` menjadi `.env` dan sesuaikan variabel database Anda, misal:
+        ```
+        DATABASE_URL="postgresql://user:password@localhost:5432/dbname"
+        ```
+    - Pastikan database sudah tersedia.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+4. **Generate Prisma Client**
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+    ```bash
+    npm run prisma
+    ```
 
-## Deploy on Vercel
+5. **Migrasi Database**
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+    ```bash
+    npm run db:migrate-dev
+    ```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+    Atau untuk push skema tanpa migrasi:
+
+    ```bash
+    npm run db:push
+    ```
+
+6. **(Opsional) Jalankan Prisma Studio**
+
+    ```bash
+    npm run db:studio
+    ```
+
+7. **Jalankan development server**
+
+    ```bash
+    npm run dev
+    # atau
+    yarn dev
+    # atau
+    pnpm dev
+    # atau
+    bun dev
+    ```
+
+8. **Buka aplikasi**
+   Buka [http://localhost:3000](http://localhost:3000) di browser Anda.
+
+## Struktur Script Penting
+
+- `npm run dev` — Menjalankan Next.js dalam mode development
+- `npm run build` — Build aplikasi untuk production
+- `npm run prisma` — Generate Prisma Client
+- `npm run db:migrate-dev` — Migrasi database (development)
+- `npm run db:studio` — Membuka Prisma Studio (GUI database)
+- `npm run db:reset` — Reset database dan migrasi ulang
+
+## Sumber Belajar
+
+- [Dokumentasi Next.js](https://nextjs.org/docs)
+- [Dokumentasi Prisma](https://www.prisma.io/docs)
+
+## Deployment
+
+Aplikasi ini dapat dideploy di [Vercel](https://vercel.com/) atau platform lain yang mendukung Next.js dan akses ke database.
+
+Pastikan environment variable `DATABASE_URL` sudah diatur dengan benar pada environment production Anda.

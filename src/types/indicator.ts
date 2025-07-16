@@ -42,7 +42,7 @@ export type CreateIndicatorType = {
     description: string;
     assesment_type: AssessmentAspects;
     themeID?: number | null;
-    classCategory?: ClassCategory;
+    classCategory: ClassCategory;
 
     createdAt?: Date;
     updatedAt?: Date;

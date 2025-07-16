@@ -17,5 +17,5 @@
             "parser": "postcss"
         }
     ],
-    "ignorePatterns": ["**/*.css", "**/*.scss"]
+    "ignorePatterns": ["**/*.css", "**/*.scss", "README.md"]
 }

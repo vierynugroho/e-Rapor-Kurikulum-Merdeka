@@ -227,12 +227,30 @@ export class StudentRepository {
     }
 
     static async DELETE(studentID: number) {
-        const student = await prisma.student.delete({
-            where: {
-                id: studentID,
-            },
+        // Hapus data berelasi menggunakan transaction agar lebih aman
+        const deleted = await prisma.$transaction(async tx => {
+            await tx.student_Score.deleteMany({
+                where: { studentId: studentID },
+            });
+            await tx.student_Development.deleteMany({
+                where: { studentId: studentID },
+            });
+            await tx.reflection.deleteMany({
+                where: { studentId: studentID },
+            });
+            await tx.attendance.deleteMany({
+                where: { studentId: studentID },
+            });
+
+            const student = await tx.student.delete({
+                where: {
+                    id: studentID,
+                },
+            });
+
+            return student;
         });
 
-        return student;
+        return deleted;
     }
 }

@@ -6,8 +6,8 @@ const TOAST_DEFAULT_DURATION = 3000; // 3 seconds
 export function ToastProvider({ children }: { children: React.ReactNode }) {
     return (
         <ToastProviderPrimitive duration={TOAST_DEFAULT_DURATION}>
-            {children}
             <Toaster />
+            {children}
         </ToastProviderPrimitive>
     );
 }

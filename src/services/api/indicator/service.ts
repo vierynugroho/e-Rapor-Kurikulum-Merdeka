@@ -36,10 +36,12 @@ export class IndicatorService {
     }
 
     static async CREATE<T extends CreateIndicatorType>(request: T) {
+        console.log(request);
         if (request.themeID) {
             const identityExist = await IndicatorRepository.GET_IDENTITY(
                 request.title,
                 request.themeID,
+                request.classCategory,
             );
 
             if (identityExist) {

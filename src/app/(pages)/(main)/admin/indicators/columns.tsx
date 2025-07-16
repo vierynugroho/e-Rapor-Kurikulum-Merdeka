@@ -4,7 +4,7 @@ import { ArrowUpDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import ActionMenu from './components/action-menu';
 import { IndicatorType } from '@/types/indicator';
-import { AssessmentAspects } from '@prisma/client';
+import { AssessmentAspects, ClassCategory } from '@prisma/client';
 
 export const columns: ColumnDef<IndicatorType>[] = [
     {
@@ -35,6 +35,15 @@ export const columns: ColumnDef<IndicatorType>[] = [
                 AssessmentAspects[type]?.replace(/_/g, ' ') ||
                 'Tidak Diketahui';
             return displayText;
+        },
+    },
+    {
+        accessorKey: 'classCategory',
+        header: 'Kelas',
+        cell: ({ row }: CellContext<IndicatorType, unknown>) => {
+            const type = row.original.classCategory as ClassCategory;
+            if (!type) return 'Tidak Diketahui';
+            return type.replace(/_/g, ' ');
         },
     },
     {

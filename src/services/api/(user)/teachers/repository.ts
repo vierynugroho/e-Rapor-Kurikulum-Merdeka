@@ -1,16 +1,18 @@
 import { prisma } from '@/lib/prisma';
 import { CreateTeacherType, UpdateTeacherType } from '@/types/teacher';
 import { UserPosition } from '@prisma/client';
+import * as bcrypt from 'bcrypt';
 
 export class TeacherRepository {
     static async CREATE(teacherData: CreateTeacherType) {
+        const encryptedPassword = await bcrypt.hash(teacherData.password, 10);
         const teacher = await prisma.teacher.create({
             data: {
                 fullname: teacherData.fullname,
                 email: teacherData.email,
                 identity_number: teacherData.identity_number,
                 classID: teacherData.classID,
-                password: teacherData.password,
+                password: encryptedPassword,
                 role: teacherData.role,
                 position: teacherData.position,
             },
@@ -72,19 +74,29 @@ export class TeacherRepository {
     }
 
     static async UPDATE(teacherID: number, teacherData: UpdateTeacherType) {
+        const updatedData = {
+            fullname: teacherData.fullname,
+            email: teacherData.email!,
+            identity_number: teacherData.identity_number,
+            classID: teacherData.classID,
+            role: teacherData.role,
+            position: teacherData.position,
+            password: teacherData.password,
+        };
+
+        if (teacherData.password) {
+            const encryptedPassword = await bcrypt.hash(
+                teacherData.password,
+                10,
+            );
+            updatedData.password = encryptedPassword;
+        }
+
         const teacher = await prisma.teacher.update({
             where: {
                 id: teacherID,
             },
-            data: {
-                fullname: teacherData.fullname,
-                email: teacherData.email!,
-                identity_number: teacherData.identity_number,
-                classID: teacherData.classID,
-                password: teacherData.password,
-                role: teacherData.role,
-                position: teacherData.position,
-            },
+            data: updatedData,
         });
 
         return teacher;
